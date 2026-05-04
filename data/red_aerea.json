@@ -1,0 +1,88 @@
+    {
+        "configuracion": {
+            "aeronaves": {
+                "Avión Comercial": {
+                    "costoKm": 0.18,
+                    "tiempoKm": 0.7
+                },
+                "Avión Regional": {
+                    "costoKm": 0.25,
+                    "tiempoKm": 1.1
+                },
+                "Hélice": {
+                    "costoKm": 0.12,
+                    "tiempoKm": 2.5
+                }
+            },
+            "presupuestoMinimoPorc": 35,
+            "intervaloAlojamiento": 20,
+            "intervaloAlimentacion": 8
+        },
+        "aeropuertos": [
+            {
+                "id": "BOG",
+                "nombre": "Aeropuerto Internacional El Dorado",
+                "ciudad": "Bogotá",
+                "pais": "Colombia",
+                "zonaHoraria": "America/Bogota",
+                "esHub": true,
+                "costoAlojamiento": 45,
+                "costoAlimentacion": 12,
+                "actividades": [
+                    {
+                        "nombre": "Tour Ciudad Amurallada",
+                        "tipo": "opcional",
+                        "duracionMin": 180,
+                        "costoUSD": 25
+                    }
+                ],
+                "trabajos": [
+                    {
+                        "nombre": "Cargador de equipaje",
+                        "tarifaHora": 8,
+                        "maxHoras": 6
+                    },
+                    {
+                        "nombre": "Guía de aeropuerto",
+                        "tarifaHora": 12,
+                        "maxHoras": 4
+                    }
+                ]
+            },
+            {
+                "id": "MDE",
+                "nombre": "Aeropuerto Internacional José María Córdova",
+                "ciudad": "Medellín",
+                "pais": "Colombia",
+                "zonaHoraria": "America/Bogota",
+                "esHub": false,
+                "costoAlojamiento": 35,
+                "costoAlimentacion": 10,
+                "actividades": [],
+                "trabajos": []
+            }
+        ],
+        "rutas": [
+            {
+                "origen": "BOG",
+                "destino": "MDE",
+                "distanciaKm": 240,
+                "aeronaves": [
+                    "Avión Comercial",
+                    "Avión Regional"
+                ],
+                "costoBase": 0,
+                "estanciaMinima": 60
+            },
+            {
+                "origen": "MDE",
+                "destino": "BOG",
+                "distanciaKm": 240,
+                "aeronaves": [
+                    "Avión Comercial"
+                ],
+                "costoBase": 0,
+                "estanciaMinima": 60
+            }
+        ]
+    }
