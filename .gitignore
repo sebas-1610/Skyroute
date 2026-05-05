@@ -49,3 +49,7 @@ htmlcov/
 *.png
 *.jpg
 *.jpeg
+
+#skills
+.opencode/
+opencode.json
