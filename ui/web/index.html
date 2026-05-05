@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyRoute Planner — Optimización de Rutas Aéreas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav aria-label="Navegación principal">
+        <div class="nav-logo">
+        <div class="nav-logo-icon" aria-hidden="true">✈</div>
+        SKY<span style="color:var(--text-muted)">ROUTE</span>
+        </div>
+        <ul class="nav-links" role="list">
+        <li><a href="#features">Funcionalidades</a></li>
+        <li><a href="#algorithms">Algoritmos</a></li>
+        <li><a href="#schema">Estructura</a></li>
+        <li><a href="#architecture">Arquitectura</a></li>
+        </ul>
+        <a href="#features" class="nav-cta">Ver Proyecto</a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+        <canvas id="network-canvas" aria-hidden="true"></canvas>
+        <div class="hero-noise" aria-hidden="true"></div>
+
+        <div class="hero-content">
+        <div class="hero-tag" aria-label="Estado: Sistema en línea">
+            <span class="hero-tag-dot" aria-hidden="true"></span>
+            Estructuras de Datos — Proyecto Grafos
+        </div>
+
+        <h1 class="hero-title" id="hero-title">
+            SkyRoute<br><em>Planner</em>
+        </h1>
+
+        <p class="hero-subtitle">
+            Sistema de optimización de rutas aéreas sobre una red de grafos dirigidos ponderados. 
+            Planificación inteligente con Dijkstra, gestión dinámica de presupuesto y visualización en tiempo real.
+        </p>
+
+        <div class="hero-actions">
+            <a href="#features" class="btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Explorar funcionalidades
+            </a>
+            <a href="#architecture" class="btn-secondary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Ver arquitectura
+            </a>
+        </div>
+        </div>
+
+        <div class="hero-stats" aria-label="Estadísticas del proyecto">
+        <div class="stat">
+            <span class="stat-value">30+</span>
+            <span class="stat-label">Aeropuertos</span>
+        </div>
+        <div class="stat-sep" aria-hidden="true"></div>
+        <div class="stat">
+            <span class="stat-value">3</span>
+            <span class="stat-label">Algoritmos</span>
+        </div>
+        <div class="stat-sep" aria-hidden="true"></div>
+        <div class="stat">
+            <span class="stat-value">5</span>
+            <span class="stat-label">Requerimientos</span>
+        </div>
+        <div class="stat-sep" aria-hidden="true"></div>
+        <div class="stat">
+            <span class="stat-value">5.0</span>
+            <span class="stat-label">Puntos totales</span>
+        </div>
+        </div>
+    </section>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <!-- FEATURES -->
+    <section id="features" aria-labelledby="features-title">
+        <p class="section-label">Requerimientos funcionales</p>
+        <h2 class="section-title" id="features-title">Lo que el sistema hace</h2>
+        <p class="section-desc">
+        Cinco módulos independientes que cubren desde la carga del grafo hasta la generación 
+        del reporte final, con decisiones dinámicas y tolerancia a fallos en la red.
+        </p>
+
+        <div class="features-grid" role="list">
+
+        <article class="feature-card" role="listitem">
+            <div class="feature-header">
+            <div class="feature-icon icon-teal" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><line x1="12" y1="7" x2="5" y2="17"/><line x1="12" y1="7" x2="19" y2="17"/></svg>
+            </div>
+            <span class="feature-index">R1</span>
+            </div>
+            <h3 class="feature-title">Carga y visualización de la red</h3>
+            <p class="feature-desc">Representa la red aérea desde JSON. Distingue aeropuertos hub de secundarios, muestra distancias por arista y despliega información detallada al seleccionar un nodo.</p>
+            <div class="feature-score">
+            <div class="feature-score-bar"><div class="feature-score-fill" style="width:50%"></div></div>
+            0.5 pts
+            </div>
+        </article>
+
+        <article class="feature-card" role="listitem">
+            <div class="feature-header">
+            <div class="feature-icon icon-amber" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h12"/></svg>
+            </div>
+            <span class="feature-index">R2</span>
+            </div>
+            <h3 class="feature-title">Planificación básica de itinerario</h3>
+            <p class="feature-desc">Dado un origen y presupuesto, propone dos alternativas: máximos destinos sin exceder el gasto, y máximos destinos en menor tiempo. Soporta criterios combinados y filtro de aeropuertos.</p>
+            <div class="feature-score">
+            <div class="feature-score-bar"><div class="feature-score-fill" style="width:100%"></div></div>
+            1.5 pts
+            </div>
+        </article>
+
+        <article class="feature-card" role="listitem">
+            <div class="feature-header">
+            <div class="feature-icon icon-coral" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <span class="feature-index">R3</span>
+            </div>
+            <h3 class="feature-title">Planificación avanzada dinámica</h3>
+            <p class="feature-desc">El viajero puede aumentar su presupuesto aceptando trabajos temporales en destinos. Gestión de alojamiento (cada 20 h), alimentación (cada 8 h) y actividades opcionales en cada escala.</p>
+            <div class="feature-score">
+            <div class="feature-score-bar"><div class="feature-score-fill" style="width:100%"></div></div>
+            2.0 pts
+            </div>
+        </article>
+
+        <article class="feature-card" role="listitem">
+            <div class="feature-header">
+            <div class="feature-icon icon-teal" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <span class="feature-index">R4</span>
+            </div>
+            <h3 class="feature-title">Interrupciones en la red</h3>
+            <p class="feature-desc">Bloqueo dinámico de aristas ante cancelaciones o cierres de espacio aéreo. Si el viajero está en tránsito, regresa al origen del tramo y recalcula el itinerario automáticamente.</p>
+            <div class="feature-score">
+            <div class="feature-score-bar"><div class="feature-score-fill" style="width:50%"></div></div>
+            0.5 pts
+            </div>
+        </article>
+
+        <article class="feature-card" role="listitem">
+            <div class="feature-header">
+            <div class="feature-icon icon-amber" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <span class="feature-index">R5</span>
+            </div>
+            <h3 class="feature-title">Visualización y reporte final</h3>
+            <p class="feature-desc">Resumen completo: destinos visitados, tramos volados, actividades realizadas, trabajos, presupuesto inicial vs. gastado y saldo final. Todo resaltado sobre el mapa de la red.</p>
+            <div class="feature-score">
+            <div class="feature-score-bar"><div class="feature-score-fill" style="width:50%"></div></div>
+            0.5 pts
+            </div>
+        </article>
+
+        </div>
+    </section>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <!-- ALGORITHMS -->
+    <section id="algorithms" class="algo-section" aria-labelledby="algo-title">
+        <p class="section-label">Core / algorithms</p>
+        <h2 class="section-title" id="algo-title">Algoritmos implementados</h2>
+        <p class="section-desc">
+        Ninguno usa librerías externas de grafos. Cada uno implementado desde cero 
+        con interfaz <code style="font-family:var(--font-mono);font-size:13px;color:var(--teal)">IAlgoritmo</code> para ser intercambiable por estrategia.
+        </p>
+
+        <div class="algo-grid">
+
+        <article class="algo-card" data-reveal>
+            <div class="algo-name">dijkstra.py</div>
+            <h3 class="algo-title">Dijkstra — Camino mínimo</h3>
+            <p class="algo-desc">
+            Camino de costo mínimo entre dos aeropuertos. Criterio de optimización intercambiable: distancia, tiempo o costo USD. Detención anticipada al alcanzar el destino.
+            </p>
+            <div class="algo-meta">
+            <span class="tag tag-amber">O(V²)</span>
+            <span class="tag tag-teal">Pesos no negativos</span>
+            <span class="tag">R2 · R3 · R4</span>
+            </div>
+        </article>
+
+        <article class="algo-card" data-reveal>
+            <div class="algo-name">bfs.py</div>
+            <h3 class="algo-title">BFS — Búsqueda en amplitud</h3>
+            <p class="algo-desc">
+            Recorrido nivel por nivel desde un aeropuerto origen. Útil para encontrar la ruta con menor número de escalas, independientemente del costo de cada tramo.
+            </p>
+            <div class="algo-meta">
+            <span class="tag tag-amber">O(V + E)</span>
+            <span class="tag tag-teal">Sin pesos</span>
+            <span class="tag">R2 · Escalas mínimas</span>
+            </div>
+        </article>
+
+        <article class="algo-card" data-reveal>
+            <div class="algo-name">dfs.py</div>
+            <h3 class="algo-title">DFS — Búsqueda en profundidad</h3>
+            <p class="algo-desc">
+            Exploración exhaustiva para detectar ciclos, calcular componentes conexas y enumerar todos los caminos posibles entre dos nodos bajo restricciones de presupuesto.
+            </p>
+            <div class="algo-meta">
+            <span class="tag tag-amber">O(V + E)</span>
+            <span class="tag tag-coral">Con backtracking</span>
+            <span class="tag">R3 · Cobertura máxima</span>
+            </div>
+        </article>
+
+        <article class="algo-card" data-reveal>
+            <div class="algo-name">cobertura_maxima.py</div>
+            <h3 class="algo-title">Greedy — Cobertura máxima</h3>
+            <p class="algo-desc">
+            Heurística voraz para maximizar destinos visitados dentro de un presupuesto y tiempo dados. Selecciona en cada paso la ruta de mayor eficiencia relativa.
+            </p>
+            <div class="algo-meta">
+            <span class="tag tag-amber">O(E log E)</span>
+            <span class="tag tag-coral">Heurístico</span>
+            <span class="tag">R2a · R2b</span>
+            </div>
+        </article>
+
+        </div>
+    </section>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <!-- JSON SCHEMA -->
+    <section id="schema" aria-labelledby="schema-title">
+        <div class="schema-section">
+
+        <div class="schema-intro">
+            <p class="section-label">data / red_aerea.json</p>
+            <h2 class="section-title" id="schema-title">Estructura del archivo de datos</h2>
+            <p class="section-desc" style="margin-bottom:24px">
+            30+ aeropuertos latinoamericanos. Tres bloques raíz: configuración global de aeronaves, 
+            nodos con toda la información de cada aeropuerto y aristas dirigidas entre ellos.
+            </p>
+            <div class="algo-meta" style="gap:8px">
+            <span class="tag tag-teal">JSON</span>
+            <span class="tag">30+ nodos</span>
+            <span class="tag">Grafo dirigido</span>
+            <span class="tag tag-amber">3 tipos de aeronave</span>
+            </div>
+        </div>
+
+        <div class="schema-blocks">
+
+            <div class="schema-block">
+            <div class="schema-block-head">
+                <span class="schema-block-title">configuracion</span>
+                <span class="schema-block-badge">global</span>
+            </div>
+            <div class="schema-code" role="region" aria-label="Ejemplo JSON configuracion">
+    <span class="k">{</span>
+    <span class="s">"aeronaves"</span><span class="k">:</span> <span class="k">{</span>
+        <span class="s">"Avión Comercial"</span><span class="k">:</span> <span class="k">{</span>
+        <span class="s">"costoKm"</span><span class="k">:</span> <span class="n">0.18</span><span class="k">,</span>
+        <span class="s">"tiempoKm"</span><span class="k">:</span> <span class="n">0.7</span>
+        <span class="k">},</span>
+        <span class="s">"Hélice"</span><span class="k">:</span> <span class="k">{</span> <span class="s">"costoKm"</span><span class="k">:</span> <span class="n">0.12</span><span class="k">,</span> <span class="s">"tiempoKm"</span><span class="k">:</span> <span class="n">2.5</span> <span class="k">}</span>
+    <span class="k">},</span>
+    <span class="s">"presupuestoMinimoPorc"</span><span class="k">:</span> <span class="n">35</span><span class="k">,</span>
+    <span class="s">"intervaloAlojamiento"</span><span class="k">:</span> <span class="n">20</span>
+    <span class="k">}</span>
+            </div>
+            </div>
+
+            <div class="schema-block">
+            <div class="schema-block-head">
+                <span class="schema-block-title">aeropuertos[ ]</span>
+                <span class="schema-block-badge">nodos</span>
+            </div>
+            <div class="schema-code" role="region" aria-label="Ejemplo JSON nodo aeropuerto">
+    <span class="k">{</span>
+    <span class="s">"id"</span><span class="k">:</span> <span class="b">"BOG"</span><span class="k">,</span>
+    <span class="s">"ciudad"</span><span class="k">:</span> <span class="b">"Bogotá"</span><span class="k">,</span>
+    <span class="s">"esHub"</span><span class="k">:</span> <span class="n">true</span><span class="k">,</span>
+    <span class="s">"costoAlojamiento"</span><span class="k">:</span> <span class="n">45</span><span class="k">,</span>
+    <span class="s">"trabajos"</span><span class="k">:</span> <span class="k">[{</span>
+        <span class="s">"nombre"</span><span class="k">:</span> <span class="b">"Guía de aeropuerto"</span><span class="k">,</span>
+        <span class="s">"tarifaHora"</span><span class="k">:</span> <span class="n">12</span><span class="k">,</span>
+        <span class="s">"maxHoras"</span><span class="k">:</span> <span class="n">4</span>
+    <span class="k">}]</span>
+    <span class="k">}</span>
+            </div>
+            </div>
+
+            <div class="schema-block">
+            <div class="schema-block-head">
+                <span class="schema-block-title">rutas[ ]</span>
+                <span class="schema-block-badge">aristas</span>
+            </div>
+            <div class="schema-code" role="region" aria-label="Ejemplo JSON arista ruta">
+    <span class="k">{</span>
+    <span class="s">"origen"</span><span class="k">:</span>  <span class="b">"BOG"</span><span class="k">,</span>
+    <span class="s">"destino"</span><span class="k">:</span> <span class="b">"MDE"</span><span class="k">,</span>
+    <span class="s">"distanciaKm"</span><span class="k">:</span> <span class="n">240</span><span class="k">,</span>
+    <span class="s">"aeronaves"</span><span class="k">:</span> <span class="k">[</span><span class="b">"Avión Comercial"</span><span class="k">],</span>
+    <span class="s">"costoBase"</span><span class="k">:</span> <span class="n">0</span><span class="k">,</span>
+    <span class="s">"estanciaMinima"</span><span class="k">:</span> <span class="n">60</span>
+    <span class="k">}</span>
+            </div>
+            </div>
+
+        </div>
+        </div>
+    </section>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <!-- ARCHITECTURE -->
+    <section id="architecture" class="structure-section" aria-labelledby="arch-title">
+        <p class="section-label">Arquitectura del proyecto</p>
+        <h2 class="section-title" id="arch-title">Estructura de carpetas</h2>
+        <p class="section-desc">
+        Cinco capas con dependencias estrictamente de arriba hacia abajo. 
+        <code style="font-family:var(--font-mono);font-size:13px;color:var(--teal)">core/</code> no importa nunca a <code style="font-family:var(--font-mono);font-size:13px;color:var(--amber)">ui/</code> ni a <code style="font-family:var(--font-mono);font-size:13px;color:var(--amber)">services/</code>.
+        </p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;align-items:start">
+
+        <div class="file-tree" role="region" aria-label="Árbol de directorios del proyecto">
+    <span class="ft-dir">skyroute/</span>
+    ├── <span class="ft-file">main.py</span>
+    │
+    ├── <span class="ft-dir">core/</span>
+    │   ├── <span class="ft-dir">models/</span>
+    │   │   ├── <span class="ft-file">aeropuerto.py</span>   <span class="ft-note">← vértice</span>
+    │   │   ├── <span class="ft-file">ruta.py</span>          <span class="ft-note">← arista</span>
+    │   │   └── <span class="ft-file">grafo.py</span>         <span class="ft-note">← lista adyac.</span>
+    │   ├── <span class="ft-dir">algorithms/</span>
+    │   │   ├── <span class="ft-file">dijkstra.py</span>
+    │   │   ├── <span class="ft-file">bfs.py</span>
+    │   │   └── <span class="ft-file">dfs.py</span>
+    │   └── <span class="ft-dir">interfaces/</span>
+    │       ├── <span class="ft-file">i_grafo.py</span>
+    │       ├── <span class="ft-file">i_algoritmo.py</span>
+    │       └── <span class="ft-file">i_visualizador.py</span>
+    │
+    ├── <span class="ft-dir">services/</span>
+    │   ├── <span class="ft-file">cargador_json.py</span>
+    │   ├── <span class="ft-file">planificador_basico.py</span>
+    │   └── <span class="ft-file">planificador_avanzado.py</span>
+    │
+    ├── <span class="ft-dir">ui/</span>
+    │   └── <span class="ft-file">visualizador.py</span>  <span class="ft-note">← networkx aquí</span>
+    │
+    ├── <span class="ft-dir">data/</span>
+    │   └── <span class="ft-file">red_aerea.json</span>
+    │
+    └── <span class="ft-dir">utils/</span>
+        ├── <span class="ft-file">calculadora_costos.py</span>
+        └── <span class="ft-file">validador.py</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px">
+            <article class="algo-card" style="transform:none;opacity:1">
+            <div class="algo-name">Principios SOLID</div>
+            <p class="algo-desc" style="font-size:13px;line-height:1.75">
+                <strong style="color:var(--text);font-weight:600">S</strong> — Cada clase tiene una sola razón para cambiar.<br>
+                <strong style="color:var(--text);font-weight:600">O</strong> — Algoritmos extensibles sin modificar <code style="font-family:var(--font-mono);color:var(--teal);font-size:12px">Grafo</code>.<br>
+                <strong style="color:var(--text);font-weight:600">L</strong> — <code style="font-family:var(--font-mono);color:var(--teal);font-size:12px">Dijkstra</code> reemplaza a cualquier <code style="font-family:var(--font-mono);color:var(--teal);font-size:12px">IAlgoritmo</code>.<br>
+                <strong style="color:var(--text);font-weight:600">I</strong> — Interfaces pequeñas y específicas por capa.<br>
+                <strong style="color:var(--text);font-weight:600">D</strong> — <code style="font-family:var(--font-mono);color:var(--teal);font-size:12px">services/</code> depende de <code style="font-family:var(--font-mono);color:var(--teal);font-size:12px">IAlgoritmo</code>, no de <code style="font-family:var(--font-mono);color:var(--teal);font-size:12px">Dijkstra</code>.
+            </p>
+            </article>
+
+            <article class="algo-card" style="transform:none;opacity:1">
+            <div class="algo-name">Restricciones técnicas</div>
+            <p class="algo-desc" style="font-size:13px;line-height:1.75">
+                Sin librerías externas de grafos en <code style="font-family:var(--font-mono);color:var(--teal);font-size:12px">core/</code>. 
+                <code style="font-family:var(--font-mono);color:var(--amber);font-size:12px">networkx</code> confinado a <code style="font-family:var(--font-mono);color:var(--amber);font-size:12px">ui/visualizador.py</code>.
+                Lista de adyacencia implementada con <code style="font-family:var(--font-mono);color:var(--teal);font-size:12px">dict</code> para lookup O(1).
+                Código documentado en inglés, versionado en Git.
+            </p>
+            </article>
+        </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-brand">
+        <span>SKY</span>ROUTE PLANNER — Ingeniería en Sistemas y Computación
+        </div>
+        <div class="footer-meta">
+        Estructuras de Datos · Proyecto Grafos
+        </div>
+    </footer>
+
+    <script src="js/app.js" defer></script>
+    <script src="js/features.js" defer></script>
+</body>
+</html>
