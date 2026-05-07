@@ -1,0 +1,3961 @@
+{
+  "configuracion": {
+    "aeronaves": {
+      "Boeing737": {
+        "costoKm": 0.12,
+        "tiempoKm": 0.09
+      },
+      "Airbus320": {
+        "costoKm": 0.11,
+        "tiempoKm": 0.09
+      },
+      "Boeing787": {
+        "costoKm": 0.09,
+        "tiempoKm": 0.085
+      },
+      "Airbus380": {
+        "costoKm": 0.08,
+        "tiempoKm": 0.083
+      },
+      "ATR72": {
+        "costoKm": 0.18,
+        "tiempoKm": 0.12
+      },
+      "Embraer190": {
+        "costoKm": 0.15,
+        "tiempoKm": 0.10
+      },
+      "Boeing767": {
+        "costoKm": 0.10,
+        "tiempoKm": 0.087
+      }
+    },
+    "presupuestoMinimoPorc": 35,
+    "intervaloAlojamiento": 20,
+    "intervaloAlimentacion": 8
+  },
+  "nodos": [
+    {
+      "id": "BOG",
+      "nombre": "Aeropuerto Internacional El Dorado",
+      "ciudad": "Bogotá",
+      "pais": "Colombia",
+      "zonaHoraria": "America/Bogota",
+      "esHub": true,
+      "costoAlojamiento": 45,
+      "costoAlimentacion": 8,
+      "actividades": [
+        {
+          "nombre": "Tour histórico La Candelaria",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 12
+        },
+        {
+          "nombre": "Visita al Museo del Oro",
+          "tipo": "cultural",
+          "duracionMin": 120,
+          "costoUSD": 4
+        },
+        {
+          "nombre": "Senderismo Cerro Monserrate",
+          "tipo": "aventura",
+          "duracionMin": 240,
+          "costoUSD": 6
+        },
+        {
+          "nombre": "Recorrido gastronómico Usaquén",
+          "tipo": "gastronomia",
+          "duracionMin": 150,
+          "costoUSD": 20
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente en aeropuerto",
+          "tarifaHora": 5,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía turístico local",
+          "tarifaHora": 7,
+          "maxHoras": 6
+        },
+        {
+          "nombre": "Traductor español-inglés",
+          "tarifaHora": 9,
+          "maxHoras": 4
+        }
+      ]
+    },
+    {
+      "id": "MDE",
+      "nombre": "Aeropuerto Internacional José María Córdova",
+      "ciudad": "Medellín",
+      "pais": "Colombia",
+      "zonaHoraria": "America/Bogota",
+      "esHub": false,
+      "costoAlojamiento": 38,
+      "costoAlimentacion": 7,
+      "actividades": [
+        {
+          "nombre": "Metro Cable y comunas",
+          "tipo": "cultural",
+          "duracionMin": 210,
+          "costoUSD": 8
+        },
+        {
+          "nombre": "Visita a Guatapé y La Piedra",
+          "tipo": "aventura",
+          "duracionMin": 480,
+          "costoUSD": 35
+        },
+        {
+          "nombre": "Tour Museo Casa de la Memoria",
+          "tipo": "cultural",
+          "duracionMin": 90,
+          "costoUSD": 3
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Operario logístico aeropuerto",
+          "tarifaHora": 4,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Freelancer diseño gráfico",
+          "tarifaHora": 10,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "LIM",
+      "nombre": "Aeropuerto Internacional Jorge Chávez",
+      "ciudad": "Lima",
+      "pais": "Perú",
+      "zonaHoraria": "America/Lima",
+      "esHub": true,
+      "costoAlojamiento": 50,
+      "costoAlimentacion": 9,
+      "actividades": [
+        {
+          "nombre": "Tour gastronómico Miraflores",
+          "tipo": "gastronomia",
+          "duracionMin": 180,
+          "costoUSD": 25
+        },
+        {
+          "nombre": "Visita Huaca Pucllana",
+          "tipo": "cultural",
+          "duracionMin": 90,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Excursión a Pachacámac",
+          "tipo": "cultural",
+          "duracionMin": 300,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "Parapente en Miraflores",
+          "tipo": "aventura",
+          "duracionMin": 60,
+          "costoUSD": 40
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de vuelo terrestre",
+          "tarifaHora": 6,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía turístico Lima",
+          "tarifaHora": 8,
+          "maxHoras": 6
+        },
+        {
+          "nombre": "Repartidor de mensajería",
+          "tarifaHora": 5,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "GRU",
+      "nombre": "Aeropuerto Internacional de São Paulo-Guarulhos",
+      "ciudad": "São Paulo",
+      "pais": "Brasil",
+      "zonaHoraria": "America/Sao_Paulo",
+      "esHub": true,
+      "costoAlojamiento": 60,
+      "costoAlimentacion": 10,
+      "actividades": [
+        {
+          "nombre": "Visita al MASP - Museo de Arte",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 7
+        },
+        {
+          "nombre": "Recorrido Barrio Liberdade",
+          "tipo": "cultural",
+          "duracionMin": 120,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Tour gastronómico Vila Madalena",
+          "tipo": "gastronomia",
+          "duracionMin": 180,
+          "costoUSD": 30
+        },
+        {
+          "nombre": "Samba show nocturno",
+          "tipo": "entretenimiento",
+          "duracionMin": 120,
+          "costoUSD": 25
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente aeroportuario bilingüe",
+          "tarifaHora": 8,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Intérprete portugués",
+          "tarifaHora": 12,
+          "maxHoras": 4
+        }
+      ]
+    },
+    {
+      "id": "EZE",
+      "nombre": "Aeropuerto Internacional Ministro Pistarini",
+      "ciudad": "Buenos Aires",
+      "pais": "Argentina",
+      "zonaHoraria": "America/Argentina/Buenos_Aires",
+      "esHub": true,
+      "costoAlojamiento": 30,
+      "costoAlimentacion": 6,
+      "actividades": [
+        {
+          "nombre": "Tour barrio La Boca y Caminito",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Espectáculo de tango en San Telmo",
+          "tipo": "entretenimiento",
+          "duracionMin": 120,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "Visita Casa Rosada y Plaza de Mayo",
+          "tipo": "cultural",
+          "duracionMin": 90,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Degustación de vinos y asado",
+          "tipo": "gastronomia",
+          "duracionMin": 180,
+          "costoUSD": 35
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Auxiliar de carga aeropuerto",
+          "tarifaHora": 4,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Instructor de tango turístico",
+          "tarifaHora": 15,
+          "maxHoras": 4
+        }
+      ]
+    },
+    {
+      "id": "SCL",
+      "nombre": "Aeropuerto Internacional Arturo Merino Benítez",
+      "ciudad": "Santiago",
+      "pais": "Chile",
+      "zonaHoraria": "America/Santiago",
+      "esHub": true,
+      "costoAlojamiento": 55,
+      "costoAlimentacion": 10,
+      "actividades": [
+        {
+          "nombre": "Tour Cerro San Cristóbal",
+          "tipo": "aventura",
+          "duracionMin": 180,
+          "costoUSD": 8
+        },
+        {
+          "nombre": "Visita Museo Chileno de Arte Precolombino",
+          "tipo": "cultural",
+          "duracionMin": 120,
+          "costoUSD": 6
+        },
+        {
+          "nombre": "Excursión viñedos Valle Maipo",
+          "tipo": "gastronomia",
+          "duracionMin": 360,
+          "costoUSD": 45
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente servicios aeropuerto",
+          "tarifaHora": 7,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía enoturismo",
+          "tarifaHora": 12,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "UIO",
+      "nombre": "Aeropuerto Internacional Mariscal Sucre",
+      "ciudad": "Quito",
+      "pais": "Ecuador",
+      "zonaHoraria": "America/Guayaquil",
+      "esHub": false,
+      "costoAlojamiento": 35,
+      "costoAlimentacion": 7,
+      "actividades": [
+        {
+          "nombre": "Tour Centro Histórico Quito (Patrimonio UNESCO)",
+          "tipo": "cultural",
+          "duracionMin": 240,
+          "costoUSD": 10
+        },
+        {
+          "nombre": "Visita la Mitad del Mundo",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 8
+        },
+        {
+          "nombre": "Teleférico Cruz Loma",
+          "tipo": "aventura",
+          "duracionMin": 120,
+          "costoUSD": 9
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Auxiliar turístico aeropuerto",
+          "tarifaHora": 4,
+          "maxHoras": 7
+        },
+        {
+          "nombre": "Vendedor artesanías aeropuerto",
+          "tarifaHora": 3,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "GYE",
+      "nombre": "Aeropuerto Internacional José Joaquín de Olmedo",
+      "ciudad": "Guayaquil",
+      "pais": "Ecuador",
+      "zonaHoraria": "America/Guayaquil",
+      "esHub": false,
+      "costoAlojamiento": 32,
+      "costoAlimentacion": 7,
+      "actividades": [
+        {
+          "nombre": "Malecón 2000 y centro histórico",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Tour manglares reserva ecológica",
+          "tipo": "aventura",
+          "duracionMin": 240,
+          "costoUSD": 22
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Cargador de equipaje",
+          "tarifaHora": 3,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Asistente de tienda duty free",
+          "tarifaHora": 5,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "CCS",
+      "nombre": "Aeropuerto Internacional Simón Bolívar",
+      "ciudad": "Caracas",
+      "pais": "Venezuela",
+      "zonaHoraria": "America/Caracas",
+      "esHub": false,
+      "costoAlojamiento": 25,
+      "costoAlimentacion": 5,
+      "actividades": [
+        {
+          "nombre": "Visita al Parque Nacional El Ávila",
+          "tipo": "aventura",
+          "duracionMin": 300,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Recorrido Museo de Arte Contemporáneo",
+          "tipo": "cultural",
+          "duracionMin": 120,
+          "costoUSD": 2
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente operaciones aeropuerto",
+          "tarifaHora": 3,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía turístico local",
+          "tarifaHora": 4,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "ASU",
+      "nombre": "Aeropuerto Internacional Silvio Pettirossi",
+      "ciudad": "Asunción",
+      "pais": "Paraguay",
+      "zonaHoraria": "America/Asuncion",
+      "esHub": false,
+      "costoAlojamiento": 28,
+      "costoAlimentacion": 6,
+      "actividades": [
+        {
+          "nombre": "Tour Palacio de los López",
+          "tipo": "cultural",
+          "duracionMin": 90,
+          "costoUSD": 3
+        },
+        {
+          "nombre": "Visita Museo del Barro",
+          "tipo": "cultural",
+          "duracionMin": 120,
+          "costoUSD": 2
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Auxiliar de limpieza aeropuerto",
+          "tarifaHora": 3,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Asistente de información turística",
+          "tarifaHora": 4,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "MVD",
+      "nombre": "Aeropuerto Internacional de Carrasco",
+      "ciudad": "Montevideo",
+      "pais": "Uruguay",
+      "zonaHoraria": "America/Montevideo",
+      "esHub": false,
+      "costoAlojamiento": 55,
+      "costoAlimentacion": 10,
+      "actividades": [
+        {
+          "nombre": "Tour Ciudad Vieja Montevideo",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Visita Mercado del Puerto",
+          "tipo": "gastronomia",
+          "duracionMin": 120,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "Recorrido playas Pocitos y Buceo",
+          "tipo": "recreacion",
+          "duracionMin": 180,
+          "costoUSD": 0
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente servicios al viajero",
+          "tarifaHora": 7,
+          "maxHoras": 7
+        },
+        {
+          "nombre": "Técnico mantenimiento aeropuerto",
+          "tarifaHora": 9,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "LPB",
+      "nombre": "Aeropuerto Internacional El Alto",
+      "ciudad": "La Paz",
+      "pais": "Bolivia",
+      "zonaHoraria": "America/La_Paz",
+      "esHub": false,
+      "costoAlojamiento": 25,
+      "costoAlimentacion": 5,
+      "actividades": [
+        {
+          "nombre": "Tour Witches Market y centro histórico",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Visita Valle de la Luna",
+          "tipo": "aventura",
+          "duracionMin": 150,
+          "costoUSD": 8
+        },
+        {
+          "nombre": "Cable aéreo Mi Teleférico",
+          "tipo": "recreacion",
+          "duracionMin": 90,
+          "costoUSD": 4
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Guía turístico bilingüe",
+          "tarifaHora": 5,
+          "maxHoras": 6
+        },
+        {
+          "nombre": "Vendedor artesanías bolivianas",
+          "tarifaHora": 3,
+          "maxHoras": 7
+        }
+      ]
+    },
+    {
+      "id": "VVI",
+      "nombre": "Aeropuerto Internacional Viru Viru",
+      "ciudad": "Santa Cruz de la Sierra",
+      "pais": "Bolivia",
+      "zonaHoraria": "America/La_Paz",
+      "esHub": false,
+      "costoAlojamiento": 28,
+      "costoAlimentacion": 6,
+      "actividades": [
+        {
+          "nombre": "Tour Biocentro Güembé",
+          "tipo": "aventura",
+          "duracionMin": 180,
+          "costoUSD": 15
+        },
+        {
+          "nombre": "Visita Misiones Jesuíticas Chiquitos",
+          "tipo": "cultural",
+          "duracionMin": 360,
+          "costoUSD": 25
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Auxiliar operaciones terminales",
+          "tarifaHora": 3,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Asistente tienda de souvenirs",
+          "tarifaHora": 4,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "MIA",
+      "nombre": "Aeropuerto Internacional de Miami",
+      "ciudad": "Miami",
+      "pais": "Estados Unidos",
+      "zonaHoraria": "America/New_York",
+      "esHub": true,
+      "costoAlojamiento": 120,
+      "costoAlimentacion": 18,
+      "actividades": [
+        {
+          "nombre": "Tour Art Deco South Beach",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 15
+        },
+        {
+          "nombre": "Visita Everglades National Park",
+          "tipo": "aventura",
+          "duracionMin": 360,
+          "costoUSD": 35
+        },
+        {
+          "nombre": "Wynwood Walls arte urbano",
+          "tipo": "cultural",
+          "duracionMin": 120,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Paseo en bote Biscayne Bay",
+          "tipo": "recreacion",
+          "duracionMin": 120,
+          "costoUSD": 40
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de servicios al cliente aeropuerto",
+          "tarifaHora": 14,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Manejador de equipaje certificado",
+          "tarifaHora": 13,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Asistente bilingüe check-in",
+          "tarifaHora": 15,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "JFK",
+      "nombre": "Aeropuerto Internacional John F. Kennedy",
+      "ciudad": "Nueva York",
+      "pais": "Estados Unidos",
+      "zonaHoraria": "America/New_York",
+      "esHub": true,
+      "costoAlojamiento": 180,
+      "costoAlimentacion": 22,
+      "actividades": [
+        {
+          "nombre": "Tour Times Square y Broadway",
+          "tipo": "entretenimiento",
+          "duracionMin": 180,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Visita Estatua de la Libertad",
+          "tipo": "cultural",
+          "duracionMin": 300,
+          "costoUSD": 25
+        },
+        {
+          "nombre": "Recorrido Central Park",
+          "tipo": "recreacion",
+          "duracionMin": 150,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Tour museos Smithsonian",
+          "tipo": "cultural",
+          "duracionMin": 240,
+          "costoUSD": 0
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de terminal JFK",
+          "tarifaHora": 16,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Agente de seguridad aeroportuaria",
+          "tarifaHora": 18,
+          "maxHoras": 8
+        }
+      ]
+    },
+    {
+      "id": "LAX",
+      "nombre": "Aeropuerto Internacional de Los Ángeles",
+      "ciudad": "Los Ángeles",
+      "pais": "Estados Unidos",
+      "zonaHoraria": "America/Los_Angeles",
+      "esHub": true,
+      "costoAlojamiento": 160,
+      "costoAlimentacion": 20,
+      "actividades": [
+        {
+          "nombre": "Tour Hollywood Walk of Fame",
+          "tipo": "entretenimiento",
+          "duracionMin": 120,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Visita Getty Museum",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Recorrido Santa Mónica Pier",
+          "tipo": "recreacion",
+          "duracionMin": 150,
+          "costoUSD": 5
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente operaciones LAX",
+          "tarifaHora": 17,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Conductor traslado aeropuerto",
+          "tarifaHora": 15,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "MEX",
+      "nombre": "Aeropuerto Internacional Benito Juárez",
+      "ciudad": "Ciudad de México",
+      "pais": "México",
+      "zonaHoraria": "America/Mexico_City",
+      "esHub": true,
+      "costoAlojamiento": 55,
+      "costoAlimentacion": 9,
+      "actividades": [
+        {
+          "nombre": "Tour Teotihuacán pirámides",
+          "tipo": "cultural",
+          "duracionMin": 360,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "Recorrido Centro Histórico CDMX",
+          "tipo": "cultural",
+          "duracionMin": 210,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Visita Museo Nacional de Antropología",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 4
+        },
+        {
+          "nombre": "Tour gastronómico Xochimilco",
+          "tipo": "gastronomia",
+          "duracionMin": 240,
+          "costoUSD": 30
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de vuelos aeropuerto",
+          "tarifaHora": 7,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía turístico bilingüe",
+          "tarifaHora": 9,
+          "maxHoras": 6
+        },
+        {
+          "nombre": "Asistente de migración turística",
+          "tarifaHora": 8,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "CUN",
+      "nombre": "Aeropuerto Internacional de Cancún",
+      "ciudad": "Cancún",
+      "pais": "México",
+      "zonaHoraria": "America/Cancun",
+      "esHub": false,
+      "costoAlojamiento": 70,
+      "costoAlimentacion": 12,
+      "actividades": [
+        {
+          "nombre": "Tour Ruinas de Chichén Itzá",
+          "tipo": "cultural",
+          "duracionMin": 480,
+          "costoUSD": 40
+        },
+        {
+          "nombre": "Snorkeling en arrecife Mesoamericano",
+          "tipo": "aventura",
+          "duracionMin": 180,
+          "costoUSD": 35
+        },
+        {
+          "nombre": "Excursión cenotes Ik Kil",
+          "tipo": "aventura",
+          "duracionMin": 240,
+          "costoUSD": 25
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de resort turístico",
+          "tarifaHora": 8,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Instructor de deportes acuáticos",
+          "tarifaHora": 12,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "PTY",
+      "nombre": "Aeropuerto Internacional de Tocumen",
+      "ciudad": "Ciudad de Panamá",
+      "pais": "Panamá",
+      "zonaHoraria": "America/Panama",
+      "esHub": true,
+      "costoAlojamiento": 60,
+      "costoAlimentacion": 11,
+      "actividades": [
+        {
+          "nombre": "Tour Canal de Panamá (Miraflores)",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 18
+        },
+        {
+          "nombre": "Recorrido Casco Viejo Patrimonio UNESCO",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Excursión Archipiélago de San Blas",
+          "tipo": "aventura",
+          "duracionMin": 480,
+          "costoUSD": 80
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente duty free aeropuerto",
+          "tarifaHora": 8,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía turístico canal",
+          "tarifaHora": 10,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "SJO",
+      "nombre": "Aeropuerto Internacional Juan Santamaría",
+      "ciudad": "San José",
+      "pais": "Costa Rica",
+      "zonaHoraria": "America/Costa_Rica",
+      "esHub": false,
+      "costoAlojamiento": 65,
+      "costoAlimentacion": 12,
+      "actividades": [
+        {
+          "nombre": "Tour Volcán Arenal y aguas termales",
+          "tipo": "aventura",
+          "duracionMin": 480,
+          "costoUSD": 55
+        },
+        {
+          "nombre": "Canopy y tirolesa en bosque lluvioso",
+          "tipo": "aventura",
+          "duracionMin": 240,
+          "costoUSD": 45
+        },
+        {
+          "nombre": "Visita Museo Nacional Costa Rica",
+          "tipo": "cultural",
+          "duracionMin": 120,
+          "costoUSD": 8
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de ecoturismo",
+          "tarifaHora": 9,
+          "maxHoras": 7
+        },
+        {
+          "nombre": "Auxiliar operaciones aeropuerto",
+          "tarifaHora": 8,
+          "maxHoras": 8
+        }
+      ]
+    },
+    {
+      "id": "HAV",
+      "nombre": "Aeropuerto Internacional José Martí",
+      "ciudad": "La Habana",
+      "pais": "Cuba",
+      "zonaHoraria": "America/Havana",
+      "esHub": false,
+      "costoAlojamiento": 40,
+      "costoAlimentacion": 8,
+      "actividades": [
+        {
+          "nombre": "Tour Habana Vieja Patrimonio UNESCO",
+          "tipo": "cultural",
+          "duracionMin": 240,
+          "costoUSD": 10
+        },
+        {
+          "nombre": "Show de son cubano y mojitos",
+          "tipo": "entretenimiento",
+          "duracionMin": 150,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "Paseo en autos clásicos americanos",
+          "tipo": "cultural",
+          "duracionMin": 90,
+          "costoUSD": 30
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Guía turístico La Habana",
+          "tarifaHora": 5,
+          "maxHoras": 7
+        },
+        {
+          "nombre": "Músico en establecimiento turístico",
+          "tarifaHora": 6,
+          "maxHoras": 4
+        }
+      ]
+    },
+    {
+      "id": "SDQ",
+      "nombre": "Aeropuerto Internacional Las Américas",
+      "ciudad": "Santo Domingo",
+      "pais": "República Dominicana",
+      "zonaHoraria": "America/Santo_Domingo",
+      "esHub": false,
+      "costoAlojamiento": 50,
+      "costoAlimentacion": 9,
+      "actividades": [
+        {
+          "nombre": "Tour Zona Colonial (primera ciudad americana)",
+          "tipo": "cultural",
+          "duracionMin": 210,
+          "costoUSD": 10
+        },
+        {
+          "nombre": "Visita Alcázar de Colón",
+          "tipo": "cultural",
+          "duracionMin": 90,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Excursión playas Punta Cana",
+          "tipo": "recreacion",
+          "duracionMin": 360,
+          "costoUSD": 45
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente turístico aeropuerto",
+          "tarifaHora": 6,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Instructor de merengue turístico",
+          "tarifaHora": 10,
+          "maxHoras": 3
+        }
+      ]
+    },
+    {
+      "id": "MAD",
+      "nombre": "Aeropuerto Internacional Adolfo Suárez Madrid-Barajas",
+      "ciudad": "Madrid",
+      "pais": "España",
+      "zonaHoraria": "Europe/Madrid",
+      "esHub": true,
+      "costoAlojamiento": 90,
+      "costoAlimentacion": 14,
+      "actividades": [
+        {
+          "nombre": "Tour Museo del Prado",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 18
+        },
+        {
+          "nombre": "Recorrido Barrio de La Latina",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Tour El Escorial",
+          "tipo": "cultural",
+          "duracionMin": 360,
+          "costoUSD": 25
+        },
+        {
+          "nombre": "Tapas tour por Madrid",
+          "tipo": "gastronomia",
+          "duracionMin": 180,
+          "costoUSD": 30
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente aeroportuario multilingüe",
+          "tarifaHora": 12,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía turístico museos Madrid",
+          "tarifaHora": 14,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "LHR",
+      "nombre": "Aeropuerto de Londres Heathrow",
+      "ciudad": "Londres",
+      "pais": "Reino Unido",
+      "zonaHoraria": "Europe/London",
+      "esHub": true,
+      "costoAlojamiento": 150,
+      "costoAlimentacion": 20,
+      "actividades": [
+        {
+          "nombre": "Tour Palacio de Buckingham y Guardia Real",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Visita Museo Británico",
+          "tipo": "cultural",
+          "duracionMin": 210,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Tour Tower of London y Tower Bridge",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 30
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente servicios Heathrow",
+          "tarifaHora": 18,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Agente de información turística",
+          "tarifaHora": 15,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "CDG",
+      "nombre": "Aeropuerto Internacional Charles de Gaulle",
+      "ciudad": "París",
+      "pais": "Francia",
+      "zonaHoraria": "Europe/Paris",
+      "esHub": true,
+      "costoAlojamiento": 140,
+      "costoAlimentacion": 18,
+      "actividades": [
+        {
+          "nombre": "Tour Torre Eiffel y Champ de Mars",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 26
+        },
+        {
+          "nombre": "Visita Museo del Louvre",
+          "tipo": "cultural",
+          "duracionMin": 240,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "Crucero por el Sena",
+          "tipo": "recreacion",
+          "duracionMin": 90,
+          "costoUSD": 18
+        },
+        {
+          "nombre": "Recorrido Montmartre y Sacré-Cœur",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 0
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente aeroportuario CDG",
+          "tarifaHora": 16,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Intérprete francés-español",
+          "tarifaHora": 20,
+          "maxHoras": 4
+        }
+      ]
+    },
+    {
+      "id": "FRA",
+      "nombre": "Aeropuerto Internacional de Fráncfort",
+      "ciudad": "Fráncfort",
+      "pais": "Alemania",
+      "zonaHoraria": "Europe/Berlin",
+      "esHub": true,
+      "costoAlojamiento": 110,
+      "costoAlimentacion": 16,
+      "actividades": [
+        {
+          "nombre": "Tour Römerberg centro histórico",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Visita Museo Städel",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 16
+        },
+        {
+          "nombre": "Excursión Castillo Heidelberg",
+          "tipo": "aventura",
+          "duracionMin": 360,
+          "costoUSD": 30
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente operaciones FRA",
+          "tarifaHora": 15,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Técnico logístico aeropuerto",
+          "tarifaHora": 18,
+          "maxHoras": 7
+        }
+      ]
+    },
+    {
+      "id": "AMS",
+      "nombre": "Aeropuerto de Amsterdam Schiphol",
+      "ciudad": "Ámsterdam",
+      "pais": "Países Bajos",
+      "zonaHoraria": "Europe/Amsterdam",
+      "esHub": true,
+      "costoAlojamiento": 130,
+      "costoAlimentacion": 17,
+      "actividades": [
+        {
+          "nombre": "Tour Museos Rijksmuseum y Van Gogh",
+          "tipo": "cultural",
+          "duracionMin": 240,
+          "costoUSD": 35
+        },
+        {
+          "nombre": "Recorrido canales en bote",
+          "tipo": "recreacion",
+          "duracionMin": 90,
+          "costoUSD": 18
+        },
+        {
+          "nombre": "Visita molinos de viento Zaanse Schans",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 15
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente aeroportuario Schiphol",
+          "tarifaHora": 16,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía de bicicleta turística",
+          "tarifaHora": 14,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "DXB",
+      "nombre": "Aeropuerto Internacional de Dubái",
+      "ciudad": "Dubái",
+      "pais": "Emiratos Árabes Unidos",
+      "zonaHoraria": "Asia/Dubai",
+      "esHub": true,
+      "costoAlojamiento": 120,
+      "costoAlimentacion": 16,
+      "actividades": [
+        {
+          "nombre": "Tour Burj Khalifa y Dubai Mall",
+          "tipo": "entretenimiento",
+          "duracionMin": 180,
+          "costoUSD": 40
+        },
+        {
+          "nombre": "Safari desierto en 4x4",
+          "tipo": "aventura",
+          "duracionMin": 360,
+          "costoUSD": 65
+        },
+        {
+          "nombre": "Recorrido Old Dubai (Deira y Al Fahidi)",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 5
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de lujo aeropuerto DXB",
+          "tarifaHora": 20,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía turístico árabe-español",
+          "tarifaHora": 25,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "SIN",
+      "nombre": "Aeropuerto Internacional Changi",
+      "ciudad": "Singapur",
+      "pais": "Singapur",
+      "zonaHoraria": "Asia/Singapore",
+      "esHub": true,
+      "costoAlojamiento": 130,
+      "costoAlimentacion": 15,
+      "actividades": [
+        {
+          "nombre": "Gardens by the Bay y Supertrees",
+          "tipo": "recreacion",
+          "duracionMin": 180,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "Tour Marina Bay Sands",
+          "tipo": "entretenimiento",
+          "duracionMin": 150,
+          "costoUSD": 25
+        },
+        {
+          "nombre": "Recorrido Chinatown y Little India",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 0
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente Changi Airport",
+          "tarifaHora": 18,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Operador tecnología aeropuerto",
+          "tarifaHora": 20,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "NRT",
+      "nombre": "Aeropuerto Internacional de Narita",
+      "ciudad": "Tokio",
+      "pais": "Japón",
+      "zonaHoraria": "Asia/Tokyo",
+      "esHub": true,
+      "costoAlojamiento": 120,
+      "costoAlimentacion": 14,
+      "actividades": [
+        {
+          "nombre": "Tour Templo Narita-san Shinshoji",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Visita al barrio Akihabara",
+          "tipo": "entretenimiento",
+          "duracionMin": 180,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Tour Asakusa y Senso-ji",
+          "tipo": "cultural",
+          "duracionMin": 210,
+          "costoUSD": 0
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de pasajeros Narita",
+          "tarifaHora": 15,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Intérprete japonés-inglés",
+          "tarifaHora": 22,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "ICN",
+      "nombre": "Aeropuerto Internacional de Incheon",
+      "ciudad": "Seúl",
+      "pais": "Corea del Sur",
+      "zonaHoraria": "Asia/Seoul",
+      "esHub": true,
+      "costoAlojamiento": 100,
+      "costoAlimentacion": 12,
+      "actividades": [
+        {
+          "nombre": "Tour Palacio Gyeongbokgung y Hanbok",
+          "tipo": "cultural",
+          "duracionMin": 210,
+          "costoUSD": 8
+        },
+        {
+          "nombre": "Recorrido Myeongdong y gastronomía K",
+          "tipo": "gastronomia",
+          "duracionMin": 180,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "K-Pop experince Gangnam",
+          "tipo": "entretenimiento",
+          "duracionMin": 120,
+          "costoUSD": 30
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente aeropuerto Incheon",
+          "tarifaHora": 14,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Asistente de tecnología de pasajeros",
+          "tarifaHora": 16,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "PEK",
+      "nombre": "Aeropuerto Internacional Capital de Pekín",
+      "ciudad": "Pekín",
+      "pais": "China",
+      "zonaHoraria": "Asia/Shanghai",
+      "esHub": true,
+      "costoAlojamiento": 85,
+      "costoAlimentacion": 10,
+      "actividades": [
+        {
+          "nombre": "Tour Gran Muralla China (Mutianyu)",
+          "tipo": "aventura",
+          "duracionMin": 360,
+          "costoUSD": 30
+        },
+        {
+          "nombre": "Visita Ciudad Prohibida y Tiananmen",
+          "tipo": "cultural",
+          "duracionMin": 240,
+          "costoUSD": 12
+        },
+        {
+          "nombre": "Tour Templo del Cielo",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 8
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de relaciones internacionales aeropuerto",
+          "tarifaHora": 12,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía turístico bilingüe",
+          "tarifaHora": 10,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "SYD",
+      "nombre": "Aeropuerto Internacional de Sídney Kingsford Smith",
+      "ciudad": "Sídney",
+      "pais": "Australia",
+      "zonaHoraria": "Australia/Sydney",
+      "esHub": true,
+      "costoAlojamiento": 130,
+      "costoAlimentacion": 18,
+      "actividades": [
+        {
+          "nombre": "Tour Ópera de Sídney y Harbour Bridge",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "Visita Bondi Beach y Coastal Walk",
+          "tipo": "recreacion",
+          "duracionMin": 210,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Excursión Blue Mountains",
+          "tipo": "aventura",
+          "duracionMin": 480,
+          "costoUSD": 50
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente aeroportuario Sídney",
+          "tarifaHora": 20,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Técnico de operaciones aéreas",
+          "tarifaHora": 22,
+          "maxHoras": 7
+        }
+      ]
+    },
+    {
+      "id": "JNB",
+      "nombre": "Aeropuerto Internacional OR Tambo",
+      "ciudad": "Johannesburgo",
+      "pais": "Sudáfrica",
+      "zonaHoraria": "Africa/Johannesburg",
+      "esHub": true,
+      "costoAlojamiento": 70,
+      "costoAlimentacion": 10,
+      "actividades": [
+        {
+          "nombre": "Tour Soweto e historia del Apartheid",
+          "tipo": "cultural",
+          "duracionMin": 300,
+          "costoUSD": 25
+        },
+        {
+          "nombre": "Safari Kruger National Park",
+          "tipo": "aventura",
+          "duracionMin": 480,
+          "costoUSD": 90
+        },
+        {
+          "nombre": "Visita Museo del Apartheid",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 12
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente operaciones OR Tambo",
+          "tarifaHora": 10,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía safari turístico",
+          "tarifaHora": 15,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "NBO",
+      "nombre": "Aeropuerto Internacional Jomo Kenyatta",
+      "ciudad": "Nairobi",
+      "pais": "Kenia",
+      "zonaHoraria": "Africa/Nairobi",
+      "esHub": false,
+      "costoAlojamiento": 55,
+      "costoAlimentacion": 8,
+      "actividades": [
+        {
+          "nombre": "Safari Maasai Mara",
+          "tipo": "aventura",
+          "duracionMin": 720,
+          "costoUSD": 150
+        },
+        {
+          "nombre": "Visita Parque Nacional Nairobi",
+          "tipo": "aventura",
+          "duracionMin": 240,
+          "costoUSD": 35
+        },
+        {
+          "nombre": "Tour Karen Blixen Museum",
+          "tipo": "cultural",
+          "duracionMin": 120,
+          "costoUSD": 10
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente terminal Jomo Kenyatta",
+          "tarifaHora": 8,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía de safari bilingüe",
+          "tarifaHora": 12,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "CAI",
+      "nombre": "Aeropuerto Internacional El Cairo",
+      "ciudad": "El Cairo",
+      "pais": "Egipto",
+      "zonaHoraria": "Africa/Cairo",
+      "esHub": false,
+      "costoAlojamiento": 50,
+      "costoAlimentacion": 7,
+      "actividades": [
+        {
+          "nombre": "Tour Pirámides de Giza y Esfinge",
+          "tipo": "cultural",
+          "duracionMin": 360,
+          "costoUSD": 25
+        },
+        {
+          "nombre": "Visita Museo Egipcio de El Cairo",
+          "tipo": "cultural",
+          "duracionMin": 240,
+          "costoUSD": 15
+        },
+        {
+          "nombre": "Excursión en feluca por el Nilo",
+          "tipo": "recreacion",
+          "duracionMin": 120,
+          "costoUSD": 20
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente turístico El Cairo",
+          "tarifaHora": 5,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía arqueológico bilingüe",
+          "tarifaHora": 9,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "IST",
+      "nombre": "Aeropuerto de Estambul",
+      "ciudad": "Estambul",
+      "pais": "Turquía",
+      "zonaHoraria": "Europe/Istanbul",
+      "esHub": true,
+      "costoAlojamiento": 70,
+      "costoAlimentacion": 10,
+      "actividades": [
+        {
+          "nombre": "Tour Hagia Sophia y Mezquita Azul",
+          "tipo": "cultural",
+          "duracionMin": 210,
+          "costoUSD": 15
+        },
+        {
+          "nombre": "Recorrido Gran Bazar de Estambul",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 0
+        },
+        {
+          "nombre": "Crucero por el Bósforo",
+          "tipo": "recreacion",
+          "duracionMin": 120,
+          "costoUSD": 20
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente aeropuerto Estambul",
+          "tarifaHora": 10,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía turístico bilingüe Estambul",
+          "tarifaHora": 12,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "BKK",
+      "nombre": "Aeropuerto Internacional Suvarnabhumi",
+      "ciudad": "Bangkok",
+      "pais": "Tailandia",
+      "zonaHoraria": "Asia/Bangkok",
+      "esHub": true,
+      "costoAlojamiento": 55,
+      "costoAlimentacion": 8,
+      "actividades": [
+        {
+          "nombre": "Tour Templo del Buda de Esmeralda (Wat Phra Kaew)",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Recorrido mercados flotantes",
+          "tipo": "gastronomia",
+          "duracionMin": 300,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "Paseo en tuk-tuk por Bangkok",
+          "tipo": "entretenimiento",
+          "duracionMin": 120,
+          "costoUSD": 15
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de turismo Suvarnabhumi",
+          "tarifaHora": 7,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Instructor de cocina tailandesa",
+          "tarifaHora": 10,
+          "maxHoras": 4
+        }
+      ]
+    },
+    {
+      "id": "DEL",
+      "nombre": "Aeropuerto Internacional Indira Gandhi",
+      "ciudad": "Nueva Delhi",
+      "pais": "India",
+      "zonaHoraria": "Asia/Kolkata",
+      "esHub": true,
+      "costoAlojamiento": 50,
+      "costoAlimentacion": 7,
+      "actividades": [
+        {
+          "nombre": "Tour Taj Mahal en Agra",
+          "tipo": "cultural",
+          "duracionMin": 480,
+          "costoUSD": 30
+        },
+        {
+          "nombre": "Visita Qutb Minar y Red Fort",
+          "tipo": "cultural",
+          "duracionMin": 240,
+          "costoUSD": 10
+        },
+        {
+          "nombre": "Recorrido mercado Chandni Chowk",
+          "tipo": "gastronomia",
+          "duracionMin": 180,
+          "costoUSD": 8
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente aeropuerto IGI Delhi",
+          "tarifaHora": 6,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía turístico bilingüe Delhi",
+          "tarifaHora": 8,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "BAQ",
+      "nombre": "Aeropuerto Internacional Ernesto Cortissoz",
+      "ciudad": "Barranquilla",
+      "pais": "Colombia",
+      "zonaHoraria": "America/Bogota",
+      "esHub": false,
+      "costoAlojamiento": 35,
+      "costoAlimentacion": 7,
+      "actividades": [
+        {
+          "nombre": "Carnaval de Barranquilla (experiencia cultural)",
+          "tipo": "entretenimiento",
+          "duracionMin": 240,
+          "costoUSD": 15
+        },
+        {
+          "nombre": "Visita al Jardín Botánico de Barranquilla",
+          "tipo": "recreacion",
+          "duracionMin": 120,
+          "costoUSD": 4
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente operaciones aeropuerto",
+          "tarifaHora": 4,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Vendedor de artesanías locales",
+          "tarifaHora": 3,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "CTG",
+      "nombre": "Aeropuerto Internacional Rafael Núñez",
+      "ciudad": "Cartagena de Indias",
+      "pais": "Colombia",
+      "zonaHoraria": "America/Bogota",
+      "esHub": false,
+      "costoAlojamiento": 60,
+      "costoAlimentacion": 10,
+      "actividades": [
+        {
+          "nombre": "Tour amurallado y ciudad histórica (Patrimonio UNESCO)",
+          "tipo": "cultural",
+          "duracionMin": 210,
+          "costoUSD": 12
+        },
+        {
+          "nombre": "Excursión Islas del Rosario",
+          "tipo": "aventura",
+          "duracionMin": 480,
+          "costoUSD": 50
+        },
+        {
+          "nombre": "Paseo en chiva nocturna",
+          "tipo": "entretenimiento",
+          "duracionMin": 150,
+          "costoUSD": 18
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Guía turístico ciudad histórica",
+          "tarifaHora": 6,
+          "maxHoras": 7
+        },
+        {
+          "nombre": "Asistente de tours marítimos",
+          "tarifaHora": 5,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "CLO",
+      "nombre": "Aeropuerto Internacional Alfonso Bonilla Aragón",
+      "ciudad": "Cali",
+      "pais": "Colombia",
+      "zonaHoraria": "America/Bogota",
+      "esHub": false,
+      "costoAlojamiento": 35,
+      "costoAlimentacion": 7,
+      "actividades": [
+        {
+          "nombre": "Clases de salsa en barrio Juanchito",
+          "tipo": "entretenimiento",
+          "duracionMin": 120,
+          "costoUSD": 15
+        },
+        {
+          "nombre": "Tour Cristo Rey y mirador",
+          "tipo": "recreacion",
+          "duracionMin": 90,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Visita Zoológico de Cali",
+          "tipo": "recreacion",
+          "duracionMin": 180,
+          "costoUSD": 8
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Instructor de salsa turístico",
+          "tarifaHora": 10,
+          "maxHoras": 4
+        },
+        {
+          "nombre": "Auxiliar de operaciones aeropuerto",
+          "tarifaHora": 4,
+          "maxHoras": 8
+        }
+      ]
+    },
+    {
+      "id": "BEL",
+      "nombre": "Aeropuerto Internacional de Belém Val de Cans",
+      "ciudad": "Belém",
+      "pais": "Brasil",
+      "zonaHoraria": "America/Belem",
+      "esHub": false,
+      "costoAlojamiento": 40,
+      "costoAlimentacion": 8,
+      "actividades": [
+        {
+          "nombre": "Tour Mercado Ver-o-Peso y Amazonia",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Excursión selva amazónica",
+          "tipo": "aventura",
+          "duracionMin": 480,
+          "costoUSD": 60
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente aeropuerto Val de Cans",
+          "tarifaHora": 5,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía ecoturismo amazónico",
+          "tarifaHora": 8,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "MAO",
+      "nombre": "Aeropuerto Internacional Eduardo Gomes",
+      "ciudad": "Manaos",
+      "pais": "Brasil",
+      "zonaHoraria": "America/Manaus",
+      "esHub": false,
+      "costoAlojamiento": 42,
+      "costoAlimentacion": 8,
+      "actividades": [
+        {
+          "nombre": "Tour Teatro Amazonas y centro histórico",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Excursión Encuentro de las Aguas (Río Negro y Amazonas)",
+          "tipo": "aventura",
+          "duracionMin": 360,
+          "costoUSD": 40
+        },
+        {
+          "nombre": "Tour nocturno fauna amazónica",
+          "tipo": "aventura",
+          "duracionMin": 240,
+          "costoUSD": 35
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Guía turístico río Amazonas",
+          "tarifaHora": 7,
+          "maxHoras": 7
+        },
+        {
+          "nombre": "Asistente de operaciones aeropuerto",
+          "tarifaHora": 5,
+          "maxHoras": 8
+        }
+      ]
+    },
+    {
+      "id": "REC",
+      "nombre": "Aeropuerto Internacional dos Guararapes",
+      "ciudad": "Recife",
+      "pais": "Brasil",
+      "zonaHoraria": "America/Recife",
+      "esHub": false,
+      "costoAlojamiento": 45,
+      "costoAlimentacion": 9,
+      "actividades": [
+        {
+          "nombre": "Tour Olinda Patrimonio UNESCO",
+          "tipo": "cultural",
+          "duracionMin": 210,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Visita Frevo e Instituto Ricardo Brennand",
+          "tipo": "cultural",
+          "duracionMin": 150,
+          "costoUSD": 8
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de terminal aeroportuaria",
+          "tarifaHora": 5,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía cultural Recife-Olinda",
+          "tarifaHora": 7,
+          "maxHoras": 5
+        }
+      ]
+    },
+    {
+      "id": "FOR",
+      "nombre": "Aeropuerto Internacional Pinto Martins",
+      "ciudad": "Fortaleza",
+      "pais": "Brasil",
+      "zonaHoraria": "America/Fortaleza",
+      "esHub": false,
+      "costoAlojamiento": 42,
+      "costoAlimentacion": 8,
+      "actividades": [
+        {
+          "nombre": "Tour dunas de Jericoacoara",
+          "tipo": "aventura",
+          "duracionMin": 480,
+          "costoUSD": 40
+        },
+        {
+          "nombre": "Kitesurf en playa Cumbuco",
+          "tipo": "aventura",
+          "duracionMin": 240,
+          "costoUSD": 50
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Instructor de kitesurf turístico",
+          "tarifaHora": 12,
+          "maxHoras": 5
+        },
+        {
+          "nombre": "Asistente de aeropuerto",
+          "tarifaHora": 5,
+          "maxHoras": 8
+        }
+      ]
+    },
+    {
+      "id": "SSA",
+      "nombre": "Aeropuerto Internacional Deputado Luís Eduardo Magalhães",
+      "ciudad": "Salvador",
+      "pais": "Brasil",
+      "zonaHoraria": "America/Bahia",
+      "esHub": false,
+      "costoAlojamiento": 45,
+      "costoAlimentacion": 9,
+      "actividades": [
+        {
+          "nombre": "Tour Pelourinho Patrimonio UNESCO",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 5
+        },
+        {
+          "nombre": "Clase de capoeira y cocina bahiana",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 20
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de terminal Salvador",
+          "tarifaHora": 5,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Instructor de capoeira turístico",
+          "tarifaHora": 10,
+          "maxHoras": 4
+        }
+      ]
+    },
+    {
+      "id": "CGB",
+      "nombre": "Aeropuerto Internacional Marechal Rondon",
+      "ciudad": "Cuiabá",
+      "pais": "Brasil",
+      "zonaHoraria": "America/Cuiaba",
+      "esHub": false,
+      "costoAlojamiento": 38,
+      "costoAlimentacion": 8,
+      "actividades": [
+        {
+          "nombre": "Tour Pantanal safari fotográfico",
+          "tipo": "aventura",
+          "duracionMin": 600,
+          "costoUSD": 80
+        },
+        {
+          "nombre": "Visita Chapada dos Guimarães",
+          "tipo": "aventura",
+          "duracionMin": 360,
+          "costoUSD": 30
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Guía de ecoturismo Pantanal",
+          "tarifaHora": 9,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Asistente logístico aeropuerto",
+          "tarifaHora": 5,
+          "maxHoras": 7
+        }
+      ]
+    },
+    {
+      "id": "IGU",
+      "nombre": "Aeropuerto Internacional de Foz do Iguaçu",
+      "ciudad": "Foz do Iguaçu",
+      "pais": "Brasil",
+      "zonaHoraria": "America/Sao_Paulo",
+      "esHub": false,
+      "costoAlojamiento": 48,
+      "costoAlimentacion": 9,
+      "actividades": [
+        {
+          "nombre": "Cataratas del Iguazú lado brasileño",
+          "tipo": "aventura",
+          "duracionMin": 240,
+          "costoUSD": 18
+        },
+        {
+          "nombre": "Cataratas del Iguazú lado argentino",
+          "tipo": "aventura",
+          "duracionMin": 300,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "Tour Itaipú Binacional",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 15
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Guía Cataratas bilingüe",
+          "tarifaHora": 8,
+          "maxHoras": 7
+        },
+        {
+          "nombre": "Asistente de turismo fronterizo",
+          "tarifaHora": 6,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "CUZ",
+      "nombre": "Aeropuerto Internacional Alejandro Velasco Astete",
+      "ciudad": "Cusco",
+      "pais": "Perú",
+      "zonaHoraria": "America/Lima",
+      "esHub": false,
+      "costoAlojamiento": 40,
+      "costoAlimentacion": 8,
+      "actividades": [
+        {
+          "nombre": "Tour Machu Picchu (tren + ciudadela)",
+          "tipo": "cultural",
+          "duracionMin": 600,
+          "costoUSD": 80
+        },
+        {
+          "nombre": "Recorrido Valle Sagrado de los Incas",
+          "tipo": "cultural",
+          "duracionMin": 480,
+          "costoUSD": 40
+        },
+        {
+          "nombre": "Tour Sacsayhuamán y sitios incas en Cusco",
+          "tipo": "cultural",
+          "duracionMin": 240,
+          "costoUSD": 15
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Guía turístico Machu Picchu certificado",
+          "tarifaHora": 12,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Asistente de turismo vivencial",
+          "tarifaHora": 7,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "AQP",
+      "nombre": "Aeropuerto Internacional Rodríguez Ballón",
+      "ciudad": "Arequipa",
+      "pais": "Perú",
+      "zonaHoraria": "America/Lima",
+      "esHub": false,
+      "costoAlojamiento": 35,
+      "costoAlimentacion": 7,
+      "actividades": [
+        {
+          "nombre": "Tour Monasterio de Santa Catalina",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 10
+        },
+        {
+          "nombre": "Excursión Cañón del Colca",
+          "tipo": "aventura",
+          "duracionMin": 720,
+          "costoUSD": 50
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de aeropuerto Arequipa",
+          "tarifaHora": 4,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Guía turístico cañón Colca",
+          "tarifaHora": 8,
+          "maxHoras": 6
+        }
+      ]
+    },
+    {
+      "id": "PMC",
+      "nombre": "Aeropuerto El Tepual",
+      "ciudad": "Puerto Montt",
+      "pais": "Chile",
+      "zonaHoraria": "America/Santiago",
+      "esHub": false,
+      "costoAlojamiento": 50,
+      "costoAlimentacion": 10,
+      "actividades": [
+        {
+          "nombre": "Tour Región de los Lagos y Volcán Osorno",
+          "tipo": "aventura",
+          "duracionMin": 360,
+          "costoUSD": 35
+        },
+        {
+          "nombre": "Excursión Chiloé y sus iglesias UNESCO",
+          "tipo": "cultural",
+          "duracionMin": 480,
+          "costoUSD": 30
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de turismo patagónico",
+          "tarifaHora": 8,
+          "maxHoras": 7
+        },
+        {
+          "nombre": "Auxiliar de operaciones aeropuerto",
+          "tarifaHora": 7,
+          "maxHoras": 8
+        }
+      ]
+    },
+    {
+      "id": "PUQ",
+      "nombre": "Aeropuerto Internacional Carlos Ibáñez del Campo",
+      "ciudad": "Punta Arenas",
+      "pais": "Chile",
+      "zonaHoraria": "America/Punta_Arenas",
+      "esHub": false,
+      "costoAlojamiento": 60,
+      "costoAlimentacion": 12,
+      "actividades": [
+        {
+          "nombre": "Tour Torres del Paine Nacional Park",
+          "tipo": "aventura",
+          "duracionMin": 720,
+          "costoUSD": 90
+        },
+        {
+          "nombre": "Visita Glaciar Grey y campo de hielo",
+          "tipo": "aventura",
+          "duracionMin": 480,
+          "costoUSD": 60
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Guía trekking Patagonia certificado",
+          "tarifaHora": 14,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Asistente de logística aeropuerto austral",
+          "tarifaHora": 9,
+          "maxHoras": 7
+        }
+      ]
+    },
+    {
+      "id": "GIG",
+      "nombre": "Aeropuerto Internacional Antônio Carlos Jobim (Galeão)",
+      "ciudad": "Río de Janeiro",
+      "pais": "Brasil",
+      "zonaHoraria": "America/Sao_Paulo",
+      "esHub": true,
+      "costoAlojamiento": 65,
+      "costoAlimentacion": 11,
+      "actividades": [
+        {
+          "nombre": "Tour Cristo Redentor y Corcovado",
+          "tipo": "cultural",
+          "duracionMin": 210,
+          "costoUSD": 20
+        },
+        {
+          "nombre": "Visita Pan de Azúcar (teleférico)",
+          "tipo": "aventura",
+          "duracionMin": 150,
+          "costoUSD": 25
+        },
+        {
+          "nombre": "Recorrido Lapa y Santa Teresa",
+          "tipo": "cultural",
+          "duracionMin": 180,
+          "costoUSD": 8
+        },
+        {
+          "nombre": "Playa Ipanema y Copacabana",
+          "tipo": "recreacion",
+          "duracionMin": 240,
+          "costoUSD": 0
+        }
+      ],
+      "trabajos": [
+        {
+          "nombre": "Asistente de terminal Galeão",
+          "tarifaHora": 7,
+          "maxHoras": 8
+        },
+        {
+          "nombre": "Instructor de surf turístico",
+          "tarifaHora": 12,
+          "maxHoras": 4
+        }
+      ]
+    }
+  ],
+  "aristas": [
+    {
+      "origen": "BOG",
+      "destino": "MDE",
+      "distanciaKm": 240,
+      "aeronaves": [
+        "Airbus320",
+        "Embraer190"
+      ],
+      "costoBase": 60,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "MDE",
+      "destino": "BOG",
+      "distanciaKm": 240,
+      "aeronaves": [
+        "Airbus320",
+        "Embraer190"
+      ],
+      "costoBase": 60,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "BOG",
+      "destino": "CTG",
+      "distanciaKm": 680,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 80,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "CTG",
+      "destino": "BOG",
+      "distanciaKm": 680,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 80,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "BOG",
+      "destino": "BAQ",
+      "distanciaKm": 900,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 90,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "BAQ",
+      "destino": "BOG",
+      "distanciaKm": 900,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 90,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "BOG",
+      "destino": "CLO",
+      "distanciaKm": 320,
+      "aeronaves": [
+        "Airbus320",
+        "Embraer190"
+      ],
+      "costoBase": 65,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "CLO",
+      "destino": "BOG",
+      "distanciaKm": 320,
+      "aeronaves": [
+        "Airbus320",
+        "Embraer190"
+      ],
+      "costoBase": 65,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "BOG",
+      "destino": "LIM",
+      "distanciaKm": 1900,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "LIM",
+      "destino": "BOG",
+      "distanciaKm": 1900,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "BOG",
+      "destino": "GRU",
+      "distanciaKm": 4270,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 350,
+      "estanciaMinima": 180
+    },
+    {
+      "origen": "GRU",
+      "destino": "BOG",
+      "distanciaKm": 4270,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 350,
+      "estanciaMinima": 180
+    },
+    {
+      "origen": "BOG",
+      "destino": "PTY",
+      "distanciaKm": 730,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 90,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "PTY",
+      "destino": "BOG",
+      "distanciaKm": 730,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 90,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "BOG",
+      "destino": "MEX",
+      "distanciaKm": 3450,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 280,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "MEX",
+      "destino": "BOG",
+      "distanciaKm": 3450,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 280,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "BOG",
+      "destino": "MIA",
+      "distanciaKm": 2760,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 230,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "MIA",
+      "destino": "BOG",
+      "distanciaKm": 2760,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 230,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "BOG",
+      "destino": "MAD",
+      "distanciaKm": 8200,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 550,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "MAD",
+      "destino": "BOG",
+      "distanciaKm": 8200,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 550,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "BOG",
+      "destino": "UIO",
+      "distanciaKm": 600,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 75,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "UIO",
+      "destino": "BOG",
+      "distanciaKm": 600,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 75,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "UIO",
+      "destino": "GYE",
+      "distanciaKm": 280,
+      "aeronaves": [
+        "Airbus320",
+        "ATR72"
+      ],
+      "costoBase": 50,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "GYE",
+      "destino": "UIO",
+      "distanciaKm": 280,
+      "aeronaves": [
+        "Airbus320",
+        "ATR72"
+      ],
+      "costoBase": 50,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "UIO",
+      "destino": "LIM",
+      "distanciaKm": 1560,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 150,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "LIM",
+      "destino": "UIO",
+      "distanciaKm": 1560,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 150,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "LIM",
+      "destino": "CUZ",
+      "distanciaKm": 1110,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 100,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "CUZ",
+      "destino": "LIM",
+      "distanciaKm": 1110,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 100,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "LIM",
+      "destino": "AQP",
+      "distanciaKm": 800,
+      "aeronaves": [
+        "Boeing737",
+        "Embraer190"
+      ],
+      "costoBase": 80,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "AQP",
+      "destino": "LIM",
+      "distanciaKm": 800,
+      "aeronaves": [
+        "Boeing737",
+        "Embraer190"
+      ],
+      "costoBase": 80,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "LIM",
+      "destino": "SCL",
+      "distanciaKm": 2450,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 200,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "SCL",
+      "destino": "LIM",
+      "distanciaKm": 2450,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 200,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "LIM",
+      "destino": "GRU",
+      "distanciaKm": 3680,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 300,
+      "estanciaMinima": 180
+    },
+    {
+      "origen": "GRU",
+      "destino": "LIM",
+      "distanciaKm": 3680,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 300,
+      "estanciaMinima": 180
+    },
+    {
+      "origen": "SCL",
+      "destino": "EZE",
+      "distanciaKm": 1140,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 110,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "EZE",
+      "destino": "SCL",
+      "distanciaKm": 1140,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 110,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "SCL",
+      "destino": "GRU",
+      "distanciaKm": 2600,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 210,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "GRU",
+      "destino": "SCL",
+      "distanciaKm": 2600,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 210,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "SCL",
+      "destino": "PMC",
+      "distanciaKm": 980,
+      "aeronaves": [
+        "Boeing737",
+        "ATR72"
+      ],
+      "costoBase": 90,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "PMC",
+      "destino": "SCL",
+      "distanciaKm": 980,
+      "aeronaves": [
+        "Boeing737",
+        "ATR72"
+      ],
+      "costoBase": 90,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "PMC",
+      "destino": "PUQ",
+      "distanciaKm": 900,
+      "aeronaves": [
+        "Boeing737",
+        "ATR72"
+      ],
+      "costoBase": 85,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "PUQ",
+      "destino": "PMC",
+      "distanciaKm": 900,
+      "aeronaves": [
+        "Boeing737",
+        "ATR72"
+      ],
+      "costoBase": 85,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "EZE",
+      "destino": "GRU",
+      "distanciaKm": 1700,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 160,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "GRU",
+      "destino": "EZE",
+      "distanciaKm": 1700,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 160,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "EZE",
+      "destino": "MVD",
+      "distanciaKm": 210,
+      "aeronaves": [
+        "Embraer190",
+        "ATR72"
+      ],
+      "costoBase": 40,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "MVD",
+      "destino": "EZE",
+      "distanciaKm": 210,
+      "aeronaves": [
+        "Embraer190",
+        "ATR72"
+      ],
+      "costoBase": 40,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "EZE",
+      "destino": "ASU",
+      "distanciaKm": 1070,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 100,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "ASU",
+      "destino": "EZE",
+      "distanciaKm": 1070,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 100,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "GRU",
+      "destino": "GIG",
+      "distanciaKm": 360,
+      "aeronaves": [
+        "Airbus320",
+        "Boeing737"
+      ],
+      "costoBase": 50,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "GIG",
+      "destino": "GRU",
+      "distanciaKm": 360,
+      "aeronaves": [
+        "Airbus320",
+        "Boeing737"
+      ],
+      "costoBase": 50,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "GRU",
+      "destino": "SSA",
+      "distanciaKm": 1960,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 150,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "SSA",
+      "destino": "GRU",
+      "distanciaKm": 1960,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 150,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "GRU",
+      "destino": "REC",
+      "distanciaKm": 2210,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 160,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "REC",
+      "destino": "GRU",
+      "distanciaKm": 2210,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 160,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "GRU",
+      "destino": "FOR",
+      "distanciaKm": 2770,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "FOR",
+      "destino": "GRU",
+      "distanciaKm": 2770,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "GRU",
+      "destino": "MAO",
+      "distanciaKm": 2700,
+      "aeronaves": [
+        "Boeing737",
+        "Boeing767"
+      ],
+      "costoBase": 190,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "MAO",
+      "destino": "GRU",
+      "distanciaKm": 2700,
+      "aeronaves": [
+        "Boeing737",
+        "Boeing767"
+      ],
+      "costoBase": 190,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "MAO",
+      "destino": "BEL",
+      "distanciaKm": 1300,
+      "aeronaves": [
+        "Boeing737",
+        "ATR72"
+      ],
+      "costoBase": 110,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "BEL",
+      "destino": "MAO",
+      "distanciaKm": 1300,
+      "aeronaves": [
+        "Boeing737",
+        "ATR72"
+      ],
+      "costoBase": 110,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "GRU",
+      "destino": "IGU",
+      "distanciaKm": 940,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 90,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "IGU",
+      "destino": "GRU",
+      "distanciaKm": 940,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 90,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "GRU",
+      "destino": "CGB",
+      "distanciaKm": 1480,
+      "aeronaves": [
+        "Boeing737",
+        "Embraer190"
+      ],
+      "costoBase": 130,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "CGB",
+      "destino": "GRU",
+      "distanciaKm": 1480,
+      "aeronaves": [
+        "Boeing737",
+        "Embraer190"
+      ],
+      "costoBase": 130,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "LPB",
+      "destino": "SCL",
+      "distanciaKm": 1800,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 160,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "SCL",
+      "destino": "LPB",
+      "distanciaKm": 1800,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 160,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "LPB",
+      "destino": "VVI",
+      "distanciaKm": 850,
+      "aeronaves": [
+        "Boeing737",
+        "ATR72"
+      ],
+      "costoBase": 75,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "VVI",
+      "destino": "LPB",
+      "distanciaKm": 850,
+      "aeronaves": [
+        "Boeing737",
+        "ATR72"
+      ],
+      "costoBase": 75,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "VVI",
+      "destino": "GRU",
+      "distanciaKm": 2500,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 200,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "GRU",
+      "destino": "VVI",
+      "distanciaKm": 2500,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 200,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "PTY",
+      "destino": "MIA",
+      "distanciaKm": 2250,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "MIA",
+      "destino": "PTY",
+      "distanciaKm": 2250,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "PTY",
+      "destino": "MEX",
+      "distanciaKm": 2000,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 170,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "MEX",
+      "destino": "PTY",
+      "distanciaKm": 2000,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 170,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "PTY",
+      "destino": "SJO",
+      "distanciaKm": 620,
+      "aeronaves": [
+        "Boeing737",
+        "Embraer190"
+      ],
+      "costoBase": 70,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "SJO",
+      "destino": "PTY",
+      "distanciaKm": 620,
+      "aeronaves": [
+        "Boeing737",
+        "Embraer190"
+      ],
+      "costoBase": 70,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "MEX",
+      "destino": "CUN",
+      "distanciaKm": 1550,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 120,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "CUN",
+      "destino": "MEX",
+      "distanciaKm": 1550,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 120,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "MEX",
+      "destino": "LAX",
+      "distanciaKm": 2480,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 200,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "LAX",
+      "destino": "MEX",
+      "distanciaKm": 2480,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 200,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "MEX",
+      "destino": "JFK",
+      "distanciaKm": 3370,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 270,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "JFK",
+      "destino": "MEX",
+      "distanciaKm": 3370,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 270,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "MEX",
+      "destino": "HAV",
+      "distanciaKm": 1550,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 120,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "HAV",
+      "destino": "MEX",
+      "distanciaKm": 1550,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 120,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "MIA",
+      "destino": "HAV",
+      "distanciaKm": 330,
+      "aeronaves": [
+        "Boeing737",
+        "Embraer190"
+      ],
+      "costoBase": 50,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "HAV",
+      "destino": "MIA",
+      "distanciaKm": 330,
+      "aeronaves": [
+        "Boeing737",
+        "Embraer190"
+      ],
+      "costoBase": 50,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "MIA",
+      "destino": "SDQ",
+      "distanciaKm": 1540,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 120,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "SDQ",
+      "destino": "MIA",
+      "distanciaKm": 1540,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 120,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "MIA",
+      "destino": "JFK",
+      "distanciaKm": 1765,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 140,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "JFK",
+      "destino": "MIA",
+      "distanciaKm": 1765,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 140,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "JFK",
+      "destino": "LAX",
+      "distanciaKm": 3975,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 250,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "LAX",
+      "destino": "JFK",
+      "distanciaKm": 3975,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 250,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "JFK",
+      "destino": "LHR",
+      "distanciaKm": 5570,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 400,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "LHR",
+      "destino": "JFK",
+      "distanciaKm": 5570,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 400,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "JFK",
+      "destino": "CDG",
+      "distanciaKm": 5835,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 420,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "CDG",
+      "destino": "JFK",
+      "distanciaKm": 5835,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 420,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "MAD",
+      "destino": "LHR",
+      "distanciaKm": 1260,
+      "aeronaves": [
+        "Airbus320",
+        "Boeing737"
+      ],
+      "costoBase": 100,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "LHR",
+      "destino": "MAD",
+      "distanciaKm": 1260,
+      "aeronaves": [
+        "Airbus320",
+        "Boeing737"
+      ],
+      "costoBase": 100,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "MAD",
+      "destino": "CDG",
+      "distanciaKm": 1050,
+      "aeronaves": [
+        "Airbus320",
+        "Boeing737"
+      ],
+      "costoBase": 90,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "CDG",
+      "destino": "MAD",
+      "distanciaKm": 1050,
+      "aeronaves": [
+        "Airbus320",
+        "Boeing737"
+      ],
+      "costoBase": 90,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "CDG",
+      "destino": "FRA",
+      "distanciaKm": 480,
+      "aeronaves": [
+        "Airbus320",
+        "Embraer190"
+      ],
+      "costoBase": 60,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "FRA",
+      "destino": "CDG",
+      "distanciaKm": 480,
+      "aeronaves": [
+        "Airbus320",
+        "Embraer190"
+      ],
+      "costoBase": 60,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "FRA",
+      "destino": "AMS",
+      "distanciaKm": 430,
+      "aeronaves": [
+        "Airbus320",
+        "Embraer190"
+      ],
+      "costoBase": 55,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "AMS",
+      "destino": "FRA",
+      "distanciaKm": 430,
+      "aeronaves": [
+        "Airbus320",
+        "Embraer190"
+      ],
+      "costoBase": 55,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "FRA",
+      "destino": "DXB",
+      "distanciaKm": 5060,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 370,
+      "estanciaMinima": 210
+    },
+    {
+      "origen": "DXB",
+      "destino": "FRA",
+      "distanciaKm": 5060,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 370,
+      "estanciaMinima": 210
+    },
+    {
+      "origen": "DXB",
+      "destino": "SIN",
+      "distanciaKm": 5840,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 380,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "SIN",
+      "destino": "DXB",
+      "distanciaKm": 5840,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 380,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "DXB",
+      "destino": "BKK",
+      "distanciaKm": 4920,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 340,
+      "estanciaMinima": 210
+    },
+    {
+      "origen": "BKK",
+      "destino": "DXB",
+      "distanciaKm": 4920,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 340,
+      "estanciaMinima": 210
+    },
+    {
+      "origen": "DXB",
+      "destino": "DEL",
+      "distanciaKm": 2190,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "DEL",
+      "destino": "DXB",
+      "distanciaKm": 2190,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "DXB",
+      "destino": "CAI",
+      "distanciaKm": 2410,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 190,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "CAI",
+      "destino": "DXB",
+      "distanciaKm": 2410,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 190,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "DXB",
+      "destino": "IST",
+      "distanciaKm": 2580,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 200,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "IST",
+      "destino": "DXB",
+      "distanciaKm": 2580,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 200,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "IST",
+      "destino": "LHR",
+      "distanciaKm": 2510,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "LHR",
+      "destino": "IST",
+      "distanciaKm": 2510,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing737"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "SIN",
+      "destino": "NRT",
+      "distanciaKm": 5320,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 360,
+      "estanciaMinima": 210
+    },
+    {
+      "origen": "NRT",
+      "destino": "SIN",
+      "distanciaKm": 5320,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 360,
+      "estanciaMinima": 210
+    },
+    {
+      "origen": "SIN",
+      "destino": "BKK",
+      "distanciaKm": 1440,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 110,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "BKK",
+      "destino": "SIN",
+      "distanciaKm": 1440,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 110,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "NRT",
+      "destino": "ICN",
+      "distanciaKm": 1210,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 100,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "ICN",
+      "destino": "NRT",
+      "distanciaKm": 1210,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 100,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "NRT",
+      "destino": "PEK",
+      "distanciaKm": 2100,
+      "aeronaves": [
+        "Boeing737",
+        "Boeing787"
+      ],
+      "costoBase": 160,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "PEK",
+      "destino": "NRT",
+      "distanciaKm": 2100,
+      "aeronaves": [
+        "Boeing737",
+        "Boeing787"
+      ],
+      "costoBase": 160,
+      "estanciaMinima": 120
+    },
+    {
+      "origen": "NRT",
+      "destino": "LAX",
+      "distanciaKm": 8760,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 580,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "LAX",
+      "destino": "NRT",
+      "distanciaKm": 8760,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 580,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "NRT",
+      "destino": "SYD",
+      "distanciaKm": 7820,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 530,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "SYD",
+      "destino": "NRT",
+      "distanciaKm": 7820,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 530,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "SYD",
+      "destino": "SIN",
+      "distanciaKm": 6310,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 420,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "SIN",
+      "destino": "SYD",
+      "distanciaKm": 6310,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 420,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "JNB",
+      "destino": "NBO",
+      "distanciaKm": 3410,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 270,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "NBO",
+      "destino": "JNB",
+      "distanciaKm": 3410,
+      "aeronaves": [
+        "Boeing787",
+        "Boeing767"
+      ],
+      "costoBase": 270,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "JNB",
+      "destino": "DXB",
+      "distanciaKm": 6400,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 430,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "DXB",
+      "destino": "JNB",
+      "distanciaKm": 6400,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 430,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "CAI",
+      "destino": "IST",
+      "distanciaKm": 1590,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 130,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "IST",
+      "destino": "CAI",
+      "distanciaKm": 1590,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 130,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "GRU",
+      "destino": "MIA",
+      "distanciaKm": 7645,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 490,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "MIA",
+      "destino": "GRU",
+      "distanciaKm": 7645,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 490,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "GRU",
+      "destino": "MAD",
+      "distanciaKm": 7690,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 500,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "MAD",
+      "destino": "GRU",
+      "distanciaKm": 7690,
+      "aeronaves": [
+        "Boeing787",
+        "Airbus380"
+      ],
+      "costoBase": 500,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "CCS",
+      "destino": "BOG",
+      "distanciaKm": 1040,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 0,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "BOG",
+      "destino": "CCS",
+      "distanciaKm": 1040,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 0,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "CCS",
+      "destino": "PTY",
+      "distanciaKm": 1060,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 95,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "PTY",
+      "destino": "CCS",
+      "distanciaKm": 1060,
+      "aeronaves": [
+        "Boeing737",
+        "Airbus320"
+      ],
+      "costoBase": 95,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "MDE",
+      "destino": "CTG",
+      "distanciaKm": 480,
+      "aeronaves": [
+        "Airbus320",
+        "ATR72"
+      ],
+      "costoBase": 60,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "CTG",
+      "destino": "MDE",
+      "distanciaKm": 480,
+      "aeronaves": [
+        "Airbus320",
+        "ATR72"
+      ],
+      "costoBase": 60,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "LIM",
+      "destino": "CCS",
+      "distanciaKm": 2930,
+      "aeronaves": [
+        "Boeing737",
+        "Boeing767"
+      ],
+      "costoBase": 220,
+      "estanciaMinima": 150
+    },
+    {
+      "origen": "CCS",
+      "destino": "LIM",
+      "distanciaKm": 2930,
+      "aeronaves": [
+        "Boeing737",
+        "Boeing767"
+      ],
+      "costoBase": 220,
+      "estanciaMinima": 150
+    }
+  ]
+}

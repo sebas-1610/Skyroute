@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyRoute Visualizador — Optimización de Rutas Aéreas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        #graph-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            z-index: 50;
+        }
+        #graph-canvas:active {
+            cursor: grabbing;
+        }
+        #legend {
+            position: fixed;
+            top: 80px;
+            right: 16px;
+            background: var(--surface);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            color: var(--text);
+            font-size: 11px;
+            line-height: 1.8;
+            z-index: 100;
+        }
+        #legend h3 {
+            font-size: 11px;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-soft);
+            padding-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .legend-dot.hub { background: var(--amber); }
+        .legend-dot.secondary { background: var(--teal); }
+        .legend-line {
+            width: 20px;
+            height: 0;
+            border-bottom: 2px dashed var(--coral);
+            flex-shrink: 0;
+        }
+        #tooltip {
+            position: fixed;
+            display: none;
+            background: var(--surface);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            z-index: 200;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        #tooltip .iata {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--amber);
+        }
+        #tooltip .city {
+            color: var(--text-muted);
+        }
+        #file-input {
+            display: none;
+        }
+        .btn-load {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            background: transparent;
+            cursor: pointer;
+            transition: all 200ms;
+        }
+        .btn-load:hover {
+            border-color: var(--text-muted);
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav aria-label="Navegación principal">
+        <div class="nav-logo">
+        <div class="nav-logo-icon" aria-hidden="true">✈</div>
+        SKY<span style="color:var(--text-muted)">ROUTE</span>
+        </div>
+        <ul class="nav-links" role="list">
+        <li><a href="planificador.html">Planificador</a></li>
+        <li><a href="visualizador.html">Visualizador</a></li>
+        <li><a href="#schema">Estructura</a></li>
+        <li><a href="#architecture">Arquitectura</a></li>
+        </ul>
+        <a href="#features" class="nav-cta">Ver Proyecto</a>
+    </nav>
+
+    <!-- Graph Canvas -->
+    <canvas id="graph-canvas"></canvas>
+
+    <!-- Legend overlay -->
+    <div id="legend">
+        <h3>Leyenda</h3>
+        <div class="legend-item">
+            <span class="legend-dot hub"></span>
+            <span>Aeropuerto Hub</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-dot secondary"></span>
+            <span>Aeropuerto Secundario</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-line"></span>
+            <span>Ruta Subsidida</span>
+        </div>
+        <div class="legend-item">
+            <span style="font-size:13px">✈</span>
+            <span>Distancia (km)</span>
+        </div>
+        <div class="legend-item">
+            <span style="font-size:13px">🛫</span>
+            <span>Aeronaves</span>
+        </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div id="tooltip">
+        <div class="iata"></div>
+        <div class="city"></div>
+    </div>
+
+    <!-- Load JSON Button -->
+    <div style="position:fixed;top:80px;left:16px;z-index:100;">
+        <label for="file-input" class="btn-load">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            Cargar JSON
+        </label>
+        <input type="file" id="file-input" accept=".json">
+    </div>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <div class="divider" aria-hidden="true"></div>
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-brand">
+        <span>SKY</span>ROUTE VISUALIZADOR — Ingeniería en Sistemas y Computación
+        </div>
+        <div class="footer-meta">
+        Estructuras de Datos · Proyecto Grafos
+        </div>
+    </footer>
+
+    <script src="js/app.js" defer></script>
+    <script src="js/features.js" defer></script>
+
+    <script>
+    // No embedded data — graph loads from user JSON file
+    let graphLoaded = false;
+
+    const CONFIG = {
+        canvas: null,
+        ctx: null,
+        width: 0,
+        height: 0,
+        padding: 60,
+        minNodeSeparation: 40,
+        maxIterations: 300,
+        hubRadius: 28,
+        secondaryRadius: 20,
+        hubColor: '#d4870a',
+        secondaryColor: '#2abfa0',
+        edgeColor: 'rgba(180, 160, 110, 0.45)',
+        subsidizedColor: '#d4634a',
+        highlightColor: '#f0a500',
+        highlightWidth: 2.5,
+        dimOpacity: 0.15,
+        defaultEdgeWidth: 1.5,
+        arrowSize: 10,
+        curvature: 18,
+        bgColor: '#0d1117',
+        textColor: '#e8dfc0',
+        pillBgColor: '#1a1f2e',
+        pillBorderColor: '#333333',
+        aircraftColor: '#2abfa0',
+        fontMono: 'JetBrains Mono, monospace',
+        zoomMin: 0.3,
+        zoomMax: 3.0
+    };
+
+    let nodes = [];
+    let edges = [];
+    let nodeMap = new Map();
+    let scale = 1;
+    let offsetX = 0;
+    let offsetY = 0;
+    let selectedNode = null;
+    let draggedNode = null;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let isPanning = false;
+    let animationFrameId = null;
+
+    function initLayout() {
+        CONFIG.canvas = document.getElementById('graph-canvas');
+        CONFIG.ctx = CONFIG.canvas.getContext('2d');
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Start with empty state — user must load a JSON
+        setupEventListeners();
+        drawEmptyState();
+    }
+
+    function drawEmptyState() {
+        const ctx = CONFIG.ctx;
+        const w = CONFIG.width;
+        const h = CONFIG.height;
+        ctx.fillStyle = CONFIG.bgColor;
+        ctx.fillRect(0, 0, w, h);
+
+        // Center icon
+        ctx.save();
+        ctx.globalAlpha = 0.15;
+        ctx.font = 'bold 96px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#d4870a';
+        ctx.fillText('✈', w / 2, h / 2 - 48);
+        ctx.restore();
+
+        ctx.fillStyle = '#e8dfc0';
+        ctx.font = '500 20px Syne, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Carga un archivo JSON para visualizar la red aérea', w / 2, h / 2 + 28);
+
+        ctx.fillStyle = '#8b949e';
+        ctx.font = '13px JetBrains Mono, monospace';
+        ctx.fillText('Usa el botón "Cargar JSON" en la esquina superior izquierda', w / 2, h / 2 + 60);
+    }
+
+    function resizeCanvas() {
+        CONFIG.width = window.innerWidth;
+        CONFIG.height = window.innerHeight;
+        CONFIG.canvas.width = CONFIG.width;
+        CONFIG.canvas.height = CONFIG.height;
+        if (graphLoaded) draw(); else drawEmptyState();
+    }
+
+    function loadGraphData(json) {
+        const nodos = json.nodos || [];
+        const aristas = json.aristas || [];
+        
+        nodes = nodos.map(nodo => ({
+            id: nodo.id,
+            ciudad: nodo.ciudad,
+            pais: nodo.pais,
+            esHub: nodo.esHub,
+            x: 0,
+            y: 0,
+            vx: 0,
+            vy: 0,
+            fixed: false
+        }));
+        
+        edges = aristas.map(arista => ({
+            origen: arista.origen,
+            destino: arista.destino,
+            distanciaKm: arista.distanciaKm,
+            aeronaves: arista.aeronaves,
+            costoBase: arista.costoBase
+        }));
+        
+        nodes.forEach(node => nodeMap.set(node.id, node));
+    }
+
+    function initNodePositions() {
+        const centerX = CONFIG.width / 2;
+        const centerY = CONFIG.height / 2;
+        const radius = Math.min(CONFIG.width, CONFIG.height) * 0.22;
+        
+        nodes.forEach((node, i) => {
+            const angle = (2 * Math.PI * i) / nodes.length;
+            node.x = centerX + radius * Math.cos(angle);
+            node.y = centerY + radius * Math.sin(angle);
+        });
+    }
+
+    function runSimulation() {
+        const k = CONFIG.minNodeSeparation;
+        const centerX = CONFIG.width / 2;
+        const centerY = CONFIG.height / 2;
+        
+        for (let iter = 0; iter < CONFIG.maxIterations; iter++) {
+            nodes.forEach(node => {
+                if (node.fixed) return;
+                node.vx = 0;
+                node.vy = 0;
+            });
+            
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const a = nodes[i];
+                    const b = nodes[j];
+                    const dx = b.x - a.x;
+                    const dy = b.y - a.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                    const force = (k * k) / dist;
+                    const fx = (dx / dist) * force;
+                    const fy = (dy / dist) * force;
+                    
+                    if (!a.fixed) { a.vx -= fx; a.vy -= fy; }
+                    if (!b.fixed) { b.vx += fx; b.vy += fy; }
+                }
+            }
+            
+            edges.forEach(edge => {
+                const source = nodeMap.get(edge.origen);
+                const target = nodeMap.get(edge.destino);
+                if (!source || !target) return;
+                
+                const dx = target.x - source.x;
+                const dy = target.y - source.y;
+                const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                const force = dist * 0.01;
+                const fx = (dx / dist) * force;
+                const fy = (dy / dist) * force;
+                
+                if (!source.fixed) { source.vx += fx; source.vy += fy; }
+                if (!target.fixed) { target.vx -= fx; target.vy -= fy; }
+            });
+            
+            nodes.forEach(node => {
+                if (node.fixed) return;
+                const dx = centerX - node.x;
+                const dy = centerY - node.y;
+                node.vx += dx * 0.001;
+                node.vy += dy * 0.001;
+            });
+            
+            const damping = 0.85;
+            nodes.forEach(node => {
+                if (node.fixed) return;
+                node.x += node.vx * damping;
+                node.y += node.vy * damping;
+            });
+        }
+        
+        centerGraph();
+    }
+
+    function centerGraph() {
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        
+        nodes.forEach(node => {
+            minX = Math.min(minX, node.x);
+            minY = Math.min(minY, node.y);
+            maxX = Math.max(maxX, node.x);
+            maxY = Math.max(maxY, node.y);
+        });
+        
+        const graphWidth = maxX - minX;
+        const graphHeight = maxY - minY;
+        const availWidth = CONFIG.width - CONFIG.padding * 2;
+        const availHeight = CONFIG.height - CONFIG.padding * 2;
+        
+        const scaleX = availWidth / graphWidth;
+        const scaleY = availHeight / graphHeight;
+        scale = Math.min(scaleX, scaleY, 1.5);
+        
+        const centerX = CONFIG.width / 2;
+        const centerY = CONFIG.height / 2;
+        offsetX = centerX - (minX + maxX) / 2 * scale;
+        offsetY = centerY - (minY + maxY) / 2 * scale;
+
+        // Allow zooming out to 40% of the fitted scale, but never below 0.05
+        CONFIG.zoomMin = Math.max(0.05, scale * 0.4);
+    }
+
+    function setupEventListeners() {
+        const canvas = CONFIG.canvas;
+        
+        canvas.addEventListener('mousedown', handleMouseDown);
+        canvas.addEventListener('mousemove', handleMouseMove);
+        canvas.addEventListener('mouseup', handleMouseUp);
+        canvas.addEventListener('mouseleave', handleMouseUp);
+        canvas.addEventListener('wheel', handleWheel, { passive: false });
+        canvas.addEventListener('contextmenu', e => e.preventDefault());
+        
+        document.getElementById('file-input').addEventListener('change', handleFileLoad);
+    }
+
+    function handleMouseDown(e) {
+        if (e.button !== 0 && e.button !== 1) return;
+        const rect = CONFIG.canvas.getBoundingClientRect();
+        const worldX = (e.clientX - rect.left - offsetX) / scale;
+        const worldY = (e.clientY - rect.top  - offsetY) / scale;
+
+        const clickedNode = graphLoaded ? findNodeAtPosition(worldX, worldY) : null;
+
+        if (clickedNode && e.button === 0) {
+            // Left-click on node: toggle selection and prepare drag
+            draggedNode = clickedNode;
+            selectedNode = (selectedNode === clickedNode) ? null : clickedNode;
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            CONFIG.canvas.style.cursor = 'grabbing';
+            draw();
+        } else {
+            // Left-click on empty space OR middle button: pan
+            isPanning = true;
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            CONFIG.canvas.style.cursor = 'grabbing';
+            if (e.button === 0 && graphLoaded) {
+                selectedNode = null;
+                draw();
+            }
+        }
+    }
+
+    function handleMouseMove(e) {
+        const rect = CONFIG.canvas.getBoundingClientRect();
+
+        if (isPanning) {
+            offsetX += e.clientX - dragStartX;
+            offsetY += e.clientY - dragStartY;
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            if (graphLoaded) draw(); else drawEmptyState();
+            return;
+        }
+
+        if (draggedNode) {
+            const worldX = (e.clientX - rect.left - offsetX) / scale;
+            const worldY = (e.clientY - rect.top  - offsetY) / scale;
+            draggedNode.x = worldX;
+            draggedNode.y = worldY;
+            draggedNode.fixed = true;
+            draw();
+            return;
+        }
+
+        if (graphLoaded) {
+            const worldX = (e.clientX - rect.left - offsetX) / scale;
+            const worldY = (e.clientY - rect.top  - offsetY) / scale;
+            const hoveredNode = findNodeAtPosition(worldX, worldY);
+            CONFIG.canvas.style.cursor = hoveredNode ? 'pointer' : 'grab';
+            showTooltip(hoveredNode, e.clientX, e.clientY);
+        }
+    }
+
+    function handleMouseUp() {
+        if (draggedNode) draggedNode.fixed = true;
+        draggedNode = null;
+        isPanning = false;
+        CONFIG.canvas.style.cursor = 'grab';
+    }
+
+    function handleWheel(e) {
+        e.preventDefault();
+
+        const rect = CONFIG.canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // Normalize deltaY to pixels regardless of deltaMode
+        let delta = e.deltaY;
+        if (e.deltaMode === 1) delta *= 24;   // lines  → pixels
+        if (e.deltaMode === 2) delta *= 240;  // pages  → pixels
+
+        // Continuous zoom: each pixel of scroll = 0.1% scale change
+        const zoomFactor = Math.pow(0.999, delta);
+        const newScale = Math.max(CONFIG.zoomMin, Math.min(CONFIG.zoomMax, scale * zoomFactor));
+
+        // Always update offset and redraw (avoids float-comparison dead zone at limits)
+        offsetX = mouseX - (mouseX - offsetX) * (newScale / scale);
+        offsetY = mouseY - (mouseY - offsetY) * (newScale / scale);
+        scale = newScale;
+        if (graphLoaded) draw(); else drawEmptyState();
+    }
+
+    function findNodeAtPosition(x, y) {
+        for (let i = nodes.length - 1; i >= 0; i--) {
+            const node = nodes[i];
+            const r = node.esHub ? CONFIG.hubRadius : CONFIG.secondaryRadius;
+            const dx = x - node.x;
+            const dy = y - node.y;
+            if (dx * dx + dy * dy <= r * r) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    function showTooltip(node, mouseX, mouseY) {
+        const tooltip = document.getElementById('tooltip');
+        
+        if (node) {
+            tooltip.querySelector('.iata').textContent = node.id;
+            tooltip.querySelector('.city').textContent = node.ciudad + ', ' + node.pais;
+            tooltip.style.display = 'block';
+            tooltip.style.left = (mouseX + 15) + 'px';
+            tooltip.style.top = (mouseY + 15) + 'px';
+        } else {
+            tooltip.style.display = 'none';
+        }
+    }
+
+    function handleFileLoad(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            try {
+                const json = JSON.parse(event.target.result);
+                if (json.nodos && json.aristas) {
+                    graphLoaded = true;
+                    nodes = []; edges = []; nodeMap.clear();
+                    selectedNode = null;
+                    loadGraphData(json);
+                    initNodePositions();
+                    runSimulation();
+                    draw();
+                } else {
+                    alert('JSON inválido: debe contener los campos "nodos" y "aristas".');
+                }
+            } catch (err) {
+                alert('Error al parsear el JSON: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    }
+
+    function draw() {
+        const ctx = CONFIG.ctx;
+        const w = CONFIG.width;
+        const h = CONFIG.height;
+        
+        // Fill with background color
+        ctx.fillStyle = CONFIG.bgColor;
+        ctx.globalAlpha = 1;
+        ctx.fillRect(0, 0, w, h);
+        
+        ctx.save();
+        ctx.translate(offsetX, offsetY);
+        ctx.scale(scale, scale);
+        
+        edges.forEach(edge => {
+            const isHighlighted = selectedNode && 
+                (edge.origen === selectedNode.id || edge.destino === selectedNode.id);
+            const isOutgoing = selectedNode && edge.origen === selectedNode.id;
+            drawEdge(edge, isHighlighted, isOutgoing);
+        });
+        
+        nodes.forEach(drawNode);
+        
+        ctx.restore();
+    }
+
+function drawEdge(edge, isHighlighted, isOutgoing) {
+        const ctx = CONFIG.ctx;
+        const source = nodeMap.get(edge.origen);
+        const target = nodeMap.get(edge.destino);
+        
+        if (!source || !target) return;
+        
+        const hasReverse = edges.some(e => e.origen === edge.destino && e.destino === edge.origen);
+        const curvature = hasReverse ? CONFIG.curvature : CONFIG.curvature * 0.5;
+        
+        const dx = target.x - source.x;
+        const dy = target.y - source.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        
+        let midX = (source.x + target.x) / 2;
+        let midY = (source.y + target.y) / 2;
+        
+        if (hasReverse) {
+            const perpX = -dy / dist;
+            const perpY = dx / dist;
+            midX += perpX * curvature;
+            midY += perpY * curvature;
+        }
+        
+        let opacity = 1;
+        let lineWidth = CONFIG.defaultEdgeWidth;
+        let strokeColor = edge.costoBase === 0 ? CONFIG.subsidizedColor : CONFIG.edgeColor;
+        
+        if (selectedNode) {
+            if (isOutgoing) {
+                strokeColor = CONFIG.highlightColor;
+                lineWidth = CONFIG.highlightWidth;
+            } else if (isHighlighted || edge.origen === selectedNode.id) {
+                strokeColor = CONFIG.edgeColor;
+                opacity = 1;
+            } else {
+                opacity = CONFIG.dimOpacity;
+            }
+        }
+        
+        ctx.save();
+        ctx.globalAlpha = opacity;
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = lineWidth;
+        
+        if (edge.costoBase === 0) {
+            ctx.setLineDash([6, 4]);
+        }
+        
+        ctx.beginPath();
+        ctx.moveTo(source.x, source.y);
+        if (hasReverse) {
+            ctx.quadraticCurveTo(midX, midY, target.x, target.y);
+        } else {
+            ctx.lineTo(target.x, target.y);
+        }
+        ctx.stroke();
+        
+        const angle = Math.atan2(target.y - midY, target.x - midX);
+        const arrowSize = CONFIG.arrowSize;
+        
+        ctx.setLineDash([]);
+        ctx.fillStyle = strokeColor;
+        ctx.beginPath();
+        ctx.moveTo(target.x, target.y);
+        ctx.lineTo(
+            target.x - arrowSize * Math.cos(angle - Math.PI / 6),
+            target.y - arrowSize * Math.sin(angle - Math.PI / 6)
+        );
+        ctx.lineTo(
+            target.x - arrowSize * Math.cos(angle + Math.PI / 6),
+            target.y - arrowSize * Math.sin(angle + Math.PI / 6)
+        );
+        ctx.closePath();
+        ctx.fill();
+        
+        drawEdgeLabel(midX, midY, edge.distanciaKm + ' km', false);
+        
+        if (edge.aeronaves && edge.aeronaves.length > 0) {
+            const aircraftText = edge.aeronaves.join(' · ');
+            drawEdgeLabel(midX, midY + 8, aircraftText, true);
+        }
+        
+        ctx.restore();
+    }
+
+    function drawEdgeLabel(x, y, text, isAircraft) {
+        const ctx = CONFIG.ctx;
+        
+        ctx.font = isAircraft ? 
+            '5px ' + CONFIG.fontMono : 
+            '6px ' + CONFIG.fontMono;
+        
+        const metrics = ctx.measureText(text);
+        const padding = 2;
+        const w = metrics.width + padding * 2;
+        const h = isAircraft ? 7 : 8;
+        const r = h / 2;
+        
+        ctx.fillStyle = CONFIG.pillBgColor;
+        ctx.strokeStyle = CONFIG.pillBorderColor;
+        ctx.lineWidth = 1;
+        
+        ctx.beginPath();
+        ctx.roundRect(x - w/2, y - h/2, w, h, r);
+        ctx.fill();
+        ctx.stroke();
+        
+        ctx.fillStyle = isAircraft ? CONFIG.aircraftColor : CONFIG.textColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, x, y);
+    }
+
+    function drawNode(node) {
+        const ctx = CONFIG.ctx;
+        const r = node.esHub ? CONFIG.hubRadius : CONFIG.secondaryRadius;
+        const color = node.esHub ? CONFIG.hubColor : CONFIG.secondaryColor;
+        
+        let opacity = 1;
+        if (selectedNode && selectedNode !== node) {
+            const connected = edges.some(e => 
+                (e.origen === selectedNode.id && e.destino === node.id) ||
+                (e.destino === selectedNode.id && e.origen === node.id)
+            );
+            if (!connected) {
+                opacity = CONFIG.dimOpacity;
+            }
+        }
+        
+        ctx.save();
+        ctx.globalAlpha = opacity;
+        
+        ctx.fillStyle = color;
+        ctx.strokeStyle = lightenColor(color, 0.2);
+        ctx.lineWidth = 2;
+        
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold ' + (node.esHub ? 11 : 9) + 'px ' + CONFIG.fontMono;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(node.id, node.x, node.y);
+        
+        ctx.restore();
+    }
+
+    function lightenColor(color, amount) {
+        const hex = color.replace('#', '');
+        const r = Math.min(255, parseInt(hex.substr(0, 2), 16) + 255 * amount);
+        const g = Math.min(255, parseInt(hex.substr(2, 2), 16) + 255 * amount);
+        const b = Math.min(255, parseInt(hex.substr(4, 2), 16) + 255 * amount);
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    window.addEventListener('DOMContentLoaded', initLayout);
+    </script>
+</body>
+</html>
