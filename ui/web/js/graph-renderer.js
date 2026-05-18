@@ -84,10 +84,15 @@ function drawEdge(edge, isHighlighted, isOutgoing) {
     let strokeColor = edge.costoBase === 0 ? CONFIG.subsidizedColor : CONFIG.edgeColor;
 
     if (selectedNode) {
+        const isIncoming = selectedNode && edge.destino === selectedNode.id;
+        
         if (isOutgoing) {
-            strokeColor = CONFIG.highlightColor;
+            strokeColor = CONFIG.outgoingEdgeColor;
             lineWidth   = CONFIG.highlightWidth;
-        } else if (isHighlighted || edge.origen === selectedNode.id) {
+        } else if (isIncoming) {
+            strokeColor = CONFIG.incomingEdgeColor;
+            lineWidth   = CONFIG.highlightWidth;
+        } else if (isHighlighted) {
             strokeColor = CONFIG.edgeColor;
             opacity = 1;
         } else {

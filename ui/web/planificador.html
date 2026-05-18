@@ -8,162 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .planner-wrapper {
-            min-height: 100dvh;
-            padding: 88px clamp(16px, 5vw, 64px) 60px;
-            display: grid;
-            grid-template-columns: 380px 1fr;
-            gap: 32px;
-            align-items: start;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        @media (max-width: 860px) { .planner-wrapper { grid-template-columns: 1fr; } }
-
-        .planner-form {
-            position: sticky;
-            top: 80px;
-            background: var(--surface);
-            border: 1px solid var(--border-soft);
-            border-radius: var(--radius);
-            padding: 28px 28px 32px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.35);
-        }
-        .form-heading { font-family: var(--font-display); font-size: 22px; color: var(--text); margin-bottom: 6px; }
-        .form-subheading { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); letter-spacing: 0.04em; margin-bottom: 28px; line-height: 1.6; }
-
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 7px; font-family: var(--font-mono); }
-        .form-group select, .form-group input[type="number"] {
-            width: 100%; padding: 11px 14px;
-            background: var(--bg); border: 1px solid var(--border);
-            border-radius: var(--radius-sm); color: var(--text);
-            font-family: var(--font-mono); font-size: 13px;
-            transition: border-color 200ms, box-shadow 200ms; appearance: none;
-        }
-        .form-group select:focus, .form-group input[type="number"]:focus {
-            outline: none; border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-glow);
-        }
-        .form-group input::placeholder { color: var(--text-faint); }
-        .select-wrap { position: relative; }
-        .select-wrap::after { content: '▾'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 12px; pointer-events: none; }
-
-        /* Origen → Destino side by side */
-        .route-pair {
-            display: grid;
-            grid-template-columns: 1fr 24px 1fr;
-            align-items: end;
-            gap: 0;
-            margin-bottom: 18px;
-        }
-        .route-pair .form-group { margin-bottom: 0; }
-        .route-pair-arrow { display: flex; justify-content: center; align-items: center; padding-bottom: 11px; color: var(--amber-dim); font-size: 18px; }
-
-        /* File upload */
-        .file-upload { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-        .file-upload-label {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 10px 14px; background: transparent;
-            border: 1px dashed var(--border); border-radius: var(--radius-sm);
-            color: var(--text-muted); font-family: var(--font-mono); font-size: 12px;
-            cursor: pointer; transition: border-color 200ms, color 200ms, background 200ms;
-        }
-        .file-upload-label:hover { border-color: var(--amber-dim); color: var(--amber); background: var(--amber-glow); }
-        .file-upload-label.loaded { border-color: var(--teal-dim); color: var(--teal); background: var(--teal-glow); border-style: solid; }
-        .file-upload input[type="file"] { display: none; }
-        .file-name { font-size: 11px; color: var(--teal); font-family: var(--font-mono); padding-left: 2px; }
-        .budget-hint { font-size: 11px; color: var(--text-faint); font-family: var(--font-mono); margin-top: 6px; line-height: 1.5; }
-
-        .btn-plan {
-            width: 100%; padding: 13px 24px; margin-top: 8px;
-            background: var(--amber); border: none; border-radius: var(--radius-sm);
-            color: var(--bg); font-family: var(--font-mono); font-size: 13px; font-weight: 600;
-            letter-spacing: 0.06em; cursor: pointer;
-            transition: box-shadow 250ms, transform 150ms;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn-plan:hover:not(:disabled) { box-shadow: 0 0 28px oklch(76% 0.175 65 / 0.4); transform: translateY(-1px); }
-        .btn-plan:active:not(:disabled) { transform: translateY(0); }
-        .btn-plan:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn-plan .spinner { width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.2); border-top-color: var(--bg); border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
-        .btn-plan.loading .spinner { display: block; }
-        .btn-plan.loading .btn-text { opacity: 0.6; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .algo-badge { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--bg-deep); border: 1px solid var(--border-soft); border-radius: var(--radius-sm); margin-bottom: 24px; font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); }
-        .algo-badge-dot { width: 6px; height: 6px; background: var(--coral); border-radius: 50%; flex-shrink: 0; }
-
-        /* Results */
-        .results-area { display: flex; flex-direction: column; gap: 16px; }
-        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; gap: 16px; opacity: 0.5; }
-        .empty-state-icon { font-size: 48px; opacity: 0.3; }
-        .empty-state p { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); }
-
-        .error-banner { background: oklch(68% 0.17 25 / 0.1); border: 1px solid oklch(68% 0.17 25 / 0.3); border-radius: var(--radius-sm); padding: 14px 18px; font-family: var(--font-mono); font-size: 13px; color: var(--coral); }
-
-        /* ── Single result card ──────────────────────────── */
-        .result-card { background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius); overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.3); }
-
-        .rc-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 16px 24px; background: var(--bg-deep); border-bottom: 1px solid var(--border-soft); }
-        .rc-title { font-family: var(--font-display); font-size: 18px; color: var(--text); }
-        .rc-badges { display: flex; gap: 8px; flex-wrap: wrap; }
-        .rbadge { font-family: var(--font-mono); font-size: 11px; padding: 3px 10px; border-radius: 4px; letter-spacing: 0.04em; }
-        .rbadge-amber { background: var(--amber-glow); color: var(--amber); border: 1px solid var(--amber-dim); }
-        .rbadge-teal  { background: var(--teal-glow);  color: var(--teal);  border: 1px solid var(--teal-dim); }
-        .rbadge-muted { background: var(--surface-2);  color: var(--text-faint); border: 1px solid var(--border-soft); }
-
-        .rc-stats { display: grid; grid-template-columns: repeat(6, 1fr); border-bottom: 1px solid var(--border-soft); }
-        @media (max-width: 800px) { .rc-stats { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 480px) { .rc-stats { grid-template-columns: repeat(2, 1fr); } }
-        .stat-cell { padding: 14px 18px; display: flex; flex-direction: column; gap: 4px; border-right: 1px solid var(--border-soft); }
-        .stat-cell:last-child { border-right: none; }
-        .stat-cell .s-label { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); }
-        .stat-cell .s-value { font-family: var(--font-mono); font-size: 19px; font-weight: 500; color: var(--text); letter-spacing: -0.02em; }
-        .stat-cell.accent .s-value { color: var(--amber); }
-        .stat-cell.teal   .s-value { color: var(--teal); }
-        .stat-cell.coral  .s-value { color: var(--coral); }
-
-        .rc-section { padding: 18px 24px; border-bottom: 1px solid var(--border-soft); }
-        .rc-section:last-child { border-bottom: none; }
-        .rc-section-label { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 14px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-        .legend-dot { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-faint); }
-        .legend-dot span { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
-
-        .route-path { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
-        .route-node { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-        .route-node-code { padding: 6px 14px; background: var(--amber); color: var(--bg); border-radius: 6px; font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
-        .route-node-code.origin { background: var(--coral); }
-        .route-node-code.final  { background: var(--teal); }
-        .route-node-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-faint); letter-spacing: 0.06em; }
-        .route-connector { display: flex; align-items: center; padding-bottom: 14px; }
-        .route-arrow { color: var(--text-faint); font-size: 14px; }
-
-        .seg-table { width: 100%; border-collapse: collapse; }
-        .seg-table thead tr { background: var(--bg-deep); }
-        .seg-table th { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); padding: 10px 14px; text-align: left; font-weight: 500; border-bottom: 1px solid var(--border-soft); }
-        .seg-table tbody tr { border-bottom: 1px solid var(--border-soft); transition: background 150ms; }
-        .seg-table tbody tr:last-child { border-bottom: none; }
-        .seg-table tbody tr:hover { background: var(--surface-2); }
-        .seg-table td { padding: 11px 14px; font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); vertical-align: middle; }
-        .seg-num { color: var(--text-faint); font-size: 11px; margin-right: 4px; }
-        .seg-route { display: inline-flex; align-items: center; gap: 6px; }
-        .seg-iata { font-size: 13px; font-weight: 600; color: var(--text); }
-        .seg-arrow { color: var(--text-faint); font-size: 11px; }
-        .seg-aircraft { display: inline-block; padding: 2px 8px; background: var(--teal-glow); border: 1px solid var(--teal-dim); border-radius: 4px; font-size: 10px; color: var(--teal); letter-spacing: 0.04em; white-space: nowrap; }
-        .seg-accumulated { color: var(--amber) !important; font-weight: 500; }
-        @media (max-width: 600px) {
-            .seg-table thead { display: none; }
-            .seg-table tbody tr { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; padding: 10px 14px; }
-            .seg-table td { padding: 0; border: none; }
-        }
-
-
-        @media (max-width: 700px) {
-            .segments-header { display: none; }
-            .segment-row { grid-template-columns: 1fr 1fr; gap: 8px 16px; padding: 14px 16px; }
-        }
-    </style>
 </head>
 <body>
 
@@ -184,72 +28,92 @@
 
     <!-- FORM -->
     <aside>
-        <form class="planner-form" id="route-form" novalidate>
+<form class="planner-form" id="route-form" novalidate>
 
-            <h2 class="form-heading">Planifica tu ruta</h2>
-            <p class="form-subheading">
-                Elige origen, destino final y presupuesto.<br>
-                El algoritmo encontrará la ruta que llegue<br>
-                a tu destino con la mayor cantidad de escalas.
-            </p>
+    <h2 class="form-heading">Planifica tu ruta</h2>
 
-            <div class="algo-badge">
-                <span class="algo-badge-dot"></span>
-                DFS + Backtracking · Máximas escalas con destino fijo
+    <!-- Modo de búsqueda -->
+    <div class="form-group">
+        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:10px;font-family:var(--font-mono);">
+            ¿Cómo prefieres buscar?
+        </label>
+        <div class="search-mode-toggle">
+            <input type="radio" name="search-mode" value="budget" checked id="mode-budget">
+            <label for="mode-budget" class="mode-label">Por presupuesto</label>
+            
+            <input type="radio" name="search-mode" value="time" id="mode-time">
+            <label for="mode-time" class="mode-label">Por tiempo</label>
+        </div>
+    </div>
+
+    <!-- Algorithm badges -->
+    <div class="algo-badge">
+        <span class="algo-badge-dot"></span>
+        DFS + Backtracking · Máximas escalas con destino fijo
+    </div>
+
+    <!-- JSON file -->
+    <div class="file-upload">
+        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:7px;font-family:var(--font-mono);">
+            Red aérea (JSON)
+        </label>
+        <label class="file-upload-label" id="file-label" for="json-file">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+            </svg>
+            <span id="file-label-text">Cargar archivo JSON</span>
+        </label>
+        <input type="file" id="json-file" accept=".json">
+        <span class="file-name" id="file-name" aria-live="polite"></span>
+    </div>
+
+    <!-- Origen → Destino -->
+    <div class="route-pair">
+        <div class="form-group">
+            <label for="origen">Origen</label>
+            <div class="select-wrap">
+                <select id="origen" required>
+                    <option value="">Seleccionar...</option>
+                </select>
             </div>
-
-            <!-- JSON file -->
-            <div class="file-upload">
-                <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:7px;font-family:var(--font-mono);">
-                    Red aérea (JSON)
-                </label>
-                <label class="file-upload-label" id="file-label" for="json-file">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-                    </svg>
-                    <span id="file-label-text">Cargar archivo JSON</span>
-                </label>
-                <input type="file" id="json-file" accept=".json">
-                <span class="file-name" id="file-name" aria-live="polite"></span>
+        </div>
+        <div class="route-pair-arrow" aria-hidden="true">→</div>
+        <div class="form-group">
+            <label for="destino">Destino final</label>
+            <div class="select-wrap">
+                <select id="destino" required>
+                    <option value="">Seleccionar...</option>
+                </select>
             </div>
+        </div>
+    </div>
 
-            <!-- Origen → Destino -->
-            <div class="route-pair">
-                <div class="form-group">
-                    <label for="origen">Origen</label>
-                    <div class="select-wrap">
-                        <select id="origen" required>
-                            <option value="">Seleccionar...</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="route-pair-arrow" aria-hidden="true">→</div>
-                <div class="form-group">
-                    <label for="destino">Destino final</label>
-                    <div class="select-wrap">
-                        <select id="destino" required>
-                            <option value="">Seleccionar...</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+    <!-- Presupuesto (por defecto visible) -->
+    <div class="form-group" id="budget-group">
+        <label for="presupuesto">Presupuesto máximo (USD)</label>
+        <input type="number" id="presupuesto" placeholder="Ej: 800" min="0" step="0.01">
+        <p class="budget-hint">
+            Se buscará la ruta origen → destino con más<br>
+            aeropuertos intermedios sin exceder este monto.
+        </p>
+    </div>
 
-            <!-- Presupuesto -->
-            <div class="form-group">
-                <label for="presupuesto">Presupuesto máximo (USD)</label>
-                <input type="number" id="presupuesto" placeholder="Ej: 800" min="0" step="0.01" required>
-                <p class="budget-hint">
-                    Se buscará la ruta origen → destino con más<br>
-                    aeropuertos intermedios sin exceder este monto.
-                </p>
-            </div>
+    <!-- Tiempo (oculto por defecto) -->
+    <div class="form-group" id="time-group" style="display:none;">
+        <label for="tiempo">Tiempo máximo de viaje (horas)</label>
+        <input type="number" id="tiempo" placeholder="Ej: 24" min="1" step="0.5">
+        <p class="budget-hint">
+            Se buscará la ruta origen → destino con más<br>
+            aeropuertos intermedios sin exceder este tiempo.
+        </p>
+    </div>
 
-            <button type="submit" class="btn-plan" id="submit-btn">
-                <div class="spinner" aria-hidden="true"></div>
-                <span class="btn-text">Calcular ruta óptima</span>
-            </button>
+    <button type="submit" class="btn-plan" id="submit-btn">
+        <div class="spinner" aria-hidden="true"></div>
+        <span class="btn-text">Calcular ruta óptima</span>
+    </button>
 
-        </form>
+</form>
     </aside>
 
     <!-- RESULTS -->
@@ -268,194 +132,7 @@
     <div class="footer-meta">Estructuras de Datos · Proyecto Grafos</div>
 </footer>
 
-<script>
-    let airports = [], routes = [], configuracion = {};
-
-    document.getElementById('json-file').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            try {
-                const json = JSON.parse(ev.target.result);
-                airports      = json.aeropuertos || json.nodos   || [];
-                routes        = json.rutas       || json.aristas || [];
-                configuracion = json.configuracion || {};
-                populateSelects();
-                document.getElementById('file-label').classList.add('loaded');
-                document.getElementById('file-label-text').textContent = '✓ ' + file.name;
-                document.getElementById('file-name').textContent =
-                    airports.length + ' aeropuertos · ' + routes.length + ' rutas cargadas';
-            } catch (err) { showError('Error al parsear el JSON: ' + err.message); }
-        };
-        reader.readAsText(file);
-        e.target.value = '';
-    });
-
-    function populateSelects() {
-        ['origen', 'destino'].forEach(id => {
-            const sel = document.getElementById(id);
-            sel.innerHTML = '<option value="">Seleccionar...</option>';
-            airports.forEach(a => {
-                const opt = new Option(
-                    a.id + (a.ciudad ? ' — ' + a.ciudad + (a.pais ? ', ' + a.pais : '') : ''),
-                    a.id
-                );
-                sel.appendChild(opt);
-            });
-        });
-    }
-
-    document.getElementById('route-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const origen      = document.getElementById('origen').value;
-        const destino     = document.getElementById('destino').value;
-        const presupuesto = parseFloat(document.getElementById('presupuesto').value);
-
-        if (!airports.length)                        { showError('Carga un archivo JSON primero.'); return; }
-        if (!origen)                                 { showError('Selecciona un aeropuerto de origen.'); return; }
-        if (!destino)                                { showError('Selecciona un aeropuerto de destino final.'); return; }
-        if (origen === destino)                      { showError('El origen y el destino deben ser distintos.'); return; }
-        if (isNaN(presupuesto) || presupuesto <= 0)  { showError('Ingresa un presupuesto mayor a 0.'); return; }
-
-        setLoading(true);
-        document.getElementById('results-area').innerHTML = '';
-
-        try {
-            const res = await fetch('/api/planificar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ origen, destino, presupuesto, aeropuertos: airports, rutas: routes, configuracion })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Error en la solicitud');
-            renderResults(data, presupuesto);
-        } catch (err) {
-            showError('Error de red: ' + err.message);
-        } finally {
-            setLoading(false);
-        }
-    });
-
-    function renderResults(result, presupuesto) {
-        const area = document.getElementById('results-area');
-        area.innerHTML = '';
-
-        if (!result.success) {
-            area.innerHTML = `<div class="error-banner">✗ ${result.message || 'No se encontró ruta dentro del presupuesto.'}</div>`;
-            return;
-        }
-
-        const totalDist = result.segments.reduce((s, seg) => s + (seg.distancia || 0), 0);
-        const escalas   = Math.max(0, result.destinos_visitados - 1);
-
-        // ── Route path HTML
-        const lastIdx  = result.path.length - 1;
-        const pathHtml = result.path.map((code, i) => {
-            const ap   = airports.find(a => a.id === code);
-            const city = ap ? (ap.ciudad || '') : '';
-            const cls  = i === 0 ? 'origin' : i === lastIdx ? 'final' : '';
-            const conn = i < lastIdx ? `<div class="route-connector"><span class="route-arrow">→</span></div>` : '';
-            return `<div class="route-node">
-                        <div class="route-node-code ${cls}">${code}</div>
-                        ${city ? `<div class="route-node-label">${city}</div>` : ''}
-                    </div>${conn}`;
-        }).join('');
-
-        // ── Segment rows
-        const rows = result.segments.map((seg, i) => `
-            <tr>
-                <td><span class="seg-num">${i + 1}.</span><span class="seg-route">
-                    <span class="seg-iata">${seg.origen}</span>
-                    <span class="seg-arrow">→</span>
-                    <span class="seg-iata">${seg.destino}</span>
-                </span></td>
-                <td><span class="seg-aircraft">${seg.aeronave}</span></td>
-                <td>${Math.round(seg.distancia).toLocaleString()} km</td>
-                <td>$${seg.costo.toFixed(2)}</td>
-                <td class="seg-accumulated">$${seg.costo_acumulado.toFixed(2)}</td>
-            </tr>`).join('');
-
-        // ── Single card
-        area.innerHTML = `
-            <div class="result-card">
-
-                <div class="rc-header">
-                    <span class="rc-title">Ruta óptima encontrada</span>
-                    <div class="rc-badges">
-                        <span class="rbadge rbadge-amber">${result.destinos_visitados} aeropuertos</span>
-                        <span class="rbadge rbadge-teal">${escalas} escalas</span>
-                        <span class="rbadge rbadge-muted">$${result.total_costo.toFixed(2)} USD</span>
-                    </div>
-                </div>
-
-                <div class="rc-stats">
-                    <div class="stat-cell accent">
-                        <span class="s-label">Aeropuertos visitados</span>
-                        <span class="s-value">${result.destinos_visitados}</span>
-                    </div>
-                    <div class="stat-cell">
-                        <span class="s-label">Escalas intermedias</span>
-                        <span class="s-value">${escalas}</span>
-                    </div>
-                    <div class="stat-cell teal">
-                        <span class="s-label">Distancia total</span>
-                        <span class="s-value">${Math.round(totalDist).toLocaleString()} km</span>
-                    </div>
-                    <div class="stat-cell">
-                        <span class="s-label">Costo total</span>
-                        <span class="s-value">$${result.total_costo.toFixed(2)}</span>
-                    </div>
-                    <div class="stat-cell">
-                        <span class="s-label">Tramos de vuelo</span>
-                        <span class="s-value">${result.segments.length}</span>
-                    </div>
-                    <div class="stat-cell coral">
-                        <span class="s-label">Presupuesto restante</span>
-                        <span class="s-value">$${(presupuesto - result.total_costo).toFixed(2)}</span>
-                    </div>
-                </div>
-
-                <div class="rc-section">
-                    <div class="rc-section-label">
-                        Secuencia de vuelos
-                        <span class="legend-dot"><span style="background:var(--coral)"></span> Origen</span>
-                        <span class="legend-dot"><span style="background:var(--amber)"></span> Escala</span>
-                        <span class="legend-dot"><span style="background:var(--teal)"></span>  Destino final</span>
-                    </div>
-                    <div class="route-path">${pathHtml}</div>
-                </div>
-
-                <div class="rc-section">
-                    <div class="rc-section-label">Detalle por tramo</div>
-                    <table class="seg-table">
-                        <thead>
-                            <tr>
-                                <th>Tramo</th>
-                                <th>Aeronave</th>
-                                <th>Distancia</th>
-                                <th>Costo tramo</th>
-                                <th>Acumulado</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>
-
-            </div>`;
-    }
-
-        function setLoading(on) {
-        const btn = document.getElementById('submit-btn');
-        btn.disabled = on;
-        btn.classList.toggle('loading', on);
-        btn.querySelector('.btn-text').textContent = on ? 'Calculando...' : 'Calcular ruta óptima';
-    }
-
-    function showError(msg) {
-        const area = document.getElementById('results-area');
-        area.innerHTML = `<div class="error-banner">✗ ${msg}</div>`;
-    }
-</script>
+<script src="js/error-handler.js"></script>
+<script src="js/planificador.js"></script>
 </body>
 </html>

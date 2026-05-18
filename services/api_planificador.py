@@ -12,6 +12,13 @@ SOLID Principles:
 
 from flask import Blueprint, request, jsonify
 from core.algorithms.dfs_cobertura import find_max_destinations_by_budget
+from core.errors import (
+    SkyRouteError,
+    ValidationError,
+    RouteNotFoundError,
+    BudgetExceededError,
+    InternalError,
+)
 
 api_planificador_bp = Blueprint("api_planificador", __name__, url_prefix="/api")
 
@@ -19,14 +26,17 @@ api_planificador_bp = Blueprint("api_planificador", __name__, url_prefix="/api")
 @api_planificador_bp.route("/planificar", methods=["POST"])
 def planificar_ruta():
     """
-    Calculate optimal route maximizing destinations within budget.
+    Calculate optimal route maximizing destinations within budget or time.
 
     Expected JSON body:
     {
         "origen": "BOG",
-        "presupuesto": 500,
-        "aeropuertos": [...],
-        "rutas": [...],
+        "destino": "LIM",
+        "modo": "budget" | "time",
+        "presupuesto": 500,  // required if modo == "budget" (USD)
+        "tiempo": 24,        // required if modo == "time"   (hours)
+        "airports": [...],
+        "routes": [...],
         "configuracion": {...}  // optional
     }
 
@@ -38,46 +48,46 @@ def planificar_ruta():
             "total_costo": 350.00,
             "destinos_visitados": 3
         }
-        400: {"success": false, "error": "Missing required field: origen"}
-        500: {"success": false, "error": "Internal error message"}
+        400: {"success": false, "message": "...", "code": "VAL001", "type": "ValidationError"}
+        404: {"success": false, "message": "...", "code": "ROUTE001", "type": "RouteNotFoundError"}
+        500: {"success": false, "message": "...", "code": "SRV001", "type": "InternalError"}
     """
-    if not request.is_json:
-        return (
-            jsonify(
-                {"success": False, "error": "Content-Type must be application/json"}
-            ),
-            400,
-        )
-
     try:
+        if not request.is_json:
+            raise ValidationError("Content-Type must be application/json")
+
         data = request.get_json()
-    except Exception:
-        return jsonify({"success": False, "error": "Invalid JSON body"}), 400
+        if not data:
+            raise ValidationError("Invalid JSON body")
 
-    origen = data.get("origen")
-    destino = data.get("destino")
-    presupuesto = data.get("presupuesto")
-    airports = data.get("aeropuertos", [])
-    routes = data.get("rutas", [])
-    configuracion = data.get("configuracion")
+        origen = data.get("origen")
+        destino = data.get("destino")
+        modo = data.get("modo", "budget")
+        presupuesto = data.get("presupuesto")
+        tiempo = data.get("tiempo")
+        airports = data.get("airports", [])
+        routes = data.get("routes", [])
+        configuracion = data.get("configuracion")
 
-    validation_error = _validate_request(origen, destino, presupuesto, airports, routes)
-    if validation_error:
-        return jsonify({"success": False, "error": validation_error}), 400
+        _validate_request(origen, destino, presupuesto, airports, routes, modo, tiempo)
 
-    try:
+        limite = presupuesto if modo == "budget" else tiempo
         result = find_max_destinations_by_budget(
             airports=airports,
             routes=routes,
             origen=origen,
             destino=destino,
-            presupuesto=presupuesto,
+            presupuesto=limite,
+            modo=modo,
             configuracion=configuracion,
         )
         return jsonify(result), 200
 
+    except SkyRouteError as e:
+        return jsonify(e.to_dict()), e.status_code
     except Exception as e:
-        return jsonify({"success": False, "error": f"Internal error: {str(e)}"}), 500
+        err = InternalError("Error interno en el cálculo de ruta.", original_error=e)
+        return jsonify(err.to_dict()), err.status_code
 
 
 def _validate_request(
@@ -86,40 +96,45 @@ def _validate_request(
     presupuesto: float | None,
     airports: list,
     routes: list,
-) -> str | None:
+    modo: str,
+    tiempo: float | None,
+) -> None:
     """
-    Validate required fields in the request.
+    Validate required fields in the request. Raises exceptions if validation fails.
 
-    Returns:
-        Error message string if validation fails, None if valid.
+    Raises:
+        ValidationError: If any required field is missing or invalid
     """
     if not origen:
-        return "Missing required field: origen"
+        raise ValidationError("Missing required field: origen")
 
     if not isinstance(origen, str):
-        return "Field 'origen' must be a string"
+        raise ValidationError("Field 'origen' must be a string")
 
     if not destino:
-        return "Missing required field: destino"
+        raise ValidationError("Missing required field: destino")
 
     if not isinstance(destino, str):
-        return "Field 'destino' must be a string"
+        raise ValidationError("Field 'destino' must be a string")
 
     if origen == destino:
-        return "Fields 'origen' and 'destino' must be different airports"
+        raise ValidationError(
+            "Fields 'origen' and 'destino' must be different airports"
+        )
 
-    if presupuesto is None:
-        return "Missing required field: presupuesto"
-
-    if presupuesto is not None and (
-        not isinstance(presupuesto, (int, float)) or presupuesto < 0
-    ):
-        return "Field 'presupuesto' must be a non-negative number"
+    if modo == "budget":
+        if not presupuesto:
+            raise ValidationError("Missing required field: presupuesto")
+        if not isinstance(presupuesto, (int, float)) or presupuesto < 0:
+            raise ValidationError("Field 'presupuesto' must be a non-negative number")
+    elif modo == "time":
+        if not tiempo:
+            raise ValidationError("Missing required field: tiempo")
+        if not isinstance(tiempo, (int, float)) or tiempo <= 0:
+            raise ValidationError("Field 'tiempo' must be a positive number")
 
     if not airports:
-        return "Missing required field: airports (empty list)"
+        raise ValidationError("Missing required field: airports (empty list)")
 
     if not routes:
-        return "Missing required field: routes (empty list)"
-
-    return None
+        raise ValidationError("Missing required field: routes (empty list)")

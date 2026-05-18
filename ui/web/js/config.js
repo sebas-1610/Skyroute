@@ -15,6 +15,8 @@ const CONFIG = {
     secondaryColor: '#2abfa0',
     edgeColor: 'rgba(180, 160, 110, 0.45)',
     subsidizedColor: '#d4634a',
+    outgoingEdgeColor: '#ff6b6b',  
+    incomingEdgeColor: '#4ecdc4',  
     highlightColor: '#f0a500',
     highlightWidth: 2.5,
     dimOpacity: 0.15,
