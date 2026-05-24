@@ -52,6 +52,27 @@
         DFS + Backtracking · Máximas escalas con destino fijo
     </div>
 
+    <!-- Nuevos controles: criterios, transportes, incluir secundarios -->
+    <div class="form-group">
+        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:7px;font-family:var(--font-mono);">Criterios de optimización</label>
+        <div class="criteria-group">
+            <label><input type="checkbox" name="criterio" value="costo" checked> Costo (USD)</label>
+            <label><input type="checkbox" name="criterio" value="tiempo"> Tiempo (horas)</label>
+            <label><input type="checkbox" name="criterio" value="distancia"> Distancia (km)</label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:7px;font-family:var(--font-mono);">Tipos de transporte (selecciona al menos 1)</label>
+        <div id="transportes-list" class="transport-list">
+            <!-- Opciones generadas dinámicamente desde el JSON -->
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label><input type="checkbox" id="incluir-secundarios" checked> Incluir aeropuertos secundarios</label>
+    </div>
+
     <!-- JSON file -->
     <div class="file-upload">
         <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:7px;font-family:var(--font-mono);">

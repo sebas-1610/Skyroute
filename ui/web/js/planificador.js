@@ -28,6 +28,7 @@ document.getElementById('json-file').addEventListener('change', function(e) {
             aristas       = json.aristas       || [];
             configuracion = json.configuracion || {};
             populateSelects();
+            populateTransportOptions();
             document.getElementById('file-label').classList.add('loaded');
             document.getElementById('file-label-text').textContent = '✓ ' + file.name;
             document.getElementById('file-name').textContent =
@@ -49,6 +50,35 @@ function populateSelects() {
             );
             sel.appendChild(opt);
         });
+    });
+}
+
+// Populates transport type checkboxes based on loaded routes/configuracion
+function populateTransportOptions() {
+    const container = document.getElementById('transportes-list');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const set = new Set();
+    // From routes
+    aristas.forEach(a => {
+        if (a.aeronaves && Array.isArray(a.aeronaves)) a.aeronaves.forEach(t => set.add(t));
+    });
+    // From configuracion
+    if (configuracion && configuracion.aeronaves) {
+        Object.keys(configuracion.aeronaves).forEach(k => set.add(k));
+    }
+
+    if (set.size === 0) {
+        container.innerHTML = '<div class="transport-none">Sin datos de aeronaves</div>';
+        return;
+    }
+
+    Array.from(set).sort().forEach((t, i) => {
+        const id = 'transport-' + i;
+        const label = document.createElement('label');
+        label.innerHTML = `<input type="checkbox" class="transport-checkbox" id="${id}" value="${t}" ${i===0? 'checked': ''}> ${t}`;
+        container.appendChild(label);
     });
 }
 
@@ -83,6 +113,20 @@ document.getElementById('route-form').addEventListener('submit', async function(
             routes: aristas,
             configuracion
         };
+
+
+            // Recoger criterios y transportes desde UI
+            const criterios = Array.from(document.querySelectorAll('input[name="criterio"]:checked')).map(n => n.value);
+            const transportes = Array.from(document.querySelectorAll('.transport-checkbox:checked')).map(n => n.value);
+            const incluir_secundarios = document.getElementById('incluir-secundarios') ? document.getElementById('incluir-secundarios').checked : true;
+
+            body.criterios = criterios;
+            body.transportes = transportes;
+            body.incluir_secundarios = incluir_secundarios;
+
+            // Validaciones adicionales: al menos un criterio y un transporte
+            if (!body.criterios || body.criterios.length === 0) { ErrorHandler.handle('VALIDATION_ERROR', 'Selecciona al menos un criterio de optimización.', 'planificador.js:125'); return; }
+            if (!body.transportes || body.transportes.length === 0) { ErrorHandler.handle('VALIDATION_ERROR', 'Selecciona al menos un tipo de transporte.', 'planificador.js:126'); return; }
 
         // Agregar presupuesto o tiempo según corresponda
         if (mode === 'budget') {

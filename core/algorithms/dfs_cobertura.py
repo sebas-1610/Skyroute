@@ -100,7 +100,12 @@ def find_max_destinations_by_budget(
     if origen == destino:
         raise ValidationError("El origen y el destino no pueden ser el mismo.")
 
-    graph = _build_adjacency_graph(routes, aircraft_types, modo)
+    transportes_preferidos = configuracion.get("transportes_preferidos")
+    incluir_secundarios_cfg = configuracion.get("incluir_secundarios", True)
+
+    graph = _build_adjacency_graph(
+        routes, aircraft_types, modo, transportes_preferidos, incluir_secundarios_cfg, airports
+    )
 
     # In time mode the limit arrives in hours; edge weights are in minutes.
     limite = presupuesto * 60 if modo == "time" else presupuesto
@@ -164,6 +169,9 @@ def _build_adjacency_graph(
     routes: list[dict[str, Any]],
     aircraft_types: dict[str, dict[str, float]],
     modo: str = "budget",
+    transportes_preferidos: list[str] | None = None,
+    incluir_secundarios: bool = True,
+    airports: list[dict[str, Any]] | None = None,
 ) -> dict[str, list[dict[str, Any]]]:
     """Build an adjacency-list representation of the route network.
 
@@ -173,19 +181,44 @@ def _build_adjacency_graph(
     graph: dict[str, list[dict[str, Any]]] = {}
     weight_key = "tiempoKm" if modo == "time" else "costoKm"
 
+    # Helper to check if an airport is secondary (not hub)
+    airport_map = {a["id"]: a for a in (airports or [])}
+
     for route in routes:
         src = route["origen"]
         dst = route["destino"]
         distancia = route.get("distanciaKm", 0)
         aeronaves = route.get("aeronaves", ["Avión Comercial"])
         costo_base = route.get("costoBase", 0)
+        # If excluding secondary airports, skip routes involving them
+        if not incluir_secundarios:
+            src_info = airport_map.get(src)
+            dst_info = airport_map.get(dst)
+            if (src_info and not src_info.get("esHub", False)) or (
+                dst_info and not dst_info.get("esHub", False)
+            ):
+                continue
 
         if src not in graph:
             graph[src] = []
 
-        best_aircraft = aeronaves[0]
+        # Determine which aircraft to use for this edge.
+        chosen_aircraft = None
+        if transportes_preferidos:
+            # Pick the first preferred transport that operates on this route
+            for t in transportes_preferidos:
+                if t in aeronaves:
+                    chosen_aircraft = t
+                    break
+            # If none of the preferred are available, skip this route (filtered out)
+            if chosen_aircraft is None:
+                continue
+        else:
+            # Fallback behaviour: keep existing first-aircraft semantics
+            chosen_aircraft = aeronaves[0]
+
         aircraft_data = aircraft_types.get(
-            best_aircraft, {"costoKm": 0.18, "tiempoKm": 0.7}
+            chosen_aircraft, {"costoKm": 0.18, "tiempoKm": 0.7}
         )
 
         # Subsidised routes (costoBase == 0) are free in budget mode,
@@ -200,7 +233,7 @@ def _build_adjacency_graph(
                 "destino": dst,
                 "distancia": distancia,
                 "costo": peso_tramo,
-                "aeronave": best_aircraft,
+                "aeronave": chosen_aircraft,
             }
         )
 

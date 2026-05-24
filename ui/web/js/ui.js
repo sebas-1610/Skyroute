@@ -51,6 +51,21 @@ function getAircraftFromNode(nodeId) {
     return Array.from(aircraft).sort();
 }
 
+// Returns airlines operating at the node (if provided in node data)
+function getAirlinesFromNode(nodeId) {
+    const node = nodeMap.get(nodeId);
+    if (!node) return [];
+    if (Array.isArray(node.aerolineas)) return node.aerolineas.slice().sort();
+    // Fallback: attempt to infer from outgoing routes (if route has 'aerolinea')
+    const set = new Set();
+    edges.forEach(edge => {
+        if (edge.origen === nodeId && edge.aerolineas && Array.isArray(edge.aerolineas)) {
+            edge.aerolineas.forEach(a => set.add(a));
+        }
+    });
+    return Array.from(set).sort();
+}
+
 // Populates and shows the airport info panel for the given node.
 function showAirportPanel(node) {
     const panel = document.getElementById('airport-panel');
@@ -91,6 +106,20 @@ function showAirportPanel(node) {
         });
     } else {
         aircraftContainer.innerHTML = '<span class="aircraft-tag">Sin rutas</span>';
+    }
+
+    const airlinesContainer = panel.querySelector('.airlines-list');
+    airlinesContainer.innerHTML = '';
+    const airlines = getAirlinesFromNode(node.id);
+    if (airlines.length > 0) {
+        airlines.forEach(al => {
+            const tag = document.createElement('span');
+            tag.className = 'airline-tag';
+            tag.textContent = al;
+            airlinesContainer.appendChild(tag);
+        });
+    } else {
+        airlinesContainer.innerHTML = '<span class="airline-tag">No disponible</span>';
     }
 
     panel.classList.add('active');

@@ -11,6 +11,8 @@ SOLID Principles:
 """
 
 from flask import Blueprint, request, jsonify
+import json
+from werkzeug.exceptions import BadRequest
 from core.algorithms.dfs_cobertura import find_max_destinations_by_budget
 from core.errors import (
     SkyRouteError,
@@ -56,7 +58,26 @@ def planificar_ruta():
         if not request.is_json:
             raise ValidationError("Content-Type must be application/json")
 
-        data = request.get_json()
+        # Parse JSON robustly: try Flask's parser first, then fallback to
+        # attempting different decodings if the client used a non-UTF-8
+        # encoding (PowerShell's ConvertTo-Json can produce Latin1 bytes).
+        try:
+            data = request.get_json()
+        except BadRequest:
+            # Try to decode raw bytes with latin-1 as a fallback
+            raw = request.get_data()
+            try:
+                text = raw.decode('utf-8')
+            except UnicodeDecodeError:
+                try:
+                    text = raw.decode('latin-1')
+                except Exception:
+                    raise ValidationError("Failed to decode request body as JSON (unknown encoding)")
+            try:
+                data = json.loads(text)
+            except Exception:
+                raise ValidationError("Invalid JSON body (fallback decode failed)")
+
         if not data:
             raise ValidationError("Invalid JSON body")
 
@@ -69,6 +90,80 @@ def planificar_ruta():
         routes = data.get("routes", [])
         configuracion = data.get("configuracion")
 
+        # Nuevos campos (contrato extendido)
+        criterios = data.get("criterios") or []  # list of 'distancia'|'tiempo'|'costo'
+        incluir_secundarios = data.get("incluir_secundarios", True)
+        transportes = data.get("transportes", None)  # list of aircraft types to prefer
+
+        # Backwards-compatible validation: if no criterios specified, use legacy modo
+        if criterios:
+            # Validate criterios
+            allowed = {"distancia", "tiempo", "costo"}
+            if not isinstance(criterios, list) or any(c not in allowed for c in criterios):
+                raise ValidationError("Field 'criterios' must be a list with any of: distancia, tiempo, costo")
+            # Ensure airports and routes provided
+            _validate_request(origen, destino, presupuesto, airports, routes, modo, tiempo)
+
+            results = {}
+            for criterio in criterios:
+                try:
+                    if criterio == "costo":
+                        call_modo = "budget"
+                        limite = presupuesto
+                    elif criterio == "tiempo":
+                        call_modo = "time"
+                        limite = tiempo
+                    else:  # distancia
+                        # Map distancia to budget-mode where costoKm == 1, so cost == distance
+                        call_modo = "budget"
+                        limite = presupuesto
+
+                    # Merge configuracion overrides for this run
+                    run_config = dict(configuracion or {})
+                    # If transportes filter is provided, include it in configuracion for downstream use
+                    if transportes is not None:
+                        run_config.setdefault("transportes_preferidos", transportes)
+                    # Include flag for secundary airports filtering
+                    run_config.setdefault("incluir_secundarios", incluir_secundarios)
+
+                    # For distancia, coerce aeronave cost to 1 so peso == distanciaKm
+                    if criterio == "distancia":
+                        # Build a shallow aeronaves override mapping where costoKm = 1 for known types
+                        aeronaves_override = {}
+                        base_aeronaves = (run_config.get("aeronaves") or {
+                            "Avión Comercial": {"costoKm": 0.18, "tiempoKm": 0.7},
+                            "Avión Regional": {"costoKm": 0.25, "tiempoKm": 1.1},
+                            "Hélice": {"costoKm": 0.12, "tiempoKm": 2.5},
+                        })
+                        for name in base_aeronaves:
+                            aeronaves_override[name] = {"costoKm": 1.0, "tiempoKm": base_aeronaves[name].get("tiempoKm", 1.0)}
+                        run_config = dict(run_config)
+                        run_config["aeronaves"] = aeronaves_override
+
+                    # Call algorithm — limit unit depends on mode (USD or hours)
+                    limite_param = limite if call_modo == "budget" else limite
+                    # DEBUG: log inputs to help trace mismatches when called via API
+                    print(f"[DEBUG planificar] criterio={criterio} call_modo={call_modo} limite={limite_param}")
+                    print(f"[DEBUG planificar] airports={len(airports)} routes={len(routes)} transportes_preferidos={transportes}")
+                    res = find_max_destinations_by_budget(
+                        airports=airports,
+                        routes=routes,
+                        origen=origen,
+                        destino=destino,
+                        presupuesto=limite_param,
+                        modo=call_modo,
+                        configuracion=run_config,
+                    )
+                    results[criterio] = res
+                except SkyRouteError as e:
+                    results[criterio] = {"success": False, "error": e.to_dict()}
+                except Exception as e:
+                    err = InternalError("Error interno en el cálculo de ruta.", original_error=e)
+                    results[criterio] = {"success": False, "error": err.to_dict()}
+
+            return jsonify({"success": True, "results": results}), 200
+
+        # Legacy single-criterion path (compatibilidad)
         _validate_request(origen, destino, presupuesto, airports, routes, modo, tiempo)
 
         limite = presupuesto if modo == "budget" else tiempo
