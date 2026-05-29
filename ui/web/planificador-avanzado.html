@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyRoute Planificación Avanzada — Gestión Dinámica de Presupuesto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<nav aria-label="Navegación principal">
+    <a href="index.html" class="nav-logo" aria-label="Ir a inicio">
+        <div class="nav-logo-icon" aria-hidden="true">✈</div>
+        SKY<span style="color:var(--text-muted)">ROUTE</span>
+    </a>
+    <ul class="nav-links" role="list">
+        <li><a href="planificador.html">Planificador</a></li>
+        <li><a href="planificador-avanzado.html" aria-current="page">Planificación Avanzada</a></li>
+        <li><a href="visualizador.html">Visualizador</a></li>
+        <li><a href="index.html">Inicio</a></li>
+    </ul>
+    <a href="visualizador.html" class="nav-cta">Visualizador</a>
+</nav>
+
+<div class="planner-wrapper">
+    <aside>
+        <form class="planner-form advanced-planner" id="advanced-route-form" novalidate>
+            <h2 class="form-heading">Planificación Avanzada</h2>
+            <p class="budget-hint" style="margin-top:-8px; margin-bottom:18px;">
+                Módulo separado del planificador básico para modelar la gestión dinámica de presupuesto, actividades y trabajos.
+            </p>
+
+            <div class="algo-badge">
+                <span class="algo-badge-dot"></span>
+                2.3.3 · Paso a paso · Actividades obligatorias y opcionales
+            </div>
+
+            <div class="file-upload">
+                <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:7px;font-family:var(--font-mono);">
+                    Red aérea (JSON)
+                </label>
+                <label class="file-upload-label" id="advanced-file-label" for="advanced-json-file">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                    </svg>
+                    <span id="advanced-file-label-text">Cargar archivo JSON</span>
+                </label>
+                <input type="file" id="advanced-json-file" accept=".json">
+                <span class="file-name" id="advanced-file-name" aria-live="polite"></span>
+            </div>
+
+            <div class="route-pair">
+                <div class="form-group">
+                    <label for="advanced-origen">Origen</label>
+                    <div class="select-wrap">
+                        <select id="advanced-origen" required>
+                            <option value="">Seleccionar...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="route-pair-arrow" aria-hidden="true">→</div>
+                <div class="form-group">
+                    <label for="advanced-destino">Destino final</label>
+                    <div class="select-wrap">
+                        <select id="advanced-destino" required>
+                            <option value="">Seleccionar...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="advanced-presupuesto-inicial">Presupuesto inicial (USD)</label>
+                <input type="number" id="advanced-presupuesto-inicial" placeholder="Ej: 800" min="0" step="0.01">
+            </div>
+
+            <div class="form-group">
+                <label for="advanced-tiempo-disponible">Tiempo disponible (horas)</label>
+                <input type="number" id="advanced-tiempo-disponible" placeholder="Ej: 24" min="1" step="0.5">
+            </div>
+
+            <div class="form-group">
+                <label for="advanced-punto-actual">Paso actual</label>
+                <input type="text" id="advanced-punto-actual" placeholder="Se actualizará al seleccionar origen" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="advanced-notas">Registro de decisiones</label>
+                <textarea id="advanced-notas" rows="6" placeholder="Aquí se irán registrando las decisiones paso a paso..." readonly></textarea>
+            </div>
+
+            <button type="submit" class="btn-plan" id="advanced-submit-btn">
+                <div class="spinner" aria-hidden="true"></div>
+                <span class="btn-text">Simular planificación avanzada</span>
+            </button>
+        </form>
+    </aside>
+
+    <main class="results-area" id="advanced-results-area" aria-live="polite">
+        <div class="empty-state">
+            <div class="empty-state-icon">✦</div>
+            <p>Selecciona un aeropuerto origen para revisar actividades, alojamientos y trabajos disponibles.</p>
+        </div>
+    </main>
+</div>
+
+<div class="divider" aria-hidden="true"></div>
+
+<footer>
+    <div class="footer-brand"><span>SKY</span>ROUTE PLANIFICACIÓN AVANZADA — Ingeniería en Sistemas y Computación</div>
+    <div class="footer-meta">Estructuras de Datos · Proyecto Grafos</div>
+</footer>
+
+<script src="js/error-handler.js"></script>
+<script src="js/planificador_avanzado.js"></script>
+</body>
+</html>

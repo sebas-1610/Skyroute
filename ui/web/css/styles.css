@@ -788,10 +788,51 @@ margin: 0 clamp(24px, 5vw, 64px);
 .seg-arrow { color: var(--text-faint); font-size: 11px; }
 .seg-aircraft { display: inline-block; padding: 2px 8px; background: var(--teal-glow); border: 1px solid var(--teal-dim); border-radius: 4px; font-size: 10px; color: var(--teal); letter-spacing: 0.04em; white-space: nowrap; }
 .seg-accumulated { color: var(--amber) !important; font-weight: 500; }
+.route-options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.route-option-card {
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
+    overflow: hidden;
+}
+.route-option-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px 8px;
+    border-bottom: 1px solid var(--border-soft);
+}
+.route-option-head strong {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    color: var(--text);
+}
+.route-option-table { margin-top: 0; }
+.route-option-table { margin-top: 0; }
+.route-option-selected { background: var(--amber-glow); }
+.route-option-tag {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 6px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--amber);
+    border: 1px solid var(--amber-dim);
+    background: var(--amber-glow);
+}
 @media (max-width: 600px) {
     .seg-table thead { display: none; }
     .seg-table tbody tr { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; padding: 10px 14px; }
     .seg-table td { padding: 0; border: none; }
+    .route-options-grid { grid-template-columns: 1fr; }
+    .route-option-head { flex-direction: column; align-items: flex-start; }
+    .route-option-table { margin-top: 0; }
 }
 
 @media (max-width: 700px) {
@@ -1082,4 +1123,129 @@ margin: 0 clamp(24px, 5vw, 64px);
 .mode-label:hover {
     border-color: var(--text-muted);
     color: var(--text);
+}
+
+/* ─── PLANIFICACIÓN AVANZADA ────────────────────────── */
+.advanced-planner .step-actions {
+display: flex;
+gap: 10px;
+flex-wrap: wrap;
+margin-top: 10px;
+}
+
+.step-nav-btn,
+.step-action-btn {
+border: 1px solid var(--border);
+background: var(--surface-2);
+color: var(--text);
+font-family: var(--font-mono);
+font-size: 12px;
+padding: 8px 12px;
+border-radius: 10px;
+cursor: pointer;
+transition: transform 160ms var(--ease-out), border-color 160ms var(--ease-out), background 160ms var(--ease-out);
+}
+
+.step-nav-btn:hover,
+.step-action-btn:hover {
+transform: translateY(-1px);
+border-color: var(--amber);
+background: oklch(22% 0.018 250);
+}
+
+.step-action-btn:disabled,
+.step-nav-btn:disabled {
+opacity: 0.45;
+cursor: not-allowed;
+transform: none;
+}
+
+.job-hours-input {
+width: 72px;
+padding: 8px 10px;
+border: 1px solid var(--border);
+border-radius: 10px;
+background: var(--bg-deep);
+color: var(--text);
+font-family: var(--font-mono);
+font-size: 12px;
+}
+
+.decision-log {
+width: 100%;
+min-height: 180px;
+resize: vertical;
+border: 1px solid var(--border);
+border-radius: 14px;
+background: var(--bg-deep);
+color: var(--text-muted);
+font-family: var(--font-mono);
+font-size: 12px;
+line-height: 1.5;
+padding: 14px;
+}
+
+.advanced-planner .seg-table td,
+.advanced-planner .seg-table th {
+vertical-align: middle;
+}
+
+.advanced-planner .budget-hint {
+margin-top: 8px;
+}
+
+.alt-list {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 12px;
+}
+
+.alt-card {
+border: 1px solid var(--border);
+background: linear-gradient(180deg, oklch(18% 0.015 250), oklch(15% 0.012 250));
+border-radius: 16px;
+padding: 14px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.alt-card-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+font-family: var(--font-mono);
+font-size: 12px;
+}
+
+.alt-card-meta {
+display: flex;
+flex-direction: column;
+gap: 4px;
+font-size: 12px;
+color: var(--text-muted);
+}
+
+.alt-selector-label {
+display: flex;
+flex-direction: column;
+gap: 6px;
+font-size: 12px;
+color: var(--text-muted);
+}
+
+.alt-aircraft-select {
+width: 100%;
+padding: 10px 12px;
+border-radius: 10px;
+border: 1px solid var(--border);
+background: var(--bg-deep);
+color: var(--text);
+font-family: var(--font-mono);
+font-size: 12px;
+}
+
+.decision-log {
+white-space: pre-wrap;
 }

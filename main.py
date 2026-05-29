@@ -55,6 +55,10 @@ def create_app() -> Flask:
     def planificador():
         return send_from_directory("ui/web", "planificador.html")
 
+    @app.route("/planificador-avanzado")
+    def planificador_avanzado():
+        return send_from_directory("ui/web", "planificador-avanzado.html")
+
     @app.route("/<path:filename>")
     def static_files(filename):
         return send_from_directory("ui/web", filename)
@@ -158,6 +162,7 @@ if __name__ == "__main__":
         print(f"  GET /              → index.html")
         print(f"  GET /visualizador → visualizador.html")
         print(f"  GET /planificador → planificador.html")
+        print(f"  GET /planificador-avanzado → planificador-avanzado.html")
         print(f"  GET /api/health    → health check")
         print(f"  POST /api/planificar → route planner")
         app.run(host=args.host, port=args.port, debug=True)
