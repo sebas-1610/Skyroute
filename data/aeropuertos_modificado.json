@@ -1,33 +1,17 @@
 {
   "configuracion": {
     "aeronaves": {
-      "Boeing737": {
-        "costoKm": 0.12,
-        "tiempoKm": 0.09
-      },
-      "Airbus320": {
-        "costoKm": 0.11,
-        "tiempoKm": 0.09
-      },
-      "Boeing787": {
-        "costoKm": 0.09,
-        "tiempoKm": 0.085
-      },
-      "Airbus380": {
-        "costoKm": 0.08,
-        "tiempoKm": 0.083
-      },
-      "ATR72": {
+      "AvionComercial": {
         "costoKm": 0.18,
-        "tiempoKm": 0.12
+        "tiempoKm": 0.7
       },
-      "Embraer190": {
-        "costoKm": 0.15,
-        "tiempoKm": 0.10
+      "AvionRegional": {
+        "costoKm": 0.25,
+        "tiempoKm": 1.1
       },
-      "Boeing767": {
-        "costoKm": 0.10,
-        "tiempoKm": 0.087
+      "Helice": {
+        "costoKm": 0.12,
+        "tiempoKm": 2.5
       }
     },
     "presupuestoMinimoPorc": 35,
@@ -2304,6 +2288,54 @@
           "maxHoras": 4
         }
       ]
+    },
+    {
+      "id": "HND",
+      "nombre": "Aeropuerto Internacional de Haneda",
+      "ciudad": "Tokio",
+      "pais": "Japón",
+      "zonaHoraria": "Asia/Tokyo",
+      "esHub": true,
+      "costoAlojamiento": 150,
+      "costoAlimentacion": 20,
+      "actividades": [],
+      "trabajos": []
+    },
+    {
+      "id": "YYZ",
+      "nombre": "Aeropuerto Internacional Toronto Pearson",
+      "ciudad": "Toronto",
+      "pais": "Canadá",
+      "zonaHoraria": "America/Toronto",
+      "esHub": true,
+      "costoAlojamiento": 120,
+      "costoAlimentacion": 18,
+      "actividades": [],
+      "trabajos": []
+    },
+    {
+      "id": "DOH",
+      "nombre": "Aeropuerto Internacional Hamad",
+      "ciudad": "Doha",
+      "pais": "Catar",
+      "zonaHoraria": "Asia/Qatar",
+      "esHub": true,
+      "costoAlojamiento": 140,
+      "costoAlimentacion": 22,
+      "actividades": [],
+      "trabajos": []
+    },
+    {
+      "id": "AKL",
+      "nombre": "Aeropuerto de Auckland",
+      "ciudad": "Auckland",
+      "pais": "Nueva Zelanda",
+      "zonaHoraria": "Pacific/Auckland",
+      "esHub": false,
+      "costoAlojamiento": 100,
+      "costoAlimentacion": 16,
+      "actividades": [],
+      "trabajos": []
     }
   ],
   "aristas": [
@@ -2312,52 +2344,29 @@
       "destino": "MDE",
       "distanciaKm": 240,
       "aeronaves": [
-        "Airbus320",
-        "Embraer190"
-      ],
-      "costoBase": 60,
-      "estanciaMinima": 60
-    },
-    {
-      "origen": "MDE",
-      "destino": "BOG",
-      "distanciaKm": 240,
-      "aeronaves": [
-        "Airbus320",
-        "Embraer190"
+        "Helice",
+        "AvionRegional"
       ],
       "costoBase": 60,
       "estanciaMinima": 60
     },
     {
       "origen": "BOG",
-      "destino": "CTG",
-      "distanciaKm": 680,
+      "destino": "YYZ",
+      "distanciaKm": 4400,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionComercial"
       ],
-      "costoBase": 80,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "CTG",
-      "destino": "BOG",
-      "distanciaKm": 680,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 80,
-      "estanciaMinima": 90
+      "costoBase": 440,
+      "estanciaMinima": 290
     },
     {
       "origen": "BOG",
       "destino": "BAQ",
       "distanciaKm": 900,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 90,
       "estanciaMinima": 90
@@ -2367,8 +2376,8 @@
       "destino": "BOG",
       "distanciaKm": 900,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 90,
       "estanciaMinima": 90
@@ -2378,19 +2387,8 @@
       "destino": "CLO",
       "distanciaKm": 320,
       "aeronaves": [
-        "Airbus320",
-        "Embraer190"
-      ],
-      "costoBase": 65,
-      "estanciaMinima": 60
-    },
-    {
-      "origen": "CLO",
-      "destino": "BOG",
-      "distanciaKm": 320,
-      "aeronaves": [
-        "Airbus320",
-        "Embraer190"
+        "Helice",
+        "AvionRegional"
       ],
       "costoBase": 65,
       "estanciaMinima": 60
@@ -2400,74 +2398,27 @@
       "destino": "LIM",
       "distanciaKm": 1900,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionComercial"
       ],
       "costoBase": 180,
       "estanciaMinima": 120
-    },
-    {
-      "origen": "LIM",
-      "destino": "BOG",
-      "distanciaKm": 1900,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 180,
-      "estanciaMinima": 120
-    },
-    {
-      "origen": "BOG",
-      "destino": "GRU",
-      "distanciaKm": 4270,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing767"
-      ],
-      "costoBase": 350,
-      "estanciaMinima": 180
     },
     {
       "origen": "GRU",
       "destino": "BOG",
       "distanciaKm": 4270,
       "aeronaves": [
-        "Boeing787",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 350,
       "estanciaMinima": 180
     },
     {
       "origen": "BOG",
-      "destino": "PTY",
-      "distanciaKm": 730,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 90,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "PTY",
-      "destino": "BOG",
-      "distanciaKm": 730,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 90,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "BOG",
       "destino": "MEX",
       "distanciaKm": 3450,
       "aeronaves": [
-        "Boeing787",
-        "Boeing737"
+        "AvionComercial"
       ],
       "costoBase": 280,
       "estanciaMinima": 150
@@ -2477,30 +2428,17 @@
       "destino": "BOG",
       "distanciaKm": 3450,
       "aeronaves": [
-        "Boeing787",
-        "Boeing737"
+        "AvionComercial"
       ],
       "costoBase": 280,
       "estanciaMinima": 150
-    },
-    {
-      "origen": "BOG",
-      "destino": "MIA",
-      "distanciaKm": 2760,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing737"
-      ],
-      "costoBase": 230,
-      "estanciaMinima": 120
     },
     {
       "origen": "MIA",
       "destino": "BOG",
       "distanciaKm": 2760,
       "aeronaves": [
-        "Boeing787",
-        "Boeing737"
+        "AvionComercial"
       ],
       "costoBase": 230,
       "estanciaMinima": 120
@@ -2510,19 +2448,7 @@
       "destino": "MAD",
       "distanciaKm": 8200,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
-      ],
-      "costoBase": 550,
-      "estanciaMinima": 240
-    },
-    {
-      "origen": "MAD",
-      "destino": "BOG",
-      "distanciaKm": 8200,
-      "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 550,
       "estanciaMinima": 240
@@ -2532,8 +2458,8 @@
       "destino": "UIO",
       "distanciaKm": 600,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 75,
       "estanciaMinima": 90
@@ -2543,8 +2469,8 @@
       "destino": "BOG",
       "distanciaKm": 600,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 75,
       "estanciaMinima": 90
@@ -2554,19 +2480,8 @@
       "destino": "GYE",
       "distanciaKm": 280,
       "aeronaves": [
-        "Airbus320",
-        "ATR72"
-      ],
-      "costoBase": 50,
-      "estanciaMinima": 60
-    },
-    {
-      "origen": "GYE",
-      "destino": "UIO",
-      "distanciaKm": 280,
-      "aeronaves": [
-        "Airbus320",
-        "ATR72"
+        "Helice",
+        "AvionRegional"
       ],
       "costoBase": 50,
       "estanciaMinima": 60
@@ -2576,8 +2491,8 @@
       "destino": "LIM",
       "distanciaKm": 1560,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 150,
       "estanciaMinima": 120
@@ -2587,41 +2502,19 @@
       "destino": "UIO",
       "distanciaKm": 1560,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 150,
       "estanciaMinima": 120
     },
     {
       "origen": "LIM",
-      "destino": "CUZ",
-      "distanciaKm": 1110,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 100,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "CUZ",
-      "destino": "LIM",
-      "distanciaKm": 1110,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 100,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "LIM",
       "destino": "AQP",
       "distanciaKm": 800,
       "aeronaves": [
-        "Boeing737",
-        "Embraer190"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 80,
       "estanciaMinima": 90
@@ -2631,8 +2524,8 @@
       "destino": "LIM",
       "distanciaKm": 800,
       "aeronaves": [
-        "Boeing737",
-        "Embraer190"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 80,
       "estanciaMinima": 90
@@ -2642,8 +2535,7 @@
       "destino": "SCL",
       "distanciaKm": 2450,
       "aeronaves": [
-        "Boeing787",
-        "Boeing737"
+        "AvionComercial"
       ],
       "costoBase": 200,
       "estanciaMinima": 120
@@ -2653,8 +2545,7 @@
       "destino": "LIM",
       "distanciaKm": 2450,
       "aeronaves": [
-        "Boeing787",
-        "Boeing737"
+        "AvionComercial"
       ],
       "costoBase": 200,
       "estanciaMinima": 120
@@ -2664,8 +2555,7 @@
       "destino": "GRU",
       "distanciaKm": 3680,
       "aeronaves": [
-        "Boeing787",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 300,
       "estanciaMinima": 180
@@ -2675,8 +2565,7 @@
       "destino": "LIM",
       "distanciaKm": 3680,
       "aeronaves": [
-        "Boeing787",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 300,
       "estanciaMinima": 180
@@ -2686,8 +2575,8 @@
       "destino": "EZE",
       "distanciaKm": 1140,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 110,
       "estanciaMinima": 90
@@ -2697,8 +2586,8 @@
       "destino": "SCL",
       "distanciaKm": 1140,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 110,
       "estanciaMinima": 90
@@ -2708,8 +2597,7 @@
       "destino": "GRU",
       "distanciaKm": 2600,
       "aeronaves": [
-        "Boeing787",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 210,
       "estanciaMinima": 150
@@ -2719,8 +2607,7 @@
       "destino": "SCL",
       "distanciaKm": 2600,
       "aeronaves": [
-        "Boeing787",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 210,
       "estanciaMinima": 150
@@ -2730,8 +2617,8 @@
       "destino": "PMC",
       "distanciaKm": 980,
       "aeronaves": [
-        "Boeing737",
-        "ATR72"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 90,
       "estanciaMinima": 90
@@ -2741,8 +2628,8 @@
       "destino": "SCL",
       "distanciaKm": 980,
       "aeronaves": [
-        "Boeing737",
-        "ATR72"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 90,
       "estanciaMinima": 90
@@ -2752,87 +2639,10 @@
       "destino": "PUQ",
       "distanciaKm": 900,
       "aeronaves": [
-        "Boeing737",
-        "ATR72"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 85,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "PUQ",
-      "destino": "PMC",
-      "distanciaKm": 900,
-      "aeronaves": [
-        "Boeing737",
-        "ATR72"
-      ],
-      "costoBase": 85,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "EZE",
-      "destino": "GRU",
-      "distanciaKm": 1700,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing737"
-      ],
-      "costoBase": 160,
-      "estanciaMinima": 120
-    },
-    {
-      "origen": "GRU",
-      "destino": "EZE",
-      "distanciaKm": 1700,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing737"
-      ],
-      "costoBase": 160,
-      "estanciaMinima": 120
-    },
-    {
-      "origen": "EZE",
-      "destino": "MVD",
-      "distanciaKm": 210,
-      "aeronaves": [
-        "Embraer190",
-        "ATR72"
-      ],
-      "costoBase": 40,
-      "estanciaMinima": 60
-    },
-    {
-      "origen": "MVD",
-      "destino": "EZE",
-      "distanciaKm": 210,
-      "aeronaves": [
-        "Embraer190",
-        "ATR72"
-      ],
-      "costoBase": 40,
-      "estanciaMinima": 60
-    },
-    {
-      "origen": "EZE",
-      "destino": "ASU",
-      "distanciaKm": 1070,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 100,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "ASU",
-      "destino": "EZE",
-      "distanciaKm": 1070,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 100,
       "estanciaMinima": 90
     },
     {
@@ -2840,8 +2650,8 @@
       "destino": "GIG",
       "distanciaKm": 360,
       "aeronaves": [
-        "Airbus320",
-        "Boeing737"
+        "Helice",
+        "AvionRegional"
       ],
       "costoBase": 50,
       "estanciaMinima": 60
@@ -2851,8 +2661,8 @@
       "destino": "GRU",
       "distanciaKm": 360,
       "aeronaves": [
-        "Airbus320",
-        "Boeing737"
+        "Helice",
+        "AvionRegional"
       ],
       "costoBase": 50,
       "estanciaMinima": 60
@@ -2862,32 +2672,9 @@
       "destino": "SSA",
       "distanciaKm": 1960,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionComercial"
       ],
       "costoBase": 150,
-      "estanciaMinima": 120
-    },
-    {
-      "origen": "SSA",
-      "destino": "GRU",
-      "distanciaKm": 1960,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 150,
-      "estanciaMinima": 120
-    },
-    {
-      "origen": "GRU",
-      "destino": "REC",
-      "distanciaKm": 2210,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 160,
       "estanciaMinima": 120
     },
     {
@@ -2895,8 +2682,7 @@
       "destino": "GRU",
       "distanciaKm": 2210,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionComercial"
       ],
       "costoBase": 160,
       "estanciaMinima": 120
@@ -2906,8 +2692,7 @@
       "destino": "FOR",
       "distanciaKm": 2770,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionComercial"
       ],
       "costoBase": 180,
       "estanciaMinima": 150
@@ -2917,8 +2702,7 @@
       "destino": "GRU",
       "distanciaKm": 2770,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionComercial"
       ],
       "costoBase": 180,
       "estanciaMinima": 150
@@ -2928,52 +2712,50 @@
       "destino": "MAO",
       "distanciaKm": 2700,
       "aeronaves": [
-        "Boeing737",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 190,
-      "estanciaMinima": 150
+      "estanciaMinima": 300
     },
     {
       "origen": "MAO",
       "destino": "GRU",
       "distanciaKm": 2700,
       "aeronaves": [
-        "Boeing737",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 190,
       "estanciaMinima": 150
-    },
-    {
-      "origen": "MAO",
-      "destino": "BEL",
-      "distanciaKm": 1300,
-      "aeronaves": [
-        "Boeing737",
-        "ATR72"
-      ],
-      "costoBase": 110,
-      "estanciaMinima": 90
     },
     {
       "origen": "BEL",
       "destino": "MAO",
       "distanciaKm": 1300,
       "aeronaves": [
-        "Boeing737",
-        "ATR72"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 110,
       "estanciaMinima": 90
+    },
+    {
+      "origen": "MAO",
+      "destino": "BEL",
+      "distanciaKm": 1300,
+      "aeronaves": [
+        "AvionRegional",
+        "AvionComercial"
+      ],
+      "costoBase": 140,
+      "estanciaMinima": 140
     },
     {
       "origen": "GRU",
       "destino": "IGU",
       "distanciaKm": 940,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 90,
       "estanciaMinima": 90
@@ -2983,8 +2765,8 @@
       "destino": "GRU",
       "distanciaKm": 940,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 90,
       "estanciaMinima": 90
@@ -2994,8 +2776,8 @@
       "destino": "CGB",
       "distanciaKm": 1480,
       "aeronaves": [
-        "Boeing737",
-        "Embraer190"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 130,
       "estanciaMinima": 120
@@ -3005,8 +2787,8 @@
       "destino": "GRU",
       "distanciaKm": 1480,
       "aeronaves": [
-        "Boeing737",
-        "Embraer190"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 130,
       "estanciaMinima": 120
@@ -3016,8 +2798,8 @@
       "destino": "SCL",
       "distanciaKm": 1800,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 160,
       "estanciaMinima": 120
@@ -3027,74 +2809,28 @@
       "destino": "LPB",
       "distanciaKm": 1800,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 160,
       "estanciaMinima": 120
-    },
-    {
-      "origen": "LPB",
-      "destino": "VVI",
-      "distanciaKm": 850,
-      "aeronaves": [
-        "Boeing737",
-        "ATR72"
-      ],
-      "costoBase": 75,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "VVI",
-      "destino": "LPB",
-      "distanciaKm": 850,
-      "aeronaves": [
-        "Boeing737",
-        "ATR72"
-      ],
-      "costoBase": 75,
-      "estanciaMinima": 90
     },
     {
       "origen": "VVI",
       "destino": "GRU",
       "distanciaKm": 2500,
       "aeronaves": [
-        "Boeing787",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 200,
       "estanciaMinima": 150
-    },
-    {
-      "origen": "GRU",
-      "destino": "VVI",
-      "distanciaKm": 2500,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing767"
-      ],
-      "costoBase": 200,
-      "estanciaMinima": 150
-    },
-    {
-      "origen": "PTY",
-      "destino": "MIA",
-      "distanciaKm": 2250,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing737"
-      ],
-      "costoBase": 180,
-      "estanciaMinima": 120
     },
     {
       "origen": "MIA",
       "destino": "PTY",
       "distanciaKm": 2250,
       "aeronaves": [
-        "Boeing787",
-        "Boeing737"
+        "AvionComercial"
       ],
       "costoBase": 180,
       "estanciaMinima": 120
@@ -3104,8 +2840,7 @@
       "destino": "MEX",
       "distanciaKm": 2000,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionComercial"
       ],
       "costoBase": 170,
       "estanciaMinima": 120
@@ -3115,8 +2850,7 @@
       "destino": "PTY",
       "distanciaKm": 2000,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionComercial"
       ],
       "costoBase": 170,
       "estanciaMinima": 120
@@ -3126,8 +2860,8 @@
       "destino": "SJO",
       "distanciaKm": 620,
       "aeronaves": [
-        "Boeing737",
-        "Embraer190"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 70,
       "estanciaMinima": 90
@@ -3137,8 +2871,8 @@
       "destino": "PTY",
       "distanciaKm": 620,
       "aeronaves": [
-        "Boeing737",
-        "Embraer190"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 70,
       "estanciaMinima": 90
@@ -3148,8 +2882,8 @@
       "destino": "CUN",
       "distanciaKm": 1550,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 120,
       "estanciaMinima": 90
@@ -3159,52 +2893,18 @@
       "destino": "MEX",
       "distanciaKm": 1550,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 120,
       "estanciaMinima": 90
     },
     {
       "origen": "MEX",
-      "destino": "LAX",
-      "distanciaKm": 2480,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing737"
-      ],
-      "costoBase": 200,
-      "estanciaMinima": 120
-    },
-    {
-      "origen": "LAX",
-      "destino": "MEX",
-      "distanciaKm": 2480,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing737"
-      ],
-      "costoBase": 200,
-      "estanciaMinima": 120
-    },
-    {
-      "origen": "MEX",
       "destino": "JFK",
       "distanciaKm": 3370,
       "aeronaves": [
-        "Boeing787",
-        "Boeing737"
-      ],
-      "costoBase": 270,
-      "estanciaMinima": 150
-    },
-    {
-      "origen": "JFK",
-      "destino": "MEX",
-      "distanciaKm": 3370,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing737"
+        "AvionComercial"
       ],
       "costoBase": 270,
       "estanciaMinima": 150
@@ -3214,8 +2914,8 @@
       "destino": "HAV",
       "distanciaKm": 1550,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 120,
       "estanciaMinima": 90
@@ -3225,8 +2925,8 @@
       "destino": "MEX",
       "distanciaKm": 1550,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 120,
       "estanciaMinima": 90
@@ -3236,19 +2936,8 @@
       "destino": "HAV",
       "distanciaKm": 330,
       "aeronaves": [
-        "Boeing737",
-        "Embraer190"
-      ],
-      "costoBase": 50,
-      "estanciaMinima": 60
-    },
-    {
-      "origen": "HAV",
-      "destino": "MIA",
-      "distanciaKm": 330,
-      "aeronaves": [
-        "Boeing737",
-        "Embraer190"
+        "Helice",
+        "AvionRegional"
       ],
       "costoBase": 50,
       "estanciaMinima": 60
@@ -3258,8 +2947,8 @@
       "destino": "SDQ",
       "distanciaKm": 1540,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 120,
       "estanciaMinima": 90
@@ -3269,52 +2958,18 @@
       "destino": "MIA",
       "distanciaKm": 1540,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 120,
       "estanciaMinima": 90
-    },
-    {
-      "origen": "MIA",
-      "destino": "JFK",
-      "distanciaKm": 1765,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 140,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "JFK",
-      "destino": "MIA",
-      "distanciaKm": 1765,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 140,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "JFK",
-      "destino": "LAX",
-      "distanciaKm": 3975,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing737"
-      ],
-      "costoBase": 250,
-      "estanciaMinima": 150
     },
     {
       "origen": "LAX",
       "destino": "JFK",
       "distanciaKm": 3975,
       "aeronaves": [
-        "Boeing787",
-        "Boeing737"
+        "AvionComercial"
       ],
       "costoBase": 250,
       "estanciaMinima": 150
@@ -3324,8 +2979,7 @@
       "destino": "LHR",
       "distanciaKm": 5570,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 400,
       "estanciaMinima": 240
@@ -3335,21 +2989,9 @@
       "destino": "JFK",
       "distanciaKm": 5570,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 400,
-      "estanciaMinima": 240
-    },
-    {
-      "origen": "JFK",
-      "destino": "CDG",
-      "distanciaKm": 5835,
-      "aeronaves": [
-        "Boeing787",
-        "Airbus380"
-      ],
-      "costoBase": 420,
       "estanciaMinima": 240
     },
     {
@@ -3357,8 +2999,7 @@
       "destino": "JFK",
       "distanciaKm": 5835,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 420,
       "estanciaMinima": 240
@@ -3368,8 +3009,8 @@
       "destino": "LHR",
       "distanciaKm": 1260,
       "aeronaves": [
-        "Airbus320",
-        "Boeing737"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 100,
       "estanciaMinima": 90
@@ -3379,8 +3020,8 @@
       "destino": "MAD",
       "distanciaKm": 1260,
       "aeronaves": [
-        "Airbus320",
-        "Boeing737"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 100,
       "estanciaMinima": 90
@@ -3390,8 +3031,8 @@
       "destino": "CDG",
       "distanciaKm": 1050,
       "aeronaves": [
-        "Airbus320",
-        "Boeing737"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 90,
       "estanciaMinima": 90
@@ -3401,30 +3042,19 @@
       "destino": "MAD",
       "distanciaKm": 1050,
       "aeronaves": [
-        "Airbus320",
-        "Boeing737"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 90,
       "estanciaMinima": 90
-    },
-    {
-      "origen": "CDG",
-      "destino": "FRA",
-      "distanciaKm": 480,
-      "aeronaves": [
-        "Airbus320",
-        "Embraer190"
-      ],
-      "costoBase": 60,
-      "estanciaMinima": 60
     },
     {
       "origen": "FRA",
       "destino": "CDG",
       "distanciaKm": 480,
       "aeronaves": [
-        "Airbus320",
-        "Embraer190"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 60,
       "estanciaMinima": 60
@@ -3434,8 +3064,8 @@
       "destino": "AMS",
       "distanciaKm": 430,
       "aeronaves": [
-        "Airbus320",
-        "Embraer190"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 55,
       "estanciaMinima": 60
@@ -3445,52 +3075,28 @@
       "destino": "FRA",
       "distanciaKm": 430,
       "aeronaves": [
-        "Airbus320",
-        "Embraer190"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 55,
       "estanciaMinima": 60
-    },
-    {
-      "origen": "FRA",
-      "destino": "DXB",
-      "distanciaKm": 5060,
-      "aeronaves": [
-        "Boeing787",
-        "Airbus380"
-      ],
-      "costoBase": 370,
-      "estanciaMinima": 210
     },
     {
       "origen": "DXB",
       "destino": "FRA",
       "distanciaKm": 5060,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 370,
       "estanciaMinima": 210
-    },
-    {
-      "origen": "DXB",
-      "destino": "SIN",
-      "distanciaKm": 5840,
-      "aeronaves": [
-        "Boeing787",
-        "Airbus380"
-      ],
-      "costoBase": 380,
-      "estanciaMinima": 240
     },
     {
       "origen": "SIN",
       "destino": "DXB",
       "distanciaKm": 5840,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 380,
       "estanciaMinima": 240
@@ -3500,8 +3106,7 @@
       "destino": "BKK",
       "distanciaKm": 4920,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 340,
       "estanciaMinima": 210
@@ -3511,8 +3116,7 @@
       "destino": "DXB",
       "distanciaKm": 4920,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 340,
       "estanciaMinima": 210
@@ -3522,19 +3126,7 @@
       "destino": "DEL",
       "distanciaKm": 2190,
       "aeronaves": [
-        "Boeing787",
-        "Boeing767"
-      ],
-      "costoBase": 180,
-      "estanciaMinima": 120
-    },
-    {
-      "origen": "DEL",
-      "destino": "DXB",
-      "distanciaKm": 2190,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 180,
       "estanciaMinima": 120
@@ -3544,19 +3136,7 @@
       "destino": "CAI",
       "distanciaKm": 2410,
       "aeronaves": [
-        "Boeing787",
-        "Boeing767"
-      ],
-      "costoBase": 190,
-      "estanciaMinima": 120
-    },
-    {
-      "origen": "CAI",
-      "destino": "DXB",
-      "distanciaKm": 2410,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 190,
       "estanciaMinima": 120
@@ -3566,8 +3146,7 @@
       "destino": "IST",
       "distanciaKm": 2580,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 200,
       "estanciaMinima": 120
@@ -3577,21 +3156,9 @@
       "destino": "DXB",
       "distanciaKm": 2580,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 200,
-      "estanciaMinima": 120
-    },
-    {
-      "origen": "IST",
-      "destino": "LHR",
-      "distanciaKm": 2510,
-      "aeronaves": [
-        "Boeing787",
-        "Boeing737"
-      ],
-      "costoBase": 180,
       "estanciaMinima": 120
     },
     {
@@ -3599,8 +3166,7 @@
       "destino": "IST",
       "distanciaKm": 2510,
       "aeronaves": [
-        "Boeing787",
-        "Boeing737"
+        "AvionComercial"
       ],
       "costoBase": 180,
       "estanciaMinima": 120
@@ -3610,19 +3176,7 @@
       "destino": "NRT",
       "distanciaKm": 5320,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
-      ],
-      "costoBase": 360,
-      "estanciaMinima": 210
-    },
-    {
-      "origen": "NRT",
-      "destino": "SIN",
-      "distanciaKm": 5320,
-      "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 360,
       "estanciaMinima": 210
@@ -3632,8 +3186,8 @@
       "destino": "BKK",
       "distanciaKm": 1440,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 110,
       "estanciaMinima": 90
@@ -3643,8 +3197,8 @@
       "destino": "SIN",
       "distanciaKm": 1440,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 110,
       "estanciaMinima": 90
@@ -3654,8 +3208,8 @@
       "destino": "ICN",
       "distanciaKm": 1210,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 100,
       "estanciaMinima": 90
@@ -3665,52 +3219,28 @@
       "destino": "NRT",
       "distanciaKm": 1210,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 100,
       "estanciaMinima": 90
-    },
-    {
-      "origen": "NRT",
-      "destino": "PEK",
-      "distanciaKm": 2100,
-      "aeronaves": [
-        "Boeing737",
-        "Boeing787"
-      ],
-      "costoBase": 160,
-      "estanciaMinima": 120
     },
     {
       "origen": "PEK",
       "destino": "NRT",
       "distanciaKm": 2100,
       "aeronaves": [
-        "Boeing737",
-        "Boeing787"
+        "AvionComercial"
       ],
       "costoBase": 160,
       "estanciaMinima": 120
-    },
-    {
-      "origen": "NRT",
-      "destino": "LAX",
-      "distanciaKm": 8760,
-      "aeronaves": [
-        "Boeing787",
-        "Airbus380"
-      ],
-      "costoBase": 580,
-      "estanciaMinima": 240
     },
     {
       "origen": "LAX",
       "destino": "NRT",
       "distanciaKm": 8760,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 580,
       "estanciaMinima": 240
@@ -3720,8 +3250,7 @@
       "destino": "SYD",
       "distanciaKm": 7820,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 530,
       "estanciaMinima": 240
@@ -3731,8 +3260,7 @@
       "destino": "NRT",
       "distanciaKm": 7820,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 530,
       "estanciaMinima": 240
@@ -3742,19 +3270,7 @@
       "destino": "SIN",
       "distanciaKm": 6310,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
-      ],
-      "costoBase": 420,
-      "estanciaMinima": 240
-    },
-    {
-      "origen": "SIN",
-      "destino": "SYD",
-      "distanciaKm": 6310,
-      "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 420,
       "estanciaMinima": 240
@@ -3764,8 +3280,7 @@
       "destino": "NBO",
       "distanciaKm": 3410,
       "aeronaves": [
-        "Boeing787",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 270,
       "estanciaMinima": 150
@@ -3775,52 +3290,28 @@
       "destino": "JNB",
       "distanciaKm": 3410,
       "aeronaves": [
-        "Boeing787",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 270,
       "estanciaMinima": 150
-    },
-    {
-      "origen": "JNB",
-      "destino": "DXB",
-      "distanciaKm": 6400,
-      "aeronaves": [
-        "Boeing787",
-        "Airbus380"
-      ],
-      "costoBase": 430,
-      "estanciaMinima": 240
     },
     {
       "origen": "DXB",
       "destino": "JNB",
       "distanciaKm": 6400,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 430,
       "estanciaMinima": 240
-    },
-    {
-      "origen": "CAI",
-      "destino": "IST",
-      "distanciaKm": 1590,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 130,
-      "estanciaMinima": 90
     },
     {
       "origen": "IST",
       "destino": "CAI",
       "distanciaKm": 1590,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 130,
       "estanciaMinima": 90
@@ -3830,19 +3321,7 @@
       "destino": "MIA",
       "distanciaKm": 7645,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
-      ],
-      "costoBase": 490,
-      "estanciaMinima": 240
-    },
-    {
-      "origen": "MIA",
-      "destino": "GRU",
-      "distanciaKm": 7645,
-      "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 490,
       "estanciaMinima": 240
@@ -3852,8 +3331,7 @@
       "destino": "MAD",
       "distanciaKm": 7690,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 500,
       "estanciaMinima": 240
@@ -3863,52 +3341,29 @@
       "destino": "GRU",
       "distanciaKm": 7690,
       "aeronaves": [
-        "Boeing787",
-        "Airbus380"
+        "AvionComercial"
       ],
       "costoBase": 500,
       "estanciaMinima": 240
-    },
-    {
-      "origen": "CCS",
-      "destino": "BOG",
-      "distanciaKm": 1040,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 0,
-      "estanciaMinima": 90
     },
     {
       "origen": "BOG",
       "destino": "CCS",
       "distanciaKm": 1040,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
-      "costoBase": 0,
-      "estanciaMinima": 90
+      "costoBase": 95,
+      "estanciaMinima": 100
     },
     {
       "origen": "CCS",
       "destino": "PTY",
       "distanciaKm": 1060,
       "aeronaves": [
-        "Boeing737",
-        "Airbus320"
-      ],
-      "costoBase": 95,
-      "estanciaMinima": 90
-    },
-    {
-      "origen": "PTY",
-      "destino": "CCS",
-      "distanciaKm": 1060,
-      "aeronaves": [
-        "Boeing737",
-        "Airbus320"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 95,
       "estanciaMinima": 90
@@ -3918,8 +3373,8 @@
       "destino": "CTG",
       "distanciaKm": 480,
       "aeronaves": [
-        "Airbus320",
-        "ATR72"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 60,
       "estanciaMinima": 60
@@ -3929,33 +3384,127 @@
       "destino": "MDE",
       "distanciaKm": 480,
       "aeronaves": [
-        "Airbus320",
-        "ATR72"
+        "AvionRegional",
+        "AvionComercial"
       ],
       "costoBase": 60,
       "estanciaMinima": 60
-    },
-    {
-      "origen": "LIM",
-      "destino": "CCS",
-      "distanciaKm": 2930,
-      "aeronaves": [
-        "Boeing737",
-        "Boeing767"
-      ],
-      "costoBase": 220,
-      "estanciaMinima": 150
     },
     {
       "origen": "CCS",
       "destino": "LIM",
       "distanciaKm": 2930,
       "aeronaves": [
-        "Boeing737",
-        "Boeing767"
+        "AvionComercial"
       ],
       "costoBase": 220,
       "estanciaMinima": 150
+    },
+    {
+      "origen": "HND",
+      "destino": "DOH",
+      "distanciaKm": 8000,
+      "aeronaves": [
+        "AvionComercial"
+      ],
+      "costoBase": 500,
+      "estanciaMinima": 240
+    },
+    {
+      "origen": "DOH",
+      "destino": "YYZ",
+      "distanciaKm": 10700,
+      "aeronaves": [
+        "AvionComercial"
+      ],
+      "costoBase": 650,
+      "estanciaMinima": 300
+    },
+    {
+      "origen": "YYZ",
+      "destino": "BOG",
+      "distanciaKm": 4400,
+      "aeronaves": [
+        "AvionComercial"
+      ],
+      "costoBase": 300,
+      "estanciaMinima": 180
+    },
+    {
+      "origen": "AKL",
+      "destino": "HND",
+      "distanciaKm": 8800,
+      "aeronaves": [
+        "AvionComercial"
+      ],
+      "costoBase": 550,
+      "estanciaMinima": 300
+    },
+    {
+      "origen": "MVD",
+      "destino": "EZE",
+      "distanciaKm": 230,
+      "aeronaves": [
+        "Helice",
+        "AvionRegional"
+      ],
+      "costoBase": 120,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "EZE",
+      "destino": "MVD",
+      "distanciaKm": 230,
+      "aeronaves": [
+        "Helice",
+        "AvionRegional"
+      ],
+      "costoBase": 120,
+      "estanciaMinima": 60
+    },
+    {
+      "origen": "ASU",
+      "destino": "GRU",
+      "distanciaKm": 1130,
+      "aeronaves": [
+        "AvionRegional",
+        "AvionComercial"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "GRU",
+      "destino": "ASU",
+      "distanciaKm": 1130,
+      "aeronaves": [
+        "AvionRegional",
+        "AvionComercial"
+      ],
+      "costoBase": 180,
+      "estanciaMinima": 90
+    },
+    {
+      "origen": "CUZ",
+      "destino": "LIM",
+      "distanciaKm": 570,
+      "aeronaves": [
+        "AvionRegional",
+        "AvionComercial"
+      ],
+      "costoBase": 140,
+      "estanciaMinima": 75
+    },
+    {
+      "origen": "LIM",
+      "destino": "CUZ",
+      "distanciaKm": 570,
+      "aeronaves": [
+        "AvionRegional",
+        "AvionComercial"
+      ],
+      "costoBase": 140,
+      "estanciaMinima": 75
     }
   ]
 }

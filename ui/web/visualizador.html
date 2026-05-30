@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/d3-styles.css">
 </head>
 <body>
 
@@ -26,8 +27,8 @@
         <a href="#features" class="nav-cta">Ver Proyecto</a>
     </nav>
 
-    <!-- Graph Canvas -->
-    <canvas id="graph-canvas"></canvas>
+    <!-- Graph Container (D3 SVG) -->
+    <div id="graph-container"></div>
 
     <!-- Legend overlay with toggle button -->
     <div id="legend">
@@ -108,10 +109,6 @@
                 <span class="label">Aviones</span>
                 <div class="aircraft-list"></div>
             </div>
-            <div class="panel-row">
-                <span class="label">Aerolíneas</span>
-                <div class="airlines-list"></div>
-            </div>
         </div>
     </div>
 
@@ -135,12 +132,9 @@
         </div>
     </footer>
 
-    <script src="js/app.js" defer></script>
-    <script src="js/features.js" defer></script>
-    <script src="js/config.js"></script>
-    <script src="js/graph-data.js"></script>
-    <script src="js/graph-renderer.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/events.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="js/d3-data.js"></script>
+    <script src="js/d3-visualizer.js"></script>
+    <script src="js/visualizador-panel.js"></script>
 </body>
 </html>

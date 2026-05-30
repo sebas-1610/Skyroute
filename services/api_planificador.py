@@ -92,7 +92,7 @@ def planificar_ruta():
 
         # Nuevos campos (contrato extendido)
         criterios = data.get("criterios") or []  # list of 'distancia'|'tiempo'|'costo'
-        incluir_secundarios = data.get("incluir_secundarios", True)
+        incluir_secundarios = data.get("incluir_secundarios", data.get("incluirSecundarios", True))
         transportes = data.get("transportes", None)  # list of aircraft types to prefer
 
         # Backwards-compatible validation: if no criterios specified, use legacy modo
@@ -102,7 +102,7 @@ def planificar_ruta():
             if not isinstance(criterios, list) or any(c not in allowed for c in criterios):
                 raise ValidationError("Field 'criterios' must be a list with any of: distancia, tiempo, costo")
             # Ensure airports and routes provided
-            _validate_request(origen, destino, presupuesto, airports, routes, modo, tiempo)
+            _validate_request(origen, destino, presupuesto, airports, routes, modo, tiempo, skip_mode_check=True)
 
             results = {}
             for criterio in criterios:
@@ -116,7 +116,7 @@ def planificar_ruta():
                     else:  # distancia
                         # Map distancia to budget-mode where costoKm == 1, so cost == distance
                         call_modo = "budget"
-                        limite = presupuesto
+                        limite = data.get("distancia-max") or presupuesto
 
                     # Merge configuracion overrides for this run
                     run_config = dict(configuracion or {})
@@ -193,6 +193,7 @@ def _validate_request(
     routes: list,
     modo: str,
     tiempo: float | None,
+    skip_mode_check: bool = False,
 ) -> None:
     """
     Validate required fields in the request. Raises exceptions if validation fails.
@@ -217,16 +218,17 @@ def _validate_request(
             "Fields 'origen' and 'destino' must be different airports"
         )
 
-    if modo == "budget":
-        if not presupuesto:
-            raise ValidationError("Missing required field: presupuesto")
-        if not isinstance(presupuesto, (int, float)) or presupuesto < 0:
-            raise ValidationError("Field 'presupuesto' must be a non-negative number")
-    elif modo == "time":
-        if not tiempo:
-            raise ValidationError("Missing required field: tiempo")
-        if not isinstance(tiempo, (int, float)) or tiempo <= 0:
-            raise ValidationError("Field 'tiempo' must be a positive number")
+    if not skip_mode_check:
+        if modo == "budget":
+            if not presupuesto:
+                raise ValidationError("Missing required field: presupuesto")
+            if not isinstance(presupuesto, (int, float)) or presupuesto < 0:
+                raise ValidationError("Field 'presupuesto' must be a non-negative number")
+        elif modo == "time":
+            if not tiempo:
+                raise ValidationError("Missing required field: tiempo")
+            if not isinstance(tiempo, (int, float)) or tiempo <= 0:
+                raise ValidationError("Field 'tiempo' must be a positive number")
 
     if not airports:
         raise ValidationError("Missing required field: airports (empty list)")

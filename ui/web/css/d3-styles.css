@@ -1,0 +1,137 @@
+/* ─── D3 VISUALIZER STYLES ────────────────────────────── */
+
+#graph-container {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    z-index: 50;
+}
+
+#graph-container:active {
+    cursor: grabbing;
+}
+
+/* ─── NODES ────────────────────────────────────────────── */
+
+.node-group {
+    cursor: pointer;
+}
+
+.node-circle {
+    stroke-width: 2;
+    transition: r 200ms ease, stroke 200ms ease, fill 200ms ease;
+}
+
+.node-group:hover .node-circle {
+    filter: brightness(1.25);
+}
+
+.node-label {
+    font-family: 'JetBrains Mono', monospace;
+    fill: #ffffff;
+    pointer-events: none;
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+.node-group.dimmed {
+    opacity: 0.15;
+    transition: opacity 300ms ease;
+}
+
+.node-group:not(.dimmed) {
+    transition: opacity 300ms ease;
+}
+
+/* ─── LINKS ────────────────────────────────────────────── */
+
+.link-line {
+    fill: none;
+    stroke: rgba(180, 160, 110, 0.45);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+}
+
+.link-line.subsidized {
+    stroke: #d4634a;
+    stroke-dasharray: 6, 4;
+}
+
+.link-line.bidirectional {
+    stroke: rgba(180, 160, 110, 0.6);
+    stroke-width: 2;
+}
+
+.link-line.outgoing {
+    stroke: #ff6b6b;
+    stroke-width: 2.5;
+}
+
+.link-line.incoming {
+    stroke: #4ecdc4;
+    stroke-width: 2.5;
+}
+
+.link-line.dimmed {
+    opacity: 0.15;
+    transition: opacity 300ms ease;
+}
+
+.link-line:not(.dimmed) {
+    transition: opacity 300ms ease, stroke 200ms ease, stroke-width 200ms ease;
+}
+
+/* ─── EDGE LABELS ──────────────────────────────────────── */
+
+.edge-label-group {
+    pointer-events: none;
+}
+
+.edge-label-bg {
+    fill: #1a1f2e;
+    stroke: #333333;
+    stroke-width: 1;
+}
+
+.edge-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    fill: #e8dfc0;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+}
+
+.edge-aircraft {
+    font-size: 8px;
+    fill: #2abfa0;
+}
+
+.edge-label-group.dimmed {
+    opacity: 0.15;
+}
+
+/* ─── EMPTY STATE ──────────────────────────────────────── */
+
+.empty-icon {
+    fill: #d4870a;
+    opacity: 0.15;
+}
+
+.empty-title {
+    font-family: 'Syne', system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    fill: #e8dfc0;
+    text-anchor: middle;
+}
+
+.empty-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    fill: #8b949e;
+    text-anchor: middle;
+}

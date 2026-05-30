@@ -1,196 +1,280 @@
-let nodos = [], aristas = [], configuracion = {};
+/* ─────────────────────────────────────────────────────────────────
+   planificador.js
+   R2 — Planificación básica: criterios múltiples, filtro de hubs,
+        restricciones condicionales y render multi-resultado.
+   ───────────────────────────────────────────────────────────────── */
 
-// Toggle entre modos
-document.querySelectorAll('input[name="search-mode"]').forEach(radio => {
-    radio.addEventListener('change', function() {
-        if (this.value === 'budget') {
-            document.getElementById('budget-group').style.display = 'block';
-            document.getElementById('time-group').style.display = 'none';
-            document.getElementById('presupuesto').removeAttribute('required');
-            document.getElementById('tiempo').removeAttribute('required');
-        } else {
-            document.getElementById('budget-group').style.display = 'none';
-            document.getElementById('time-group').style.display = 'block';
-            document.getElementById('presupuesto').removeAttribute('required');
-            document.getElementById('tiempo').removeAttribute('required');
-        }
-    });
-});
+'use strict';
 
-document.getElementById('json-file').addEventListener('change', function(e) {
+// ── State ────────────────────────────────────────────────────────
+let nodos         = [];
+let aristas       = [];
+let configuracion = {};
+
+// ── Criteria → constraint-input mapping ─────────────────────────
+const CRITERIO_META = {
+    costo:     { group: 'budget-group',   input: 'presupuesto',   label: 'Costo USD',  unit: 'USD', icon: '💲' },
+    tiempo:    { group: 'time-group',     input: 'tiempo',        label: 'Tiempo',     unit: 'h',   icon: '⏱' },
+    distancia: { group: 'distance-group', input: 'distancia-max', label: 'Distancia',  unit: 'km',  icon: '📏' },
+};
+
+// ── JSON load ────────────────────────────────────────────────────
+document.getElementById('json-file').addEventListener('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = function(ev) {
+    reader.onload = function (ev) {
         try {
-            const json = JSON.parse(ev.target.result);
-            nodos         = json.nodos        || [];
-            aristas       = json.aristas       || [];
+            const json    = JSON.parse(ev.target.result);
+            nodos         = json.nodos   || json.aeropuertos || [];
+            aristas       = json.aristas || json.rutas       || [];
             configuracion = json.configuracion || {};
             populateSelects();
-            populateTransportOptions();
             document.getElementById('file-label').classList.add('loaded');
-            function renderResults(result, mode, presupuesto, tiempo) {
-                const area = document.getElementById('results-area');
-                area.innerHTML = '';
+            document.getElementById('file-label-text').textContent = '✓ ' + file.name;
+            document.getElementById('file-name').textContent =
+                nodos.length + ' aeropuertos · ' + aristas.length + ' rutas cargadas';
+        } catch (err) {
+            ErrorHandler.handle('PARSING_ERROR', err.message, 'planificador.js:36');
+        }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+});
 
-                const totalDist = result.segments.reduce((s, seg) => s + (seg.distancia || 0), 0);
-                const escalas   = Math.max(0, result.destinos_visitados - 1);
+// ── Populate origin/destination selects ─────────────────────────
+function populateSelects() {
+    ['origen', 'destino'].forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '<option value="">Seleccionar...</option>';
+        nodos.forEach(a => {
+            const label = a.id +
+                (a.ciudad ? ' — ' + a.ciudad + (a.pais ? ', ' + a.pais : '') : '') +
+                (a.esHub  ? ' ★' : '');
+            sel.appendChild(new Option(label, a.id));
+        });
+    });
+}
 
-                // ── Route path HTML
-                const lastIdx  = result.path.length - 1;
-                const pathHtml = result.path.map((code, i) => {
-                    const ap      = nodos.find(a => a.id === code);
-                    const city    = ap ? (ap.ciudad || '') : '';
-                    const cls     = i === 0 ? 'origin' : i === lastIdx ? 'final' : '';
-                    const tooltip = i === 0 ? 'Origen' : i === lastIdx ? 'Destino final' : 'Escala';
-                    const conn    = i < lastIdx ? `<div class="route-connector"><span class="route-arrow">→</span></div>` : '';
-                    return `<div class="route-node">
-                                <div class="route-node-code ${cls}" data-tooltip="${tooltip}">${code}</div>
-                                ${city ? `<div class="route-node-label">${city}</div>` : ''}
-                            </div>${conn}`;
-                }).join('');
+// ── Criteria checkboxes → show/hide constraint inputs ────────────
+document.querySelectorAll('input[name="criterio"]').forEach(cb => {
+    cb.addEventListener('change', syncConstraintVisibility);
+});
 
-                // ── Segment rows
-                const rows = result.segments.map((seg, i) => `
-                    <tr>
-                        <td><span class="seg-num">${i + 1}.</span><span class="seg-route">
-                            <span class="seg-iata">${seg.origen}</span>
-                            <span class="seg-arrow">→</span>
-                            <span class="seg-iata">${seg.destino}</span>
-                        </span></td>
-                        <td><span class="seg-aircraft">${seg.aeronave}</span></td>
-                        <td>${Math.round(seg.distancia).toLocaleString()} km</td>
-                        <td>$${seg.costo.toFixed(2)}</td>
-                        <td class="seg-accumulated">$${seg.costo_acumulado.toFixed(2)}</td>
-                    </tr>`).join('');
+function syncConstraintVisibility() {
+    const checked = getCheckedCriteria();
+    const wrapper = document.getElementById('constraints-wrapper');
 
-                // comparación estática por tramo (sin controles)
-                const comparisonCards = result.segments.map((seg, i) => {
-                    const distance = Number(seg.distancia || 0);
-                    const options = getRouteAircraftOptions(seg.origen, seg.destino, distance, seg.aeronave);
-                    const optionsRows = options.map(opt => `
-                        <tr class="${opt.selected ? 'route-option-selected' : ''}">
-                            <td>${opt.name}${opt.selected ? ' <span class="route-option-tag">Elegida</span>' : ''}</td>
-                            <td>$${opt.cost.toFixed(2)}</td>
-                            <td>${opt.time.toFixed(1)} min</td>
-                        </tr>`).join('');
+    wrapper.style.display = checked.length ? 'flex' : 'none';
 
-                    return `
-                        <article class="route-option-card">
-                            <div class="route-option-head">
-                                <strong>Tramo ${i + 1}: ${seg.origen} → ${seg.destino}</strong>
-                                <span class="rbadge ${options.some(opt => opt.selected) ? 'rbadge-teal' : 'rbadge-muted'}">${distance.toLocaleString()} km</span>
-                            </div>
-                            <p class="budget-hint">Comparación de aeronaves disponibles para este tramo${options[0]?.subsidized ? ' · Ruta subsidiada' : ''}.</p>
-                            <table class="seg-table route-option-table">
-                                <thead>
-                                    <tr>
-                                        <th>Aeronave</th>
-                                        <th>Costo tramo</th>
-                                        <th>Tiempo tramo</th>
-                                    </tr>
-                                </thead>
-                                <tbody>${optionsRows}</tbody>
-                            </table>
-                        </article>`;
-                }).join('');
+    Object.entries(CRITERIO_META).forEach(([key, meta]) => {
+        document.getElementById(meta.group).style.display =
+            checked.includes(key) ? 'block' : 'none';
+    });
 
-                // ── Single card
-                area.innerHTML = `
-                    <div class="result-card">
+    const hint = document.getElementById('criteria-hint');
+    if (checked.length === 0) {
+        hint.textContent = 'Selecciona al menos un criterio. Con varios se calculará una ruta por cada uno.';
+    } else if (checked.length === 1) {
+        hint.textContent = '1 criterio seleccionado → 1 ruta calculada.';
+    } else {
+        hint.textContent = checked.length + ' criterios → se calculará una ruta por cada uno.';
+    }
+}
 
-                        <div class="rc-header">
-                            <span class="rc-title">Ruta óptima encontrada</span>
-                            <div class="rc-badges">
-                                <span class="rbadge rbadge-amber">${result.destinos_visitados} aeropuertos</span>
-                                <span class="rbadge rbadge-teal">${escalas} escalas</span>
-                                <span class="rbadge rbadge-muted">$${result.total_costo.toFixed(2)} USD</span>
-                            </div>
-                        </div>
+// ── Secondary airports toggle ────────────────────────────────────
+document.getElementById('toggle-secundarios').addEventListener('click', function () {
+    const pressed = this.getAttribute('aria-pressed') === 'true';
+    this.setAttribute('aria-pressed', String(!pressed));
+});
 
-                        <div class="rc-stats">
-                            <div class="stat-cell accent">
-                                <span class="s-label">Aeropuertos visitados</span>
-                                <span class="s-value">${result.destinos_visitados}</span>
-                            </div>
-                            <div class="stat-cell">
-                                <span class="s-label">Escalas intermedias</span>
-                                <span class="s-value">${escalas}</span>
-                            </div>
-                            <div class="stat-cell teal">
-                                <span class="s-label">Distancia total</span>
-                                <span class="s-value">${Math.round(totalDist).toLocaleString()} km</span>
-                            </div>
-                            <div class="stat-cell">
-                                <span class="s-label">Costo total</span>
-                                <span class="s-value">$${result.total_costo.toFixed(2)}</span>
-                            </div>
-                            <div class="stat-cell">
-                                <span class="s-label">Tramos de vuelo</span>
-                                <span class="s-value">${result.segments.length}</span>
-                            </div>
-                            <div class="stat-cell coral">
-                                <span class="s-label">${mode === 'budget' ? 'Presupuesto restante' : 'Tiempo límite'}</span>
-                                <span class="s-value">${mode === 'budget'
-                                    ? '$' + (presupuesto - result.total_costo).toFixed(2)
-                                    : (result.tiempo_total != null ? result.tiempo_total + ' h' : tiempo + ' h (límite)')
-                                }</span>
-                            </div>
-                        </div>
+function incluirSecundarios() {
+    return document.getElementById('toggle-secundarios').getAttribute('aria-pressed') === 'true';
+}
 
-                        <div class="rc-section">
-                            <div class="rc-section-label">Secuencia de vuelos</div>
-                            <div class="route-path">${pathHtml}</div>
-                        </div>
+// ── Helpers ──────────────────────────────────────────────────────
+function getCheckedCriteria() {
+    return [...document.querySelectorAll('input[name="criterio"]:checked')]
+        .map(cb => cb.value);
+}
 
-                        <div class="rc-section">
-                            <div class="rc-section-label">Detalle por tramo</div>
-                            <table class="seg-table">
-                                <thead>
-                                    <tr>
-                                        <th>Tramo</th>
-                                        <th>Aeronave</th>
-                                        <th>Distancia</th>
-                                        <th>Costo tramo</th>
-                                        <th>Acumulado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>${rows}</tbody>
-                            </table>
-                        </div>
+function getConstraintValue(criterio) {
+    const inputId = CRITERIO_META[criterio].input;
+    const val     = parseFloat(document.getElementById(inputId).value);
+    return isNaN(val) || val <= 0 ? null : val;
+}
 
-                        <div class="rc-section">
-                            <div class="rc-section-label">Comparación de aeronaves por tramo</div>
-                            <div class="route-options-grid">${comparisonCards}</div>
-                        </div>
+// ── Form submit ──────────────────────────────────────────────────
+document.getElementById('route-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-                    </div>`;
-            }
-        routeSelectionState.tiempo = tiempo;
+    const origen    = document.getElementById('origen').value;
+    const destino   = document.getElementById('destino').value;
+    const criterios = getCheckedCriteria();
+
+    if (!nodos.length) {
+        ErrorHandler.handle('FILE_LOAD_ERROR', 'Carga un archivo JSON primero.', 'planificador.js:100');
+        return;
+    }
+    if (!origen) {
+        ErrorHandler.handle('VALIDATION_ERROR', 'Selecciona un aeropuerto de origen.', 'planificador.js:104');
+        return;
+    }
+    if (!destino) {
+        ErrorHandler.handle('VALIDATION_ERROR', 'Selecciona un aeropuerto de destino final.', 'planificador.js:108');
+        return;
+    }
+    if (origen === destino) {
+        ErrorHandler.handle('VALIDATION_ERROR', 'El origen y el destino deben ser distintos.', 'planificador.js:112');
+        return;
+    }
+    if (criterios.length === 0) {
+        ErrorHandler.handle('VALIDATION_ERROR', 'Selecciona al menos un criterio de optimización.', 'planificador.js:116');
+        return;
     }
 
-    const view = calculateRouteView(result);
+    for (const criterio of criterios) {
+        if (getConstraintValue(criterio) === null) {
+            const label = CRITERIO_META[criterio].label;
+            ErrorHandler.handle('VALIDATION_ERROR', `Ingresa un valor válido para la restricción de ${label}.`, 'planificador.js:122');
+            return;
+        }
+    }
 
-    const totalDist = view.totalDist;
-    const escalas   = Math.max(0, result.destinos_visitados - 1);
+    // Build single request with criterios array
+    const body = {
+        origen,
+        destino,
+        criterios,
+        airports: nodos,
+        routes: aristas,
+        configuracion,
+        incluir_secundarios: incluirSecundarios(),
+    };
 
-    // ── Route path HTML
+    // Attach constraint value for each selected criterio
+    criterios.forEach(criterio => {
+        body[CRITERIO_META[criterio].input] = getConstraintValue(criterio);
+    });
+
+    setLoading(true);
+    document.getElementById('results-area').innerHTML = '';
+
+    try {
+        const data = await fetchPlan(body);
+
+        // Transform multi-criteria response → renderMultiResults format
+        const items = criterios.map(criterio => {
+            const r = data.results[criterio];
+            if (r && r.success) {
+                return { criterio, resultado: r, error: null };
+            }
+            const errMsg = r?.error?.message || r?.message || 'Sin resultado.';
+            return { criterio, resultado: null, error: { message: errMsg } };
+        });
+
+        renderMultiResults(items);
+    } catch (err) {
+        // Network error or top-level failure → show error for all criterios
+        renderMultiResults(
+            criterios.map(c => ({ criterio: c, resultado: null, error: err }))
+        );
+    } finally {
+        setLoading(false);
+    }
+});
+
+// ── Single fetch helper ──────────────────────────────────────────
+async function fetchPlan(body) {
+    const res = await fetch('/api/planificar', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+        let errBody = null;
+        try { errBody = await res.json(); } catch (_) { /* not JSON */ }
+        const msg = (errBody && errBody.message) ? errBody.message : `HTTP ${res.status}`;
+        throw new Error(msg);
+    }
+
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Error en el servidor.');
+    return data;
+}
+
+// ── Render multiple result cards ─────────────────────────────────
+function renderMultiResults(items) {
+    const area = document.getElementById('results-area');
+    area.innerHTML = '';
+
+    items.forEach(({ criterio, resultado, error }) => {
+        area.appendChild(
+            (error || !resultado)
+                ? buildErrorCard(criterio, error ? error.message : 'Sin resultado.')
+                : buildResultCard(criterio, resultado)
+        );
+    });
+}
+
+function buildErrorCard(criterio, message) {
+    const meta = CRITERIO_META[criterio];
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+        <div class="rc-header">
+            <span class="rc-title">${meta.icon} Criterio: ${meta.label}</span>
+            <div class="rc-badges">
+                <span class="rbadge" style="background:oklch(68% 0.17 25 / 0.12);color:var(--coral,#d4634a)">Sin ruta</span>
+            </div>
+        </div>
+        <p style="font-size:13px;color:var(--text-muted);padding:8px 0;">${message}</p>`;
+    return card;
+}
+
+function calcSegmentCostUSD(seg) {
+    const ac = configuracion?.aeronaves?.[seg.aeronave];
+    return seg.distancia * (ac?.costoKm || 0.18);
+}
+
+function calcSegmentTimeHours(seg) {
+    const ac = configuracion?.aeronaves?.[seg.aeronave];
+    return seg.distancia * (ac?.tiempoKm || 0.7) / 60;
+}
+
+function buildResultCard(criterio, result) {
+    const meta       = CRITERIO_META[criterio];
+    const totalDist  = result.segments.reduce((s, seg) => s + (seg.distancia || 0), 0);
+    const escalas    = Math.max(0, result.destinos_visitados - 1);
+    const constraint = getConstraintValue(criterio);
+
+    const totalCostUSD = result.segments.reduce((s, seg) => s + calcSegmentCostUSD(seg), 0);
+    const totalTimeH   = result.segments.reduce((s, seg) => s + calcSegmentTimeHours(seg), 0);
+
+    const isCost = criterio === 'costo';
+    const isDist = criterio === 'distancia';
+    const isTime = criterio === 'tiempo';
+
+    // Route path nodes
     const lastIdx  = result.path.length - 1;
     const pathHtml = result.path.map((code, i) => {
         const ap      = nodos.find(a => a.id === code);
         const city    = ap ? (ap.ciudad || '') : '';
         const cls     = i === 0 ? 'origin' : i === lastIdx ? 'final' : '';
         const tooltip = i === 0 ? 'Origen' : i === lastIdx ? 'Destino final' : 'Escala';
-        const conn    = i < lastIdx ? `<div class="route-connector"><span class="route-arrow">→</span></div>` : '';
+        const conn    = i < lastIdx
+            ? `<div class="route-connector"><span class="route-arrow">→</span></div>`
+            : '';
         return `<div class="route-node">
                     <div class="route-node-code ${cls}" data-tooltip="${tooltip}">${code}</div>
                     ${city ? `<div class="route-node-label">${city}</div>` : ''}
                 </div>${conn}`;
     }).join('');
 
-    // ── Segment rows
-    const rows = view.segments.map((seg, i) => `
+    // Segment table rows
+    const rows = result.segments.map((seg, i) => `
         <tr>
             <td><span class="seg-num">${i + 1}.</span><span class="seg-route">
                 <span class="seg-iata">${seg.origen}</span>
@@ -199,159 +283,97 @@ document.getElementById('json-file').addEventListener('change', function(e) {
             </span></td>
             <td><span class="seg-aircraft">${seg.aeronave}</span></td>
             <td>${Math.round(seg.distancia).toLocaleString()} km</td>
-            <td>$${seg.costo.toFixed(2)}</td>
-            <td class="seg-accumulated">$${seg.costo_acumulado.toFixed(2)}</td>
+            <td>$${calcSegmentCostUSD(seg).toFixed(2)}</td>
+            <td>${calcSegmentTimeHours(seg).toFixed(1)} h</td>
         </tr>`).join('');
 
-    const comparisonCards = result.segments.map((seg, i) => {
-        const routeSegment = view.segments[i];
-        const distance = Number(seg.distancia || 0);
-        const choices = getRouteAircraftChoices(seg.origen, seg.destino);
-        const route = aristas.find(a => a.origen === seg.origen && a.destino === seg.destino) || {};
-        const subsidized = Number(route.costoBase || 0) === 0;
-        const currentAircraft = routeSegment?.aeronave || seg.aeronave;
-        const options = choices.map(name => {
-            const aircraft = getAircraftData(name);
-            return {
-                name,
-                cost: subsidized ? 0 : distance * Number(aircraft.costoKm || 0),
-                time: distance * Number(aircraft.tiempoKm || 0),
-                selected: name === currentAircraft,
-                subsidized
-            };
-        });
-        const optionsRows = options.map(opt => `
-            <tr class="${opt.selected ? 'route-option-selected' : ''}">
-                <td>${opt.name}${opt.selected ? ' <span class="route-option-tag">Elegida</span>' : ''}</td>
-                <td>$${opt.cost.toFixed(2)}</td>
-                <td>${opt.time.toFixed(1)} min</td>
-            </tr>`).join('');
+    // Bottom-right stat depends on criterion
+    let remainLabel, remainValue;
+    if (isCost) {
+        remainLabel = 'Presupuesto restante';
+        remainValue = '$' + (constraint - totalCostUSD).toFixed(2);
+    } else if (isTime) {
+        remainLabel = 'Tiempo límite';
+        remainValue = totalTimeH.toFixed(1) + ' h / ' + constraint + ' h';
+    } else {
+        remainLabel = 'Distancia límite';
+        remainValue = Math.round(totalDist).toLocaleString() + ' / ' + constraint.toLocaleString() + ' km';
+    }
 
-        return `
-            <article class="route-option-card">
-                <div class="route-option-head">
-                    <strong>Tramo ${i + 1}: ${seg.origen} → ${seg.destino}</strong>
-                    <span class="rbadge ${options.some(opt => opt.selected) ? 'rbadge-teal' : 'rbadge-muted'}">${distance.toLocaleString()} km</span>
-                </div>
-                <p class="budget-hint">Comparación de aeronaves disponibles para este tramo${options[0]?.subsidized ? ' · Ruta subsidiada' : ''}.</p>
-                ${renderRouteAircraftSelector(routeSegment || seg)}
-                <table class="seg-table route-option-table">
-                    <thead>
-                        <tr>
-                            <th>Aeronave</th>
-                            <th>Costo tramo</th>
-                            <th>Tiempo tramo</th>
-                        </tr>
-                    </thead>
-                    <tbody>${optionsRows}</tbody>
-                </table>
-            </article>`;
-    }).join('');
+    // Badge value with correct unit for the criterion
+    const badgeValue = isCost
+        ? `$${totalCostUSD.toFixed(2)} USD`
+        : isDist
+            ? `${Math.round(totalDist).toLocaleString()} km`
+            : `${totalTimeH.toFixed(1)} h`;
 
-    // ── Single card
-    area.innerHTML = `
-        <div class="result-card">
-
-            <div class="rc-header">
-                <span class="rc-title">Ruta óptima encontrada</span>
-                <div class="rc-badges">
-                    <span class="rbadge rbadge-amber">${result.destinos_visitados} aeropuertos</span>
-                    <span class="rbadge rbadge-teal">${escalas} escalas</span>
-                    <span class="rbadge rbadge-muted">$${view.totalCost.toFixed(2)} USD</span>
-                </div>
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+        <div class="rc-header">
+            <span class="rc-title">${meta.icon} Criterio: ${meta.label}</span>
+            <div class="rc-badges">
+                <span class="rbadge rbadge-amber">${result.destinos_visitados} aeropuertos</span>
+                <span class="rbadge rbadge-teal">${escalas} escalas</span>
+                <span class="rbadge rbadge-muted">${badgeValue}</span>
             </div>
+        </div>
 
-            <div class="rc-stats">
-                <div class="stat-cell accent">
-                    <span class="s-label">Aeropuertos visitados</span>
-                    <span class="s-value">${result.destinos_visitados}</span>
-                </div>
-                <div class="stat-cell">
-                    <span class="s-label">Escalas intermedias</span>
-                    <span class="s-value">${escalas}</span>
-                </div>
-                <div class="stat-cell teal">
-                    <span class="s-label">Distancia total</span>
-                    <span class="s-value">${Math.round(totalDist).toLocaleString()} km</span>
-                </div>
-                <div class="stat-cell">
-                    <span class="s-label">Costo total</span>
-                    <span class="s-value">$${view.totalCost.toFixed(2)}</span>
-                </div>
-                <div class="stat-cell">
-                    <span class="s-label">Tramos de vuelo</span>
-                    <span class="s-value">${result.segments.length}</span>
-                </div>
-                <div class="stat-cell coral">
-                    <span class="s-label">${mode === 'budget' ? 'Presupuesto restante' : 'Tiempo límite'}</span>
-                    <span class="s-value">${mode === 'budget'
-                        ? '$' + (presupuesto - result.total_costo).toFixed(2)
-                        : (result.tiempo_total != null ? result.tiempo_total + ' h' : tiempo + ' h (límite)')
-                    }</span>
-                </div>
+        <div class="rc-stats">
+            <div class="stat-cell accent">
+                <span class="s-label">Aeropuertos visitados</span>
+                <span class="s-value">${result.destinos_visitados}</span>
             </div>
-
-            <div class="rc-section">
-                <div class="rc-section-label">Secuencia de vuelos</div>
-                <div class="route-path">${pathHtml}</div>
+            <div class="stat-cell">
+                <span class="s-label">Escalas intermedias</span>
+                <span class="s-value">${escalas}</span>
             </div>
-
-            <div class="rc-section">
-                <div class="rc-section-label">Detalle por tramo</div>
-                <table class="seg-table">
-                    <thead>
-                        <tr>
-                            <th>Tramo</th>
-                            <th>Aeronave</th>
-                            <th>Distancia</th>
-                            <th>Costo tramo</th>
-                            <th>Acumulado</th>
-                        </tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>
+            <div class="stat-cell ${isCost ? 'highlighted' : ''}">
+                <span class="s-label">Costo total</span>
+                <span class="s-value">$${totalCostUSD.toFixed(2)}</span>
             </div>
-
-            <div class="rc-section">
-                <div class="rc-section-label">Comparación de aeronaves por tramo</div>
-                <div class="route-options-grid">${comparisonCards}</div>
+            <div class="stat-cell ${isDist ? 'highlighted' : ''}">
+                <span class="s-label">Distancia total</span>
+                <span class="s-value">${Math.round(totalDist).toLocaleString()} km</span>
             </div>
-
-            <div class="rc-section">
-                <div class="rc-section-label">Ruta recalculada con selección actual</div>
-                <div class="rc-stats route-recalc-stats">
-                    <div class="stat-cell accent">
-                        <span class="s-label">Costo recalculado</span>
-                        <span class="s-value">$${view.totalCost.toFixed(2)}</span>
-                    </div>
-                    <div class="stat-cell teal">
-                        <span class="s-label">Tiempo recalculado</span>
-                        <span class="s-value">${view.totalTimeHours.toFixed(2)} h</span>
-                    </div>
-                    <div class="stat-cell">
-                        <span class="s-label">Selecciones activas</span>
-                        <span class="s-value">${view.segments.length}</span>
-                    </div>
-                    <div class="stat-cell coral">
-                        <span class="s-label">Presupuesto restante</span>
-                        <span class="s-value">${mode === 'budget'
-                            ? '$' + (presupuesto - view.totalCost).toFixed(2)
-                            : (result.tiempo_total != null ? result.tiempo_total + ' h' : tiempo + ' h (límite)')
-                        }</span>
-                    </div>
-                </div>
+            <div class="stat-cell ${isTime ? 'highlighted' : ''}">
+                <span class="s-label">Tiempo total</span>
+                <span class="s-value">${totalTimeH.toFixed(1)} h</span>
             </div>
+            <div class="stat-cell coral">
+                <span class="s-label">${remainLabel}</span>
+                <span class="s-value">${remainValue}</span>
+            </div>
+        </div>
 
+        <div class="rc-section">
+            <div class="rc-section-label">Secuencia de vuelos</div>
+            <div class="route-path">${pathHtml}</div>
+        </div>
+
+        <div class="rc-section">
+            <div class="rc-section-label">Detalle por tramo</div>
+            <table class="seg-table">
+                <thead>
+                    <tr>
+                        <th>Tramo</th>
+                        <th>Aeronave</th>
+                        <th>Distancia</th>
+                        <th>Costo</th>
+                        <th>Tiempo</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
         </div>`;
-
-    area.querySelectorAll('.route-apply-btn').forEach(btn => {
-        btn.addEventListener('click', () => applySegmentAircraftSelection(btn.getAttribute('data-seg-key')));
-    });
+    return card;
 }
 
+// ── Loading state ────────────────────────────────────────────────
 function setLoading(on) {
     const btn = document.getElementById('submit-btn');
     btn.disabled = on;
     btn.classList.toggle('loading', on);
-    btn.querySelector('.btn-text').textContent = on ? 'Calculando...' : 'Calcular ruta óptima';
+    btn.querySelector('.btn-text').textContent =
+        on ? 'Calculando...' : 'Calcular ruta óptima';
 }
