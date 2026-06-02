@@ -645,14 +645,14 @@ margin: 0 clamp(24px, 5vw, 64px);
 
 .form-group { margin-bottom: 18px; }
 .form-group label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 7px; font-family: var(--font-mono); }
-.form-group select, .form-group input[type="number"] {
+.form-group select, .form-group input[type="number"], .form-group input[type="text"], .form-group textarea {
     width: 100%; padding: 11px 14px;
     background: var(--bg); border: 1px solid var(--border);
     border-radius: var(--radius-sm); color: var(--text);
     font-family: var(--font-mono); font-size: 13px;
     transition: border-color 200ms, box-shadow 200ms; appearance: none;
 }
-.form-group select:focus, .form-group input[type="number"]:focus {
+.form-group select:focus, .form-group input[type="number"]:focus, .form-group input[type="text"]:focus, .form-group textarea:focus {
     outline: none; border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-glow);
 }
 .form-group input::placeholder { color: var(--text-faint); }
