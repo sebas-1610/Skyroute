@@ -790,6 +790,29 @@ margin: 0 clamp(24px, 5vw, 64px);
 .seg-arrow { color: var(--text-faint); font-size: 11px; }
 .seg-aircraft { display: inline-block; padding: 2px 8px; background: var(--teal-glow); border: 1px solid var(--teal-dim); border-radius: 4px; font-size: 10px; color: var(--teal); letter-spacing: 0.04em; white-space: nowrap; }
 .seg-accumulated { color: var(--amber) !important; font-weight: 500; }
+
+.btn-ver-mapa {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 10px 20px;
+    border: 1px solid var(--amber);
+    border-radius: var(--radius-sm);
+    color: var(--amber);
+    background: var(--amber-glow);
+    cursor: pointer;
+    transition: all 200ms;
+}
+.btn-ver-mapa:hover {
+    background: var(--amber);
+    color: var(--bg);
+    box-shadow: 0 0 18px var(--amber-glow);
+}
+.rc-actions { display: flex; justify-content: flex-end; padding: 18px 24px; }
 .route-options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
 .route-option-card {
     border: 1px solid var(--border-soft);

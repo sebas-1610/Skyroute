@@ -75,6 +75,47 @@ document.addEventListener('DOMContentLoaded', function() {
         onNodeDblClick: function(node) { showAirportPanel(node); }
     });
 
+    // Check if coming from planificador
+    var params = new URLSearchParams(window.location.search);
+    var fromPlanner = params.get('from') === 'planificador';
+
+    if (fromPlanner) {
+        document.getElementById('btn-back').style.display = 'inline-flex';
+    }
+
+    // Auto-load from localStorage if available
+    var networkRaw = localStorage.getItem('skyroute_network');
+    if (networkRaw) {
+        try {
+            var json = JSON.parse(networkRaw);
+            if ((json.nodos || json.aeropuertos) && (json.aristas || json.rutas)) {
+                SkyRouteD3.loadGraph(json);
+
+                // If coming from planner, also load and highlight the route
+                if (fromPlanner) {
+                    var routeRaw = localStorage.getItem('skyroute_route');
+                    if (routeRaw) {
+                        try {
+                            var route = JSON.parse(routeRaw);
+                            function waitForSim() {
+                                if (typeof SkyRouteD3.getSimulation === 'function') {
+                                    var sim = SkyRouteD3.getSimulation();
+                                    if (sim && sim.alpha() > sim.alphaMin()) {
+                                        setTimeout(waitForSim, 100);
+                                        return;
+                                    }
+                                }
+                                SkyRouteD3.highlightRoute(route.path, route.segments);
+                            }
+                            waitForSim();
+                        } catch (_) {}
+                    }
+                }
+            }
+        } catch (_) {}
+    }
+
+    // File input handler (manual load)
     document.getElementById('file-input').addEventListener('change', function(e) {
         var file = e.target.files[0];
         if (!file) return;
@@ -84,6 +125,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 var json = JSON.parse(ev.target.result);
                 if ((json.nodos || json.aeropuertos) && (json.aristas || json.rutas)) {
                     SkyRouteD3.loadGraph(json);
+                    localStorage.setItem('skyroute_network', JSON.stringify({
+                        nodos: json.nodos || json.aeropuertos || [],
+                        aristas: json.aristas || json.rutas || [],
+                        configuracion: json.configuracion || {}
+                    }));
                 } else {
                     alert('JSON inválido: debe contener "nodos" y "aristas".');
                 }
@@ -94,6 +140,15 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.readAsText(file);
         e.target.value = '';
     });
+
+    // "Volver" button — clean up route data before navigating
+    var backBtn = document.getElementById('btn-back');
+    if (backBtn) {
+        backBtn.addEventListener('click', function(e) {
+            localStorage.removeItem('skyroute_route');
+            localStorage.removeItem('skyroute_active_criterio');
+        });
+    }
 
     document.getElementById('close-panel').addEventListener('click', function() {
         SkyRouteD3.deselectNode();

@@ -135,3 +135,71 @@
     fill: #8b949e;
     text-anchor: middle;
 }
+
+/* ─── ROUTE HIGHLIGHT ──────────────────────────────────── */
+
+.route-highlight-line {
+    fill: none;
+    stroke: #d4870a;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 8, 4;
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.route-highlight-node {
+    stroke: #d4870a;
+    stroke-width: 3;
+    fill: #d4870a;
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.route-highlight-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: bold;
+    fill: #ffffff;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+}
+
+.route-dimmed {
+    opacity: 0.1;
+    transition: opacity 300ms ease;
+}
+
+.route-segment-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    fill: #d4870a;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+}
+
+/* ─── BACK BUTTON ──────────────────────────────────────── */
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 8px 16px;
+    border: 1px solid #555;
+    border-radius: 6px;
+    color: #8b949e;
+    background: transparent;
+    cursor: pointer;
+    transition: all 200ms;
+    text-decoration: none;
+}
+.btn-back:hover {
+    border-color: #d4870a;
+    color: #d4870a;
+}

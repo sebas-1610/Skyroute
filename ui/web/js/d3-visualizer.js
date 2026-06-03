@@ -43,6 +43,16 @@ var SkyRouteD3 = (function () {
     var container = null;
     var nodeSelectedCallback = null;
     var nodeDblClickCallback = null;
+    var nodeByIdCache = null;
+    var _cachedLinks = null;
+    var _cachedNodes = null;
+    var _cachedLabels = null;
+    var _routeActive = false;
+    var _routePath = null;
+    var _routeLines = null;
+    var _routeSegLabels = null;
+    var _routeCircles = null;
+    var _routeNodeLabels = null;
 
     // ── Initialization ───────────────────────────────────────────────────────
     function init(containerSelector, opts) {
@@ -157,6 +167,16 @@ var SkyRouteD3 = (function () {
 
     function clearGraph() {
         rootG.selectAll('*').remove();
+        _cachedLinks = null;
+        _cachedNodes = null;
+        _cachedLabels = null;
+        nodeByIdCache = null;
+        _routeActive = false;
+        _routePath = null;
+        _routeLines = null;
+        _routeSegLabels = null;
+        _routeCircles = null;
+        _routeNodeLabels = null;
     }
 
     // ── Main Render ──────────────────────────────────────────────────────────
@@ -194,6 +214,7 @@ var SkyRouteD3 = (function () {
         // Resolve visualEdges source/target from strings to node objects
         var nodeById = new Map();
         graphData.nodes.forEach(function (n) { nodeById.set(n.id, n); });
+        nodeByIdCache = nodeById;
         graphData.visualEdges.forEach(function (e) {
             e.source = nodeById.get(e.source) || e.source;
             e.target = nodeById.get(e.target) || e.target;
@@ -203,6 +224,7 @@ var SkyRouteD3 = (function () {
         renderLinks();
         renderEdgeLabels();
         renderNodes();
+        buildTickCache();
 
         simulation.on('tick', tickHandler);
 
@@ -212,47 +234,83 @@ var SkyRouteD3 = (function () {
     }
 
     // ── Offset a point by radius toward the other node ──────────────────────
-    function offsetPoint(from, to, radius) {
+    var _outA = { x: 0, y: 0 };
+    var _outB = { x: 0, y: 0 };
+    function offsetPoint(from, to, radius, out) {
         var dx = to.x - from.x;
         var dy = to.y - from.y;
         var dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        return {
-            x: from.x + (dx / dist) * radius,
-            y: from.y + (dy / dist) * radius
-        };
+        out.x = from.x + (dx / dist) * radius;
+        out.y = from.y + (dy / dist) * radius;
     }
 
     // ── Tick Handler ─────────────────────────────────────────────────────────
+    function buildTickCache() {
+        _cachedLinks = rootG.selectAll('.links-group line');
+        _cachedNodes = rootG.selectAll('.node-group');
+        _cachedLabels = rootG.selectAll('.edge-label-group');
+    }
+
     function tickHandler() {
-        rootG.selectAll('.links-group line')
-            .attr('x1', function (d) {
-                var r = d.source.esHub ? CFG.hubRadius : CFG.secondaryRadius;
-                return offsetPoint(d.source, d.target, r).x;
-            })
-            .attr('y1', function (d) {
-                var r = d.source.esHub ? CFG.hubRadius : CFG.secondaryRadius;
-                return offsetPoint(d.source, d.target, r).y;
-            })
-            .attr('x2', function (d) {
-                var r = d.target.esHub ? CFG.hubRadius : CFG.secondaryRadius;
-                return offsetPoint(d.target, d.source, r).x;
-            })
-            .attr('y2', function (d) {
-                var r = d.target.esHub ? CFG.hubRadius : CFG.secondaryRadius;
-                return offsetPoint(d.target, d.source, r).y;
-            });
+        if (!_cachedLinks) buildTickCache();
+        var rSource, rTarget;
+        _cachedLinks.each(function (d) {
+            rSource = d.source.esHub ? CFG.hubRadius : CFG.secondaryRadius;
+            rTarget = d.target.esHub ? CFG.hubRadius : CFG.secondaryRadius;
+            offsetPoint(d.source, d.target, rSource, _outA);
+            offsetPoint(d.target, d.source, rTarget, _outB);
+            this.setAttribute('x1', _outA.x);
+            this.setAttribute('y1', _outA.y);
+            this.setAttribute('x2', _outB.x);
+            this.setAttribute('y2', _outB.y);
+        });
 
-        rootG.selectAll('.node-group')
-            .attr('transform', function (d) {
-                return 'translate(' + d.x + ',' + d.y + ')';
-            });
+        _cachedNodes.attr('transform', function (d) {
+            return 'translate(' + d.x + ',' + d.y + ')';
+        });
 
-        rootG.selectAll('.edge-label-group')
-            .attr('transform', function (d) {
-                var mx = (d.source.x + d.target.x) / 2;
-                var my = (d.source.y + d.target.y) / 2;
-                return 'translate(' + mx + ',' + my + ')';
-            });
+        _cachedLabels.attr('transform', function (d) {
+            var mx = (d.source.x + d.target.x) / 2;
+            var my = (d.source.y + d.target.y) / 2;
+            return 'translate(' + mx + ',' + my + ')';
+        });
+
+        // Update route highlight positions
+        if (_routeActive && _routeLines) {
+            for (var i = 0; i < _routePath.length - 1; i++) {
+                var from = nodeByIdCache.get(_routePath[i]);
+                var to = nodeByIdCache.get(_routePath[i + 1]);
+                if (!from || !to) continue;
+
+                offsetPoint(from, to, from.esHub ? CFG.hubRadius : CFG.secondaryRadius, _outA);
+                offsetPoint(to, from, to.esHub ? CFG.hubRadius : CFG.secondaryRadius, _outB);
+
+                var line = _routeLines[i];
+                if (line) {
+                    line.setAttribute('x1', _outA.x);
+                    line.setAttribute('y1', _outA.y);
+                    line.setAttribute('x2', _outB.x);
+                    line.setAttribute('y2', _outB.y);
+                }
+                var segLabel = _routeSegLabels[i];
+                if (segLabel) {
+                    segLabel.setAttribute('x', (_outA.x + _outB.x) / 2);
+                    segLabel.setAttribute('y', (_outA.y + _outB.y) / 2 - 10);
+                }
+            }
+            for (var j = 0; j < _routePath.length; j++) {
+                var n = nodeByIdCache.get(_routePath[j]);
+                if (!n) continue;
+                if (_routeCircles[j]) {
+                    _routeCircles[j].setAttribute('cx', n.x);
+                    _routeCircles[j].setAttribute('cy', n.y);
+                }
+                if (_routeNodeLabels[j]) {
+                    _routeNodeLabels[j].setAttribute('x', n.x);
+                    _routeNodeLabels[j].setAttribute('y', n.y);
+                }
+            }
+        }
     }
 
     // ── Render Links (uses visualEdges) ─────────────────────────────────────
@@ -460,6 +518,74 @@ var SkyRouteD3 = (function () {
         return graphData;
     }
 
+    // ── Route Highlight ───────────────────────────────────────────────────────
+    function highlightRoute(path, segments) {
+        if (!graphData || !path || path.length < 2) return;
+
+        clearRouteHighlight();
+        if (!nodeByIdCache) return;
+
+        // Dim everything
+        _cachedNodes.classed('route-dimmed', true);
+        _cachedLinks.classed('route-dimmed', true);
+        _cachedLabels.classed('route-dimmed', true);
+
+        var routeG = rootG.append('g').attr('class', 'route-highlight-group');
+        var html = '';
+
+        // Route lines + segment labels
+        for (var i = 0; i < path.length - 1; i++) {
+            var from = nodeByIdCache.get(path[i]);
+            var to   = nodeByIdCache.get(path[i + 1]);
+            if (!from || !to) continue;
+
+            html += '<line class="route-highlight-line" x1="' + from.x + '" y1="' + from.y +
+                    '" x2="' + to.x + '" y2="' + to.y + '"/>';
+
+            var seg = segments && segments[i];
+            if (seg) {
+                var mx = (from.x + to.x) / 2;
+                var my = (from.y + to.y) / 2;
+                html += '<text class="route-segment-label" x="' + mx + '" y="' + (my - 10) +
+                        '">' + Math.round(seg.distancia) + ' km</text>';
+            }
+        }
+
+        // Highlighted nodes
+        for (var j = 0; j < path.length; j++) {
+            var n = nodeByIdCache.get(path[j]);
+            if (!n) continue;
+            var r = n.esHub ? CFG.hubRadius : CFG.secondaryRadius;
+            html += '<circle class="route-highlight-node" cx="' + n.x + '" cy="' + n.y +
+                    '" r="' + (r + 4) + '"/>';
+            html += '<text class="route-highlight-label" x="' + n.x + '" y="' + n.y +
+                    '">' + path[j] + '</text>';
+        }
+
+        routeG.node().innerHTML = html;
+
+        // Cache DOM references for tick updates
+        _routeActive = true;
+        _routePath = path;
+        _routeLines = routeG.node().querySelectorAll('.route-highlight-line');
+        _routeSegLabels = routeG.node().querySelectorAll('.route-segment-label');
+        _routeCircles = routeG.node().querySelectorAll('.route-highlight-node');
+        _routeNodeLabels = routeG.node().querySelectorAll('.route-highlight-label');
+    }
+
+    function clearRouteHighlight() {
+        rootG.selectAll('.route-highlight-group').remove();
+        _routeActive = false;
+        _routePath = null;
+        _routeLines = null;
+        _routeSegLabels = null;
+        _routeCircles = null;
+        _routeNodeLabels = null;
+        if (_cachedNodes) _cachedNodes.classed('route-dimmed', false);
+        if (_cachedLinks) _cachedLinks.classed('route-dimmed', false);
+        if (_cachedLabels) _cachedLabels.classed('route-dimmed', false);
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────────────
     function lightenColor(hex, amount) {
         hex = hex.replace('#', '');
@@ -477,7 +603,10 @@ var SkyRouteD3 = (function () {
         selectNode: selectNode,
         getSelectedNode: getSelectedNode,
         getGraphData: getGraphData,
+        getSimulation: function () { return simulation; },
         showEmptyState: showEmptyState,
+        highlightRoute: highlightRoute,
+        clearRouteHighlight: clearRouteHighlight,
         width: function () { return width; },
         height: function () { return height; }
     };

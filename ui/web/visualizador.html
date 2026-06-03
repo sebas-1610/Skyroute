@@ -113,7 +113,11 @@
     </div>
 
     <!-- Load JSON Button -->
-    <div style="position:fixed;top:80px;left:16px;z-index:100;">
+    <div style="position:fixed;top:80px;left:16px;z-index:100;display:flex;gap:8px;align-items:center;">
+        <a href="planificador.html" class="btn-back" id="btn-back" style="display:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Volver
+        </a>
         <label for="file-input" class="btn-load">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
             Cargar JSON

@@ -18,6 +18,63 @@ const CRITERIO_META = {
     distancia: { group: 'distance-group', input: 'distancia-max', label: 'Distancia',  unit: 'km',  icon: '📏' },
 };
 
+// ── Restore state from localStorage ──────────────────────────────
+function restorePlannerState() {
+    const saved = localStorage.getItem('skyroute_planner_state');
+    if (!saved) return;
+
+    try {
+        const state = JSON.parse(saved);
+
+        // Restore network JSON if available
+        const networkRaw = localStorage.getItem('skyroute_network');
+        if (networkRaw) {
+            const network = JSON.parse(networkRaw);
+            nodos         = network.nodos   || [];
+            aristas       = network.aristas || [];
+            configuracion = network.configuracion || {};
+            populateSelects();
+            document.getElementById('file-label').classList.add('loaded');
+            document.getElementById('file-label-text').textContent = '✓ JSON restaurado';
+            document.getElementById('file-name').textContent =
+                nodos.length + ' aeropuertos · ' + aristas.length + ' rutas cargadas';
+        }
+
+        // Restore form fields
+        if (state.origen)   document.getElementById('origen').value = state.origen;
+        if (state.destino)  document.getElementById('destino').value = state.destino;
+
+        // Restore criteria checkboxes
+        if (state.criterios) {
+            state.criterios.forEach(c => {
+                const cb = document.querySelector('input[name="criterio"][value="' + c + '"]');
+                if (cb) cb.checked = true;
+            });
+            syncConstraintVisibility();
+        }
+
+        // Restore constraint values
+        if (state.presupuesto)   document.getElementById('presupuesto').value = state.presupuesto;
+        if (state.tiempo)        document.getElementById('tiempo').value = state.tiempo;
+        if (state.distanciaMax)  document.getElementById('distancia-max').value = state.distanciaMax;
+
+        // Restore secondary airports toggle
+        if (state.secundarios !== undefined) {
+            document.getElementById('toggle-secundarios')
+                .setAttribute('aria-pressed', String(state.secundarios));
+        }
+
+        // Restore results panels
+        const resultsRaw = localStorage.getItem('skyroute_results');
+        if (resultsRaw) {
+            const results = JSON.parse(resultsRaw);
+            renderMultiResults(results);
+        }
+    } catch (_) { /* ignore corrupt state */ }
+}
+
+restorePlannerState();
+
 // ── JSON load ────────────────────────────────────────────────────
 document.getElementById('json-file').addEventListener('change', function (e) {
     const file = e.target.files[0];
@@ -30,6 +87,8 @@ document.getElementById('json-file').addEventListener('change', function (e) {
             nodos         = json.nodos   || json.aeropuertos || [];
             aristas       = json.aristas || json.rutas       || [];
             configuracion = json.configuracion || {};
+            localStorage.setItem('skyroute_network', JSON.stringify({ nodos, aristas, configuracion }));
+            localStorage.removeItem('skyroute_results');
             populateSelects();
             document.getElementById('file-label').classList.add('loaded');
             document.getElementById('file-label-text').textContent = '✓ ' + file.name;
@@ -158,6 +217,14 @@ document.getElementById('route-form').addEventListener('submit', async function 
         body[CRITERIO_META[criterio].input] = getConstraintValue(criterio);
     });
 
+    localStorage.setItem('skyroute_planner_state', JSON.stringify({
+        origen, destino, criterios,
+        presupuesto: document.getElementById('presupuesto').value,
+        tiempo: document.getElementById('tiempo').value,
+        distanciaMax: document.getElementById('distancia-max').value,
+        secundarios: incluirSecundarios()
+    }));
+
     setLoading(true);
     document.getElementById('results-area').innerHTML = '';
 
@@ -175,14 +242,28 @@ document.getElementById('route-form').addEventListener('submit', async function 
         });
 
         renderMultiResults(items);
+        localStorage.setItem('skyroute_results', JSON.stringify(items));
     } catch (err) {
-        // Network error or top-level failure → show error for all criterios
-        renderMultiResults(
-            criterios.map(c => ({ criterio: c, resultado: null, error: err }))
-        );
+        const errItems = criterios.map(c => ({ criterio: c, resultado: null, error: err }));
+        renderMultiResults(errItems);
+        localStorage.setItem('skyroute_results', JSON.stringify(errItems));
     } finally {
         setLoading(false);
     }
+});
+
+// ── "Ver mapa" button handler ─────────────────────────────────────
+document.getElementById('results-area').addEventListener('click', function (e) {
+    const btn = e.target.closest('.btn-ver-mapa');
+    if (!btn) return;
+
+    const criterio  = btn.dataset.criterio;
+    const path      = JSON.parse(btn.dataset.path);
+    const segments  = JSON.parse(btn.dataset.segments);
+
+    localStorage.setItem('skyroute_route', JSON.stringify({ criterio, path, segments }));
+    localStorage.setItem('skyroute_active_criterio', criterio);
+    window.location.href = 'visualizador.html?from=planificador';
 });
 
 // ── Single fetch helper ──────────────────────────────────────────
@@ -365,6 +446,14 @@ function buildResultCard(criterio, result) {
                 </thead>
                 <tbody>${rows}</tbody>
             </table>
+        </div>
+        <div class="rc-actions">
+            <button class="btn-ver-mapa" data-criterio="${criterio}"
+                data-path='${JSON.stringify(result.path)}'
+                data-segments='${JSON.stringify(result.segments)}'>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Ver mapa
+            </button>
         </div>`;
     return card;
 }
