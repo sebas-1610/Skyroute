@@ -54,12 +54,51 @@ function getAirport(nodeId) {
     return nodos.find(a => a.id === nodeId) || null;
 }
 
+function getRoutesForPlanning() {
+    const baseRoutes = Array.isArray(aristas) ? aristas : [];
+
+    if (
+        window.ControladorInterrupciones &&
+        typeof window.ControladorInterrupciones.getAvailableRoutes === 'function'
+    ) {
+        return window.ControladorInterrupciones.getAvailableRoutes(baseRoutes);
+    }
+
+    if (
+        window.EstadoInterrupciones &&
+        typeof window.EstadoInterrupciones.getAvailableRoutes === 'function'
+    ) {
+        return window.EstadoInterrupciones.getAvailableRoutes(baseRoutes);
+    }
+
+    return baseRoutes.filter(route => route.bloqueada !== true);
+}
+
+function isBlockedRoute(origen, destino) {
+    if (
+        window.EstadoInterrupciones &&
+        typeof window.EstadoInterrupciones.isRouteBlocked === 'function'
+    ) {
+        try {
+            return window.EstadoInterrupciones.isRouteBlocked(origen, destino);
+        } catch (error) {
+            return false;
+        }
+    }
+
+    return aristas.some(route =>
+        route.origen === origen &&
+        route.destino === destino &&
+        route.bloqueada === true
+    );
+}
+
 function getRouteSegment(origen, destino) {
-    return aristas.find(r => r.origen === origen && r.destino === destino) || null;
+    return getRoutesForPlanning().find(r => r.origen === origen && r.destino === destino) || null;
 }
 
 function getOutgoingRoutes(origen) {
-    return aristas.filter(r => r.origen === origen);
+    return getRoutesForPlanning().filter(r => r.origen === origen);
 }
 
 function getAircraftOptionsForRoute(route) {
@@ -236,9 +275,102 @@ function airportSummaryCard(node, state) {
         </div>`;
 }
 
+function ensureDestinationStat(airportId) {
+    if (!simulation.destinationStats) {
+        simulation.destinationStats = {};
+    }
+
+    if (!simulation.destinationStats[airportId]) {
+        simulation.destinationStats[airportId] = {
+            airport: airportId,
+            stayMinutes: 0,
+            costUSD: 0
+        };
+    }
+
+    return simulation.destinationStats[airportId];
+}
+
+function recordDestinationImpact(airportId, minutes, costUSD) {
+    if (!airportId) return;
+
+    const stat = ensureDestinationStat(airportId);
+    stat.stayMinutes += Number(minutes || 0);
+    stat.costUSD += Number(costUSD || 0);
+}
+
+function getVisitedDestinationRows() {
+    const visited = simulation.route.slice(0, simulation.currentIndex + 1);
+    const uniqueVisited = [...new Set(visited)];
+
+    if (!uniqueVisited.length) {
+        return '<tr><td colspan="5">No hay destinos visitados registrados</td></tr>';
+    }
+
+    return uniqueVisited.map(code => {
+        const airport = getAirport(code);
+        const stat = simulation.destinationStats?.[code] || {
+            stayMinutes: 0,
+            costUSD: 0
+        };
+
+        return `
+            <tr>
+                <td>${code}</td>
+                <td>${airport?.ciudad || '-'}</td>
+                <td>${airport?.pais || '-'}</td>
+                <td>${(Number(stat.stayMinutes || 0) / 60).toFixed(2)} h</td>
+                <td>$${Number(stat.costUSD || 0).toFixed(2)}</td>
+            </tr>`;
+    }).join('');
+}
+
+function getFlightHistoryRows() {
+    if (!simulation.flightHistory || !simulation.flightHistory.length) {
+        return '<tr><td colspan="6">No se han registrado tramos volados</td></tr>';
+    }
+
+    return simulation.flightHistory.map(flight => `
+        <tr>
+            <td>${flight.origen}</td>
+            <td>${flight.destino}</td>
+            <td>${flight.aeronave}</td>
+            <td>${Number(flight.distancia || 0).toLocaleString()} km</td>
+            <td>${Number(flight.flightMinutes || 0).toFixed(1)} min</td>
+            <td>$${Number(flight.costo || 0).toFixed(2)}</td>
+        </tr>
+    `).join('');
+}
+
+function getActivityHistoryRows() {
+    const allActivities = [
+        ...(simulation.mandatoryHistory || []),
+        ...(simulation.activityHistory || [])
+    ];
+
+    if (!allActivities.length) {
+        return '<tr><td colspan="5">No se han registrado actividades</td></tr>';
+    }
+
+    return allActivities.map(activity => `
+        <tr>
+            <td>${activity.airport}</td>
+            <td>${activity.name}</td>
+            <td>${activity.type}</td>
+            <td>${Number(activity.minutes || 0)} min</td>
+            <td>$${Number(activity.cost || 0).toFixed(2)}</td>
+        </tr>
+    `).join('');
+}
+
 function buildFinalReport() {
     const remaining = Math.max(0, simulation.remainingBudget);
     const totalTripHours = Math.max(0, simulation.initialTime - simulation.remainingTime);
+
+    const destinationRows = getVisitedDestinationRows();
+    const flightRows = getFlightHistoryRows();
+    const activityRows = getActivityHistoryRows();
+
     const jobsHtml = simulation.jobHistory.length
         ? simulation.jobHistory.map(job => `
             <tr>
@@ -250,31 +382,102 @@ function buildFinalReport() {
         : '<tr><td colspan="4">No se aceptaron trabajos temporales</td></tr>';
 
     return `
-        <div class="result-card">
+        <div class="result-card final-report-card">
             <div class="rc-header">
-                <span class="rc-title">Reporte final</span>
+                <span class="rc-title">Reporte final del viaje</span>
                 <div class="rc-badges">
                     <span class="rbadge rbadge-teal">Completado</span>
-                    <span class="rbadge rbadge-muted">${simulation.route.length - 1} tramos</span>
+                    <span class="rbadge rbadge-muted">${simulation.flightHistory.length} tramos volados</span>
                 </div>
             </div>
+
             <div class="rc-stats">
-                <div class="stat-cell accent"><span class="s-label">Presupuesto final</span><span class="s-value">$${remaining.toFixed(2)}</span></div>
-                <div class="stat-cell"><span class="s-label">Gasto total</span><span class="s-value">$${simulation.totalSpent.toFixed(2)}</span></div>
-                <div class="stat-cell teal"><span class="s-label">Ingresos totales</span><span class="s-value">$${simulation.totalEarned.toFixed(2)}</span></div>
-                <div class="stat-cell coral"><span class="s-label">Horas consumidas</span><span class="s-value">${totalTripHours.toFixed(2)} h</span></div>
-                <div class="stat-cell"><span class="s-label">Comidas obligatorias</span><span class="s-value">${simulation.mandatoryMeals}</span></div>
-                <div class="stat-cell"><span class="s-label">Alojamientos obligatorios</span><span class="s-value">${simulation.mandatoryHotels}</span></div>
+                <div class="stat-cell accent">
+                    <span class="s-label">Presupuesto inicial</span>
+                    <span class="s-value">$${simulation.initialBudget.toFixed(2)}</span>
+                </div>
+                <div class="stat-cell">
+                    <span class="s-label">Total gastado</span>
+                    <span class="s-value">$${simulation.totalSpent.toFixed(2)}</span>
+                </div>
+                <div class="stat-cell teal">
+                    <span class="s-label">Total ganado</span>
+                    <span class="s-value">$${simulation.totalEarned.toFixed(2)}</span>
+                </div>
+                <div class="stat-cell coral">
+                    <span class="s-label">Saldo final</span>
+                    <span class="s-value">$${remaining.toFixed(2)}</span>
+                </div>
+                <div class="stat-cell">
+                    <span class="s-label">Tiempo total</span>
+                    <span class="s-value">${totalTripHours.toFixed(2)} h</span>
+                </div>
+                <div class="stat-cell">
+                    <span class="s-label">Destinos visitados</span>
+                    <span class="s-value">${new Set(simulation.route.slice(0, simulation.currentIndex + 1)).size}</span>
+                </div>
             </div>
+
             <div class="rc-section">
-                <div class="rc-section-label">Resumen</div>
-                <p class="budget-hint">La simulación aplicó servicios obligatorios automáticamente y registró cada decisión en el log.</p>
+                <div class="rc-section-label">Destinos visitados</div>
+                <table class="seg-table">
+                    <thead>
+                        <tr>
+                            <th>Aeropuerto</th>
+                            <th>Ciudad</th>
+                            <th>País</th>
+                            <th>Tiempo de estadía</th>
+                            <th>Costo en destino</th>
+                        </tr>
+                    </thead>
+                    <tbody>${destinationRows}</tbody>
+                </table>
+            </div>
+
+            <div class="rc-section">
+                <div class="rc-section-label">Tramos volados</div>
+                <table class="seg-table">
+                    <thead>
+                        <tr>
+                            <th>Origen</th>
+                            <th>Destino</th>
+                            <th>Aeronave</th>
+                            <th>Distancia</th>
+                            <th>Tiempo de vuelo</th>
+                            <th>Costo</th>
+                        </tr>
+                    </thead>
+                    <tbody>${flightRows}</tbody>
+                </table>
+            </div>
+
+            <div class="rc-section">
+                <div class="rc-section-label">Actividades realizadas</div>
+                <table class="seg-table">
+                    <thead>
+                        <tr>
+                            <th>Aeropuerto</th>
+                            <th>Actividad</th>
+                            <th>Tipo</th>
+                            <th>Tiempo</th>
+                            <th>Costo</th>
+                        </tr>
+                    </thead>
+                    <tbody>${activityRows}</tbody>
+                </table>
             </div>
 
             <div class="rc-section">
                 <div class="rc-section-label">Trabajos realizados</div>
                 <table class="seg-table">
-                    <thead><tr><th>Aeropuerto</th><th>Trabajo</th><th>Horas</th><th>Ingreso</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Aeropuerto</th>
+                            <th>Trabajo</th>
+                            <th>Horas</th>
+                            <th>Ingreso</th>
+                        </tr>
+                    </thead>
                     <tbody>${jobsHtml}</tbody>
                 </table>
             </div>
@@ -337,9 +540,13 @@ function renderSimulation() {
             </div>
         </div>`;
 
-    if (node) {
-        resultsArea.insertAdjacentHTML('beforeend', airportSummaryCard(node, simulation));
-        bindStepActions();
+    if (node && !simulation.finished) {
+    resultsArea.insertAdjacentHTML('beforeend', airportSummaryCard(node, simulation));
+    bindStepActions();
+    }
+
+    if (simulation.finished) {
+        resultsArea.insertAdjacentHTML('beforeend', buildFinalReport());
     }
 }
 
@@ -364,6 +571,14 @@ function advanceTime(minutes, airportNode) {
         simulation.totalSpent += mealCost;
         simulation.mandatoryMeals += 1;
         simulation.hoursSinceMeal -= alimentacionInterval;
+        simulation.mandatoryHistory.push({
+            airport: airportNode?.id || 'nodo',
+            name: 'Alimentación obligatoria',
+            type: 'obligatoria',
+            minutes: 0,
+            cost: mealCost
+        });
+        recordDestinationImpact(airportNode?.id || 'nodo', 0, mealCost);
         appendLog(`Alimentación obligatoria en ${airportNode?.id || 'nodo'}: -$${mealCost.toFixed(2)}.`);
     }
 
@@ -373,6 +588,14 @@ function advanceTime(minutes, airportNode) {
         simulation.totalSpent += hotelCost;
         simulation.mandatoryHotels += 1;
         simulation.hoursSinceHotel -= alojamientoInterval;
+        simulation.mandatoryHistory.push({
+            airport: airportNode?.id || 'nodo',
+            name: 'Alojamiento obligatorio',
+            type: 'obligatoria',
+            minutes: 0,
+            cost: hotelCost
+        });
+        recordDestinationImpact(airportNode?.id || 'nodo', 0, hotelCost);
         appendLog(`Alojamiento obligatorio en ${airportNode?.id || 'nodo'}: -$${hotelCost.toFixed(2)}.`);
     }
 }
@@ -388,6 +611,16 @@ function applyOptionalActivity(activityIndex) {
 
     simulation.remainingBudget -= cost;
     simulation.totalSpent += cost;
+    
+    simulation.activityHistory.push({
+        airport: airportNode.id,
+        name: activity.nombre,
+        type: activity.tipo || 'opcional',
+        minutes,
+        cost
+    });
+
+    recordDestinationImpact(airportNode.id, minutes, cost);
     appendLog(`Actividad elegida en ${airportNode.id}: ${activity.nombre} (-$${cost.toFixed(2)}, ${minutes} min).`);
     advanceTime(minutes, airportNode);
     renderSimulation();
@@ -417,6 +650,9 @@ function applyJob(jobIndex) {
         hours,
         income
     });
+
+    recordDestinationImpact(airportNode.id, hours * 60, 0);
+
     appendLog(`Trabajo tomado en ${airportNode.id}: ${job.nombre} (${hours} h, +$${income.toFixed(2)}).`);
     advanceTime(hours * 60, airportNode);
     renderSimulation();
@@ -434,30 +670,144 @@ function applyMandatoryServices() {
     renderSimulation();
 }
 
-function moveToNextStep() {
+async function moveToNextStep() {
     if (!simulation) return;
 
     if (simulation.currentIndex >= simulation.route.length - 1) {
         simulation.finished = true;
+
+        if (window.ControladorInterrupciones) {
+            window.ControladorInterrupciones.clearCurrentFlight();
+        }
+
+        if (window.VueloAnimado) {
+            window.VueloAnimado.clearFlight();
+        }
+
         appendLog('Viaje finalizado. Se generó el reporte final.');
         renderSimulation();
         return;
     }
 
     const segment = simulation.segments[simulation.currentIndex];
+
+    if (!segment) {
+        appendLog('No existe un tramo válido para avanzar.');
+        renderSimulation();
+        return;
+    }
+
+    if (isBlockedRoute(segment.origen, segment.destino)) {
+        appendLog(`No se puede tomar el tramo ${segment.origen} → ${segment.destino} porque está bloqueado.`);
+
+        await recalculateRouteFromCurrentAirport(
+            `Tramo ${segment.origen} → ${segment.destino} bloqueado antes del despegue. Recalculando ruta.`
+        );
+
+        return;
+    }
+
     const currentAirport = getAirport(segment.origen);
     const nextAirport = getAirport(segment.destino);
     const aircraftData = getAircraftData(segment.aeronave);
     const flightMinutes = Number(segment.distancia || 0) * Number(aircraftData.tiempoKm || 0);
     const flightCost = Number(segment.distancia || 0) * Number(aircraftData.costoKm || 0);
 
+    if (window.ControladorInterrupciones) {
+        window.ControladorInterrupciones.setCurrentFlight({
+            origen: segment.origen,
+            destino: segment.destino,
+            aeronave: segment.aeronave,
+            distanciaKm: Number(segment.distancia || 0),
+            costoUSD: flightCost,
+            tiempoMin: flightMinutes,
+            progreso: 0,
+            estado: 'EN_TRANSITO'
+        });
+    }
+
+    appendLog(`Vuelo iniciado ${segment.origen} → ${segment.destino} en ${segment.aeronave}.`);
+
+    let flightResult = {
+        completed: true,
+        interrupted: false
+    };
+
+    if (window.VueloAnimado && typeof window.VueloAnimado.startFlight === 'function') {
+        flightResult = await window.VueloAnimado.startFlight({
+            origen: segment.origen,
+            destino: segment.destino,
+            aeronave: segment.aeronave,
+            distanciaKm: Number(segment.distancia || 0),
+            costoUSD: flightCost,
+            tiempoMin: flightMinutes
+        });
+    }
+
+    if (flightResult.interrupted) {
+        if (window.ControladorInterrupciones) {
+            window.ControladorInterrupciones.clearCurrentFlight();
+        }
+
+        appendLog(
+            `El vuelo ${segment.origen} → ${segment.destino} fue interrumpido. ` +
+            `El viajero regresa a ${segment.origen}.`
+        );
+
+        await recalculateRouteFromCurrentAirport(
+            `Recalculando desde ${segment.origen} después de la interrupción del vuelo.`
+        );
+
+        return;
+    }
+
+    if (isBlockedRoute(segment.origen, segment.destino)) {
+        if (window.ControladorInterrupciones) {
+            window.ControladorInterrupciones.clearCurrentFlight();
+        }
+
+        appendLog(`El tramo ${segment.origen} → ${segment.destino} quedó bloqueado antes de completar la llegada.`);
+
+        await recalculateRouteFromCurrentAirport(
+            `Tramo ${segment.origen} → ${segment.destino} bloqueado. Recalculando desde ${segment.origen}.`
+        );
+
+        return;
+    }
+
     simulation.remainingBudget -= flightCost;
     simulation.totalSpent += flightCost;
-    appendLog(`Vuelo ${segment.origen} → ${segment.destino} en ${segment.aeronave}: -$${flightCost.toFixed(2)}, ${flightMinutes.toFixed(1)} min.`);
+
+    simulation.flightHistory.push({
+        origen: segment.origen,
+        destino: segment.destino,
+        aeronave: segment.aeronave,
+        distancia: Number(segment.distancia || 0),
+        flightMinutes,
+        costo: flightCost
+    });
+
+    ensureDestinationStat(segment.destino);
+
+    appendLog(
+        `Vuelo completado ${segment.origen} → ${segment.destino} en ${segment.aeronave}: ` +
+        `-$${flightCost.toFixed(2)}, ${flightMinutes.toFixed(1)} min.`
+    );
+
     advanceTime(flightMinutes, currentAirport);
 
     simulation.currentIndex += 1;
+
+    if (window.ControladorInterrupciones) {
+        window.ControladorInterrupciones.clearCurrentFlight();
+    }
+
+    if (window.VueloAnimado) {
+        window.VueloAnimado.clearFlight();
+    }
+
     currentPoint.value = nextAirport ? `${nextAirport.id} · ${nextAirport.ciudad || ''}` : '';
+
     appendLog(`Llegada a ${nextAirport?.id || segment.destino}.`);
     renderSimulation();
 }
@@ -508,6 +858,7 @@ async function chooseAlternative(nextAirportId) {
 
 async function fetchSuffixPlan(origen, destino) {
     const transportes = Object.keys(configuracion?.aeronaves || DEFAULT_AIRCRAFT);
+    const routesForPlanning = getRoutesForPlanning();
     const response = await fetch('/api/planificar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -517,7 +868,7 @@ async function fetchSuffixPlan(origen, destino) {
             modo: 'budget',
             presupuesto: Math.max(Number(simulation.remainingBudget), 1),
             airports: nodos,
-            routes: aristas,
+            routes: routesForPlanning,
             configuracion,
             criterios: ['costo'],
             transportes,
@@ -532,6 +883,106 @@ async function fetchSuffixPlan(origen, destino) {
     }
 
     return planner;
+}
+
+function plannedRouteUsesBlockedRoute(blockedRoute) {
+    if (!simulation || !blockedRoute || !Array.isArray(simulation.segments)) {
+        return false;
+    }
+
+    return simulation.segments
+        .slice(simulation.currentIndex)
+        .some(segment =>
+            segment.origen === blockedRoute.origen &&
+            segment.destino === blockedRoute.destino
+        );
+}
+
+async function recalculateRouteFromCurrentAirport(reason) {
+    if (!simulation || simulation.finished) {
+        return;
+    }
+
+    const currentAirportId = simulation.route[simulation.currentIndex];
+
+    if (!currentAirportId || currentAirportId === simulation.destination) {
+        return;
+    }
+
+    appendLog(reason || `Recalculando desde ${currentAirportId} por interrupción de red.`);
+
+    try {
+        const suffix = await fetchSuffixPlan(currentAirportId, simulation.destination);
+        let suffixPath = Array.isArray(suffix.path) && suffix.path.length
+            ? suffix.path
+            : [currentAirportId, simulation.destination].filter(Boolean);
+
+        if (suffixPath[0] !== currentAirportId) {
+            suffixPath = [currentAirportId].concat(suffixPath);
+        }
+
+        const suffixSegments = normalizeSegments(suffixPath, suffix.segments || []);
+
+        const previousRoute = simulation.route.slice(0, simulation.currentIndex);
+        const previousSegments = simulation.segments.slice(0, simulation.currentIndex);
+
+        simulation.route = previousRoute.concat(suffixPath);
+        simulation.segments = previousSegments.concat(suffixSegments);
+
+        if (
+            window.EstadoInterrupciones &&
+            typeof window.EstadoInterrupciones.recordRecalculation === 'function'
+        ) {
+            window.EstadoInterrupciones.recordRecalculation(
+                currentAirportId,
+                simulation.destination,
+                suffixPath,
+                { reason: reason || 'Interrupción de red' }
+            );
+        }
+
+        appendLog(`Nueva ruta calculada: ${suffixPath.join(' → ')}.`);
+        renderSimulation();
+    } catch (error) {
+        appendLog(`No fue posible recalcular desde ${currentAirportId}: ${error.message}`);
+        renderSimulation();
+    }
+}
+
+function setupInterruptionListeners() {
+    window.addEventListener('skyroute:route-blocked', function (event) {
+        if (!simulation || simulation.finished || !event.detail || !event.detail.blockedRoute) {
+            return;
+        }
+
+        const blockedRoute = event.detail.blockedRoute;
+
+        if (event.detail.affectedCurrentFlight) {
+            appendLog(
+                `Interrupción detectada durante el vuelo ${blockedRoute.origen} → ${blockedRoute.destino}. ` +
+                `Esperando retorno al aeropuerto ${blockedRoute.origen}.`
+            );
+            return;
+        }
+
+        if (plannedRouteUsesBlockedRoute(blockedRoute)) {
+            recalculateRouteFromCurrentAirport(
+                `La ruta ${blockedRoute.origen} → ${blockedRoute.destino} fue bloqueada. Recalculando itinerario.`
+            );
+        } else {
+            appendLog(`Ruta bloqueada: ${blockedRoute.origen} → ${blockedRoute.destino}. No afecta el itinerario actual.`);
+            renderSimulation();
+        }
+    });
+
+    window.addEventListener('skyroute:route-unblocked', function (event) {
+        if (!simulation || !event.detail || !event.detail.removed) {
+            return;
+        }
+
+        appendLog(`Ruta desbloqueada: ${event.detail.origen} → ${event.detail.destino}.`);
+        renderSimulation();
+    });
 }
 
 function bindStepActions() {
@@ -556,6 +1007,7 @@ function bindStepActions() {
 
 function startAdvancedSimulation(origen, destino, presupuesto, tiempo) {
     const transportes = Object.keys(configuracion?.aeronaves || DEFAULT_AIRCRAFT);
+    const routesForPlanning = getRoutesForPlanning();
 
     return fetch('/api/planificar', {
         method: 'POST',
@@ -566,7 +1018,7 @@ function startAdvancedSimulation(origen, destino, presupuesto, tiempo) {
             modo: 'budget',
             presupuesto: Number(presupuesto),
             airports: nodos,
-            routes: aristas,
+            routes: routesForPlanning,
             configuracion,
             criterios: ['costo'],
             transportes,
@@ -584,7 +1036,7 @@ function startAdvancedSimulation(origen, destino, presupuesto, tiempo) {
         const segments = normalizeSegments(path, planner.segments || []);
 
         simulation = {
-            origin,
+            origin: origen,
             destination: destino,
             route: path,
             segments,
@@ -600,6 +1052,10 @@ function startAdvancedSimulation(origen, destino, presupuesto, tiempo) {
             mandatoryMeals: 0,
             mandatoryHotels: 0,
             jobHistory: [],
+            flightHistory: [],
+            activityHistory: [],
+            mandatoryHistory: [],
+            destinationStats: {},
             log: [
                 `Ruta calculada: ${path.join(' → ')}`,
                 `Presupuesto inicial: $${Number(presupuesto).toFixed(2)}.`,
@@ -612,6 +1068,7 @@ function startAdvancedSimulation(origen, destino, presupuesto, tiempo) {
             throw new Error('La ruta calculada está vacía.');
         }
 
+        ensureDestinationStat(origen);
         appendLog(`Simulación inicializada desde ${origen} hacia ${destino}.`);
         renderSimulation();
     });
@@ -627,6 +1084,22 @@ fileInput.addEventListener('change', function(e) {
             nodos = json.nodos || json.aeropuertos || [];
             aristas = json.aristas || json.rutas || [];
             configuracion = json.configuracion || {};
+
+            if (
+                window.EstadoInterrupciones &&
+                typeof window.EstadoInterrupciones.importBlockedRoutes === 'function'
+            ) {
+                const blockedRoutesFromJson = aristas.filter(route => route.bloqueada === true);
+                window.EstadoInterrupciones.importBlockedRoutes(blockedRoutesFromJson);
+            }
+
+            if (
+                window.ControladorInterrupciones &&
+                typeof window.ControladorInterrupciones.renderBlockedRoutes === 'function'
+            ) {
+                window.ControladorInterrupciones.renderBlockedRoutes();
+            }
+
             populateSelects();
             document.getElementById('advanced-file-label').classList.add('loaded');
             document.getElementById('advanced-file-label-text').textContent = '✓ ' + file.name;
@@ -729,3 +1202,5 @@ function setLoading(on) {
     submitButton.classList.toggle('loading', on);
     submitButton.querySelector('.btn-text').textContent = on ? 'Simulando...' : 'Simular planificación avanzada';
 }
+
+setupInterruptionListeners();

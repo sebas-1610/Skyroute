@@ -1389,3 +1389,183 @@ white-space: pre-wrap;
     flex-direction: column;
     gap: 12px;
 }
+
+.interruption-panel {
+    margin: 18px 0;
+    padding: 16px;
+    border: 1px solid rgba(255, 160, 80, 0.35);
+    border-radius: 16px;
+    background: rgba(255, 160, 80, 0.08);
+}
+
+.interruption-title {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.interruption-description {
+    margin: 0 0 14px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.interruption-route-pair {
+    align-items: end;
+}
+
+.btn-secondary-plan {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    color: var(--bg-main);
+    background: #ff9f43;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-secondary-plan:hover {
+    transform: translateY(-1px);
+    opacity: 0.92;
+}
+
+.interruption-message {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.interruption-message.info {
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.interruption-message.success {
+    color: #5ee6a8;
+    background: rgba(94, 230, 168, 0.12);
+}
+
+.interruption-message.warning {
+    color: #ffcc66;
+    background: rgba(255, 204, 102, 0.13);
+}
+
+.interruption-message.error {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.13);
+}
+
+.blocked-routes-section {
+    margin-top: 14px;
+}
+
+.blocked-routes-section h4 {
+    margin: 0 0 10px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+}
+
+.empty-blocked-routes {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.blocked-route-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.blocked-route-card strong {
+    font-size: 12px;
+    color: var(--text-primary);
+}
+
+.blocked-route-card p {
+    margin: 4px 0 0;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.btn-unblock-route {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.btn-unblock-route:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.flight-animation-panel {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.flight-animation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-primary);
+}
+
+.flight-animation-track {
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.flight-animation-progress {
+    width: 0%;
+    height: 100%;
+    border-radius: 999px;
+    background: #ff9f43;
+    transition: width 0.2s linear;
+}
+
+.flight-animation-status {
+    margin-top: 8px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--text-muted);
+}
+
+.flight-animation-panel.interrupted .flight-animation-progress {
+    background: #ff6b6b;
+}
+
+.flight-animation-panel.completed .flight-animation-progress {
+    background: #5ee6a8;
+}

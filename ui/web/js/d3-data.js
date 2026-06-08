@@ -35,6 +35,8 @@ function transformGraphData(json) {
             aeronaves: l.aeronaves || [],
             costoBase: l.costoBase || 0,
             estanciaMinima: l.estanciaMinima || 0,
+            bloqueada: l.bloqueada === true,
+            motivoBloqueo: l.motivoBloqueo || null,
             isBidirectional: false
         };
     });
@@ -85,13 +87,36 @@ function buildVisualEdges(links) {
                 target: s < t ? t : s,
                 hasForward: false,
                 hasReverse: false,
+                blockedForward: false,
+                blockedReverse: false,
+                blockedRoutes: [],
                 data: l
             });
         }
 
         var pair = pairMap.get(key);
-        if (forward) pair.hasForward = true;
-        else pair.hasReverse = true;
+
+        if (forward) {
+            pair.hasForward = true;
+
+            if (l.bloqueada === true) {
+                pair.blockedForward = true;
+            }
+        } else {
+            pair.hasReverse = true;
+
+            if (l.bloqueada === true) {
+                pair.blockedReverse = true;
+            }
+        }
+
+        if (l.bloqueada === true) {
+            pair.blockedRoutes.push({
+                origen: s,
+                destino: t,
+                motivoBloqueo: l.motivoBloqueo || 'Ruta bloqueada'
+            });
+        }
     });
 
     var visualEdges = [];
@@ -103,7 +128,11 @@ function buildVisualEdges(links) {
             distanciaKm: pair.data.distanciaKm,
             aeronaves: pair.data.aeronaves,
             costoBase: pair.data.costoBase,
-            estanciaMinima: pair.data.estanciaMinima
+            estanciaMinima: pair.data.estanciaMinima,
+            bloqueada: pair.blockedForward || pair.blockedReverse,
+            blockedForward: pair.blockedForward,
+            blockedReverse: pair.blockedReverse,
+            blockedRoutes: pair.blockedRoutes
         });
     });
 

@@ -203,3 +203,20 @@
     border-color: #d4870a;
     color: #d4870a;
 }
+
+.link-line.blocked {
+    stroke: #ff3b30 !important;
+    stroke-width: 4px !important;
+    stroke-dasharray: 10 6;
+    opacity: 0.95;
+    filter: drop-shadow(0 0 6px rgba(255, 59, 48, 0.75));
+}
+
+.link-line.blocked.route-dimmed {
+    opacity: 0.55;
+}
+
+.edge-label-group.blocked .edge-label-bg {
+    fill: rgba(255, 59, 48, 0.25);
+    stroke: rgba(255, 59, 48, 0.7);
+}

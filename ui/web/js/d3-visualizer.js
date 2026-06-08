@@ -226,6 +226,13 @@ var SkyRouteD3 = (function () {
         renderNodes();
         buildTickCache();
 
+        if (
+            window.EstadoInterrupciones &&
+            typeof window.EstadoInterrupciones.getBlockedRoutes === 'function'
+        ) {
+            applyBlockedRoutesToGraph(window.EstadoInterrupciones.getBlockedRoutes());
+        }
+
         simulation.on('tick', tickHandler);
 
         simulation.on('end', function () {
@@ -324,6 +331,7 @@ var SkyRouteD3 = (function () {
                 var cls = 'link-line';
                 if (d.costoBase === 0) cls += ' subsidized';
                 if (d.bidirectional) cls += ' bidirectional';
+                if (d.bloqueada === true) cls += ' blocked';
                 return cls;
             })
             .attr('marker-end', 'url(#arrow-default)')
@@ -509,6 +517,104 @@ var SkyRouteD3 = (function () {
         if (tooltip) tooltip.style.display = 'none';
     }
 
+    // ── Blocked Routes Highlight ─────────────────────────────────────────────
+    function normalizeCode(code) {
+        return String(code || '').trim().toUpperCase();
+    }
+
+    function visualEdgeMatchesRoute(edge, origen, destino) {
+        if (!edge || !edge.source || !edge.target) return false;
+
+        var edgeSource = typeof edge.source === 'object' ? edge.source.id : edge.source;
+        var edgeTarget = typeof edge.target === 'object' ? edge.target.id : edge.target;
+
+        origen = normalizeCode(origen);
+        destino = normalizeCode(destino);
+        edgeSource = normalizeCode(edgeSource);
+        edgeTarget = normalizeCode(edgeTarget);
+
+        return (
+            (edgeSource === origen && edgeTarget === destino) ||
+            (edgeSource === destino && edgeTarget === origen)
+        );
+    }
+
+    function markVisualEdgeBlocked(origen, destino, motivo) {
+        if (!graphData || !_cachedLinks) return;
+
+        _cachedLinks.each(function (d) {
+            if (!visualEdgeMatchesRoute(d, origen, destino)) {
+                return;
+            }
+
+            d.bloqueada = true;
+
+            if (!Array.isArray(d.blockedRoutes)) {
+                d.blockedRoutes = [];
+            }
+
+            var alreadyRegistered = d.blockedRoutes.some(function (route) {
+                return normalizeCode(route.origen) === normalizeCode(origen) &&
+                    normalizeCode(route.destino) === normalizeCode(destino);
+            });
+
+            if (!alreadyRegistered) {
+                d.blockedRoutes.push({
+                    origen: normalizeCode(origen),
+                    destino: normalizeCode(destino),
+                    motivoBloqueo: motivo || 'Ruta bloqueada'
+                });
+            }
+
+            d3.select(this).classed('blocked', true);
+        });
+    }
+
+    function unmarkVisualEdgeBlocked(origen, destino) {
+        if (!graphData || !_cachedLinks) return;
+
+        _cachedLinks.each(function (d) {
+            if (!visualEdgeMatchesRoute(d, origen, destino)) {
+                return;
+            }
+
+            if (Array.isArray(d.blockedRoutes)) {
+                d.blockedRoutes = d.blockedRoutes.filter(function (route) {
+                    return !(
+                        normalizeCode(route.origen) === normalizeCode(origen) &&
+                        normalizeCode(route.destino) === normalizeCode(destino)
+                    );
+                });
+            }
+
+            d.bloqueada = Array.isArray(d.blockedRoutes) && d.blockedRoutes.length > 0;
+
+            d3.select(this).classed('blocked', d.bloqueada === true);
+        });
+    }
+
+    function applyBlockedRoutesToGraph(blockedRoutes) {
+        if (!Array.isArray(blockedRoutes)) return;
+
+        blockedRoutes.forEach(function (route) {
+            markVisualEdgeBlocked(route.origen, route.destino, route.motivoBloqueo);
+        });
+    }
+
+    function setupBlockedRouteListeners() {
+        window.addEventListener('skyroute:route-blocked', function (event) {
+            if (!event.detail || !event.detail.blockedRoute) return;
+
+            var route = event.detail.blockedRoute;
+            markVisualEdgeBlocked(route.origen, route.destino, route.motivoBloqueo);
+        });
+
+        window.addEventListener('skyroute:route-unblocked', function (event) {
+            if (!event.detail || !event.detail.removed) return;
+
+            unmarkVisualEdgeBlocked(event.detail.origen, event.detail.destino);
+        });
+    }
     // ── Public API ──────────────────────────────────────────────────────────
     function getSelectedNode() {
         return selectedNode;
@@ -607,7 +713,13 @@ var SkyRouteD3 = (function () {
         showEmptyState: showEmptyState,
         highlightRoute: highlightRoute,
         clearRouteHighlight: clearRouteHighlight,
+        markVisualEdgeBlocked: markVisualEdgeBlocked,
+        unmarkVisualEdgeBlocked: unmarkVisualEdgeBlocked,
+        applyBlockedRoutesToGraph: applyBlockedRoutesToGraph,
+        setupBlockedRouteListeners: setupBlockedRouteListeners,
         width: function () { return width; },
         height: function () { return height; }
     };
+
+    setupBlockedRouteListeners();
 })();

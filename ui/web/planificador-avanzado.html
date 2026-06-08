@@ -87,6 +87,75 @@
                 <input type="text" id="advanced-punto-actual" placeholder="Se actualizará al seleccionar origen" readonly>
             </div>
 
+            <section class="interruption-panel" aria-label="Panel de interrupciones de red">
+                <h3 class="interruption-title">Interrupción de red</h3>
+                <p class="interruption-description">
+                    Bloquea una ruta dirigida durante la simulación. Si el viajero está en ese tramo, deberá regresar al aeropuerto origen del vuelo.
+                </p>
+
+                <div class="route-pair interruption-route-pair">
+                    <div class="form-group">
+                        <label for="interrupt-origin">Ruta origen</label>
+                        <input 
+                            type="text" 
+                            id="interrupt-origin" 
+                            placeholder="Ej: BOG" 
+                            maxlength="3"
+                            autocomplete="off">
+                    </div>
+
+                    <div class="route-pair-arrow" aria-hidden="true">→</div>
+
+                    <div class="form-group">
+                        <label for="interrupt-destination">Ruta destino</label>
+                        <input 
+                            type="text" 
+                            id="interrupt-destination" 
+                            placeholder="Ej: MDE" 
+                            maxlength="3"
+                            autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="interrupt-reason">Motivo de interrupción</label>
+                    <input 
+                        type="text" 
+                        id="interrupt-reason" 
+                        placeholder="Ej: Tormenta, cierre aéreo, cancelación">
+                </div>
+
+                <button type="button" class="btn-secondary-plan" id="btn-block-route">
+                    Bloquear ruta
+                </button>
+
+                <div id="interruption-message" class="interruption-message info" aria-live="polite">
+                    No hay interrupciones registradas.
+                </div>
+
+                <div id="flight-animation-panel" class="flight-animation-panel" hidden>
+                    <div class="flight-animation-header">
+                        <span id="flight-animation-route">Vuelo en tránsito</span>
+                        <span id="flight-animation-percent">0%</span>
+                    </div>
+
+                    <div class="flight-animation-track">
+                        <div id="flight-animation-progress" class="flight-animation-progress"></div>
+                    </div>
+
+                    <div id="flight-animation-status" class="flight-animation-status">
+                        Esperando despegue...
+                    </div>
+                </div>
+
+                <div class="blocked-routes-section">
+                    <h4>Rutas bloqueadas</h4>
+                    <div id="blocked-routes-list">
+                        <p class="empty-blocked-routes">No hay rutas bloqueadas actualmente.</p>
+                    </div>
+                </div>
+            </section>
+
             <div class="form-group">
                 <label for="advanced-notas">Registro de decisiones</label>
                 <textarea id="advanced-notas" rows="6" placeholder="Aquí se irán registrando las decisiones paso a paso..." readonly></textarea>
@@ -115,6 +184,9 @@
 </footer>
 
 <script src="js/error-handler.js"></script>
+<script src="js/interrupciones/estado-interrupciones.js"></script>
+<script src="js/interrupciones/vuelo-animado.js"></script>
+<script src="js/interrupciones/controlador-interrupciones.js"></script>
 <script src="js/planificador_avanzado.js"></script>
 </body>
 </html>
