@@ -497,7 +497,7 @@ function renderSimulation() {
             <td><span class="seg-aircraft">${seg.aeronave}</span></td>
             <td>${Math.round(seg.distancia).toLocaleString()} km</td>
             <td>$${seg.costo.toFixed(2)}</td>
-            <td class="seg-accumulated">${seg.flightMinutes.toFixed(1)} h</td>
+            <td class="seg-accumulated">${(seg.flightMinutes / 60).toFixed(2)} h</td>
         </tr>`).join('');
 
     resultsArea.innerHTML = `
